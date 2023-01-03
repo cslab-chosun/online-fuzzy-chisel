@@ -24,36 +24,45 @@ class Comparator(isGreater : Boolean = true) extends Module {
 		val max = Output(UInt(1.W))
     })
 
-      val sIdle :: sInit :: Nil = Enum(3)
+      val sIdle :: sInit :: Nil = Enum(2)
   	  val state = RegInit(sIdle)
-  	  val startRisingEdge = start & !RegNext(start)
+  	  val startRisingEdge = io.start & !RegNext(io.start)
+
+  	  val earlyTerminate1 = WireInit(false.B)
+      val earlyTerminate2 = WireInit(false.B)
+      val max_output = WireInit(0.U(1.W))
+
 
   	  switch(state) {
 
   		is(sIdle){ 
-  			when (start === true.B) {
+  			when (io.start === true.B) {
   				state := sInit
   			}
    		}
 		is(sInit){
-			when (earlyTerminate === true.B) {
+			when (io.earlyTerminate === true.B) {
 
-				io.earlyTerminate1 := true.B
-				io.earlyTerminate2 := true.B
-
-				state := sIdle
-
-			} .elsewhen (in1 === 1.U && in2 === 0.U) {
-
-				io.earlyTerminate1 = true.B
-				io.earlyTerminate2 = false.B
+				earlyTerminate1 := true.B
+				earlyTerminate2 := true.B
 
 				state := sIdle
 
-			} .elsewhen (in1 === 0.U && in2 === 1.U) {
+			} .elsewhen (io.in1 === 1.U && io.in2 === 0.U) {
 
-				io.earlyTerminate1 = false.B
-				io.earlyTerminate2 = true.B
+				earlyTerminate1 := true.B
+				earlyTerminate2 := false.B
+
+				max_output := io.in1
+
+				state := sIdle
+
+			} .elsewhen (io.in1 === 0.U && io.in2 === 1.U) {
+
+				earlyTerminate1 := false.B
+				earlyTerminate2 := true.B
+
+				max_output := io.in2
 
 				state := sIdle
 
@@ -63,25 +72,32 @@ class Comparator(isGreater : Boolean = true) extends Module {
 				// the greater value is not found yet as 
 				// the values are equal (1 == 1) or (0 == 0)
 				//
+				max_output := io.in1 // the io.in1 and io.in2 are the same
+
 				state := sInit // not needed
 			}
    		}
 	}
 
+	//
+	// Connect the outputs
+	//
+	io.earlyTerminate1 := earlyTerminate1
+	io.earlyTerminate2 := earlyTerminate2
 
-
+	io.max := max_output
 }
 
 object Comparator {
 
-  def apply(isGreater : Boolean = true)(start : Bool(), input1 : UInt(1.W), input2 : UInt(1.W), earlyTerminatation : Bool()): UInt(1.W) = {
+  def apply(isGreater : Boolean = true)(start : Bool, input1 : UInt, input2 : UInt, earlyTerminatation : Bool): UInt = {
 
     val comparator_module = Module(new Comparator(isGreater))
 
-    val earlyTerminate1 = Bool()
-    val earlyTerminate2 = Bool()
+    val earlyTerminate1 = WireInit(false.B)
+    val earlyTerminate2 = WireInit(false.B)
 
-    val max_input = UInt(1.W)
+    val max_output = Wire(UInt(1.W))
 
     //
     // Configure the input signals
@@ -99,11 +115,11 @@ object Comparator {
     earlyTerminate2 := comparator_module.io.earlyTerminate2
 
 
-    max_input := comparator_module.io.max
+    max_output := comparator_module.io.max
 
     //
     // Return the maximum input
     //
-    max_input
+    max_output
   }
 }

@@ -3,7 +3,8 @@ package fuzzy
 
 import chisel3._
 import chisel3.util._
-import crypto.aes._
+
+import fuzzy.components._
 
 class FuzzyController() extends Module {
   val io = IO(new Bundle {
@@ -15,7 +16,8 @@ class FuzzyController() extends Module {
     val max = Output(UInt(1.W))
   })
 
-    val comparator_max =  Comparator(true)(true.B, in1, in2, earlyTerminate)
+    val earlyTerminate = false.B
+    val comparator_max =  Comparator(true)(true.B, io.in1, io.in2, earlyTerminate)
     io.max := comparator_max
 }
 
