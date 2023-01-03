@@ -49,7 +49,7 @@ class ComparatorTestGreater extends AnyFlatSpec with
 
 					println("")
 
-					println(s"max : ${dut.io.max_min.peek().litValue.toInt.toBinaryString}\n")
+					println(s"max : ${dut.io.maxMin.peek().litValue.toInt.toBinaryString}\n")
 
 					dut.clock.step(1)
 				}
@@ -117,7 +117,7 @@ class ComparatorTestGreater extends AnyFlatSpec with
 
 					println("")
 
-					println(s"min : ${dut.io.max_min.peek().litValue.toInt.toBinaryString}\n")
+					println(s"min : ${dut.io.maxMin.peek().litValue.toInt.toBinaryString}\n")
 
 					dut.clock.step(1)
 				}

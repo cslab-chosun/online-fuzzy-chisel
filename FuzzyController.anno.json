@@ -17,13 +17,5 @@
   {
     "class":"firrtl.transforms.BlackBoxTargetDirAnno",
     "targetDir":"."
-  },
-  {
-    "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~FuzzyController|FuzzyController>io_max",
-    "sources":[
-      "~FuzzyController|FuzzyController>io_in1",
-      "~FuzzyController|FuzzyController>io_in2"
-    ]
   }
 ]

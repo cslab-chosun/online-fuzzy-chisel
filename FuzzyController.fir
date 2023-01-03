@@ -2,7 +2,7 @@ circuit FuzzyController :
   module Comparator :
     input clock : Clock
     input reset : Reset
-    output io : { flip start : UInt<1>, flip earlyTerminate : UInt<1>, flip in1 : UInt<1>, flip in2 : UInt<1>, earlyTerminate1 : UInt<1>, earlyTerminate2 : UInt<1>, max_min : UInt<1>}
+    output io : { flip start : UInt<1>, flip earlyTerminate : UInt<1>, flip in1 : UInt<1>, flip in2 : UInt<1>, earlyTerminate1 : UInt<1>, earlyTerminate2 : UInt<1>, maxMin : UInt<1>}
 
     reg state : UInt<1>, clock with :
       reset => (reset, UInt<1>("h0")) @[comparator.scala 28:30]
@@ -15,8 +15,8 @@ circuit FuzzyController :
       reset => (reset, UInt<1>("h0")) @[comparator.scala 31:40]
     reg earlyTerminate2 : UInt<1>, clock with :
       reset => (reset, UInt<1>("h0")) @[comparator.scala 32:36]
-    wire max_min_output : UInt<1>
-    max_min_output <= UInt<1>("h0")
+    wire maxMinOutput : UInt<1>
+    maxMinOutput <= UInt<1>("h0")
     node _T = eq(UInt<1>("h0"), state) @[comparator.scala 36:25]
     when _T : @[comparator.scala 36:25]
       node _T_1 = eq(startRisingEdge, UInt<1>("h1")) @[comparator.scala 40:47]
@@ -35,47 +35,94 @@ circuit FuzzyController :
           node _T_5 = eq(io.in2, UInt<1>("h0")) @[comparator.scala 53:63]
           node _T_6 = and(_T_4, _T_5) @[comparator.scala 53:53]
           when _T_6 : @[comparator.scala 53:72]
-            earlyTerminate1 <= UInt<1>("h1") @[comparator.scala 56:57]
-            earlyTerminate2 <= UInt<1>("h0") @[comparator.scala 57:57]
-            max_min_output <= io.in1 @[comparator.scala 58:56]
+            earlyTerminate1 <= UInt<1>("h0") @[comparator.scala 62:57]
+            earlyTerminate2 <= UInt<1>("h1") @[comparator.scala 63:57]
+            maxMinOutput <= io.in2 @[comparator.scala 64:54]
             state <= UInt<1>("h0") @[comparator.scala 67:39]
           else :
             node _T_7 = eq(io.in1, UInt<1>("h0")) @[comparator.scala 69:45]
             node _T_8 = eq(io.in2, UInt<1>("h1")) @[comparator.scala 69:63]
             node _T_9 = and(_T_7, _T_8) @[comparator.scala 69:53]
             when _T_9 : @[comparator.scala 69:72]
-              earlyTerminate1 <= UInt<1>("h0") @[comparator.scala 72:57]
-              earlyTerminate2 <= UInt<1>("h1") @[comparator.scala 73:57]
-              max_min_output <= io.in2 @[comparator.scala 74:56]
+              earlyTerminate1 <= UInt<1>("h1") @[comparator.scala 78:57]
+              earlyTerminate2 <= UInt<1>("h0") @[comparator.scala 79:57]
+              maxMinOutput <= io.in1 @[comparator.scala 80:54]
               state <= UInt<1>("h0") @[comparator.scala 83:39]
             else :
-              max_min_output <= io.in1 @[comparator.scala 91:48]
+              maxMinOutput <= io.in1 @[comparator.scala 91:46]
               earlyTerminate1 <= UInt<1>("h0") @[comparator.scala 93:49]
               earlyTerminate1 <= UInt<1>("h0") @[comparator.scala 94:49]
               state <= UInt<1>("h1") @[comparator.scala 96:39]
     io.earlyTerminate1 <= earlyTerminate1 @[comparator.scala 104:28]
     io.earlyTerminate2 <= earlyTerminate2 @[comparator.scala 105:28]
-    io.max_min <= max_min_output @[comparator.scala 107:20]
+    io.maxMin <= maxMinOutput @[comparator.scala 107:19]
+
+  module MinMaxTree :
+    input clock : Clock
+    input reset : Reset
+    output io : { flip start : UInt<1>, flip in1 : UInt<8>, flip in2 : UInt<8>, outResult : UInt<8>}
+
+    reg regMinVec : UInt<8>[8], clock with :
+      reset => (UInt<1>("h0"), regMinVec) @[min_max.scala 28:24]
+    reg regBitIndx : UInt<3>, clock with :
+      reset => (reset, UInt<3>("h0")) @[min_max.scala 30:29]
+    reg regVecIndx : UInt<3>, clock with :
+      reset => (reset, UInt<3>("h0")) @[min_max.scala 31:29]
+    node _T = dshr(io.in1, regBitIndx) @[min_max.scala 33:76]
+    node _T_1 = bits(_T, 0, 0) @[min_max.scala 33:76]
+    node _T_2 = dshr(io.in2, regBitIndx) @[min_max.scala 33:96]
+    node _T_3 = bits(_T_2, 0, 0) @[min_max.scala 33:96]
+    inst comparatorModule of Comparator @[comparator.scala 114:34]
+    comparatorModule.clock <= clock
+    comparatorModule.reset <= reset
+    wire earlyTerminate1 : UInt<1>
+    earlyTerminate1 <= UInt<1>("h0")
+    wire earlyTerminate2 : UInt<1>
+    earlyTerminate2 <= UInt<1>("h0")
+    wire maxMinOutput : UInt<1> @[comparator.scala 119:28]
+    comparatorModule.io.in1 <= _T_1 @[comparator.scala 124:29]
+    comparatorModule.io.in2 <= _T_3 @[comparator.scala 125:29]
+    comparatorModule.io.earlyTerminate <= UInt<1>("h0") @[comparator.scala 127:40]
+    comparatorModule.io.start <= UInt<1>("h1") @[comparator.scala 128:31]
+    earlyTerminate1 <= comparatorModule.io.earlyTerminate1 @[comparator.scala 133:21]
+    earlyTerminate2 <= comparatorModule.io.earlyTerminate2 @[comparator.scala 134:21]
+    maxMinOutput <= comparatorModule.io.maxMin @[comparator.scala 137:18]
+    node earlyTerminated = and(earlyTerminate1, earlyTerminate2) @[comparator.scala 139:43]
+    node selectedInput = mux(earlyTerminate1, UInt<1>("h0"), UInt<1>("h1")) @[comparator.scala 144:28]
+    node _T_4 = neq(earlyTerminated, UInt<1>("h1")) @[min_max.scala 35:27]
+    when _T_4 : @[min_max.scala 35:39]
+      node _regBitIndx_T = add(regBitIndx, UInt<1>("h1")) @[min_max.scala 36:34]
+      node _regBitIndx_T_1 = tail(_regBitIndx_T, 1) @[min_max.scala 36:34]
+      regBitIndx <= _regBitIndx_T_1 @[min_max.scala 36:20]
+    else :
+      regBitIndx <= UInt<1>("h0") @[min_max.scala 42:20]
+      node _T_5 = eq(selectedInput, UInt<1>("h0")) @[min_max.scala 44:29]
+      when _T_5 : @[min_max.scala 44:38]
+        regMinVec[regVecIndx] <= io.in1 @[min_max.scala 45:39]
+      else :
+        regMinVec[regVecIndx] <= io.in2 @[min_max.scala 47:39]
+        node _regVecIndx_T = add(regVecIndx, UInt<1>("h1")) @[min_max.scala 48:42]
+        node _regVecIndx_T_1 = tail(_regVecIndx_T, 1) @[min_max.scala 48:42]
+        regVecIndx <= _regVecIndx_T_1 @[min_max.scala 48:28]
+      node _regVecIndx_T_2 = add(regVecIndx, UInt<1>("h1")) @[min_max.scala 54:34]
+      node _regVecIndx_T_3 = tail(_regVecIndx_T_2, 1) @[min_max.scala 54:34]
+      regVecIndx <= _regVecIndx_T_3 @[min_max.scala 54:20]
+    node _io_outResult_T = add(regMinVec[0], regMinVec[7]) @[min_max.scala 60:34]
+    node _io_outResult_T_1 = tail(_io_outResult_T, 1) @[min_max.scala 60:34]
+    io.outResult <= _io_outResult_T_1 @[min_max.scala 60:18]
 
   module FuzzyController :
     input clock : Clock
     input reset : UInt<1>
-    output io : { flip earlyTerminate : UInt<1>, flip in1 : UInt<1>, flip in2 : UInt<1>, max : UInt<1>}
+    output io : { flip in1 : UInt<8>, flip in2 : UInt<8>, max : UInt<8>}
 
-    inst comparator_max_comparator_module of Comparator @[comparator.scala 114:35]
-    comparator_max_comparator_module.clock <= clock
-    comparator_max_comparator_module.reset <= reset
-    wire comparator_max_earlyTerminate1 : UInt<1>
-    comparator_max_earlyTerminate1 <= UInt<1>("h0")
-    wire comparator_max_earlyTerminate2 : UInt<1>
-    comparator_max_earlyTerminate2 <= UInt<1>("h0")
-    wire comparator_max : UInt<1> @[comparator.scala 119:30]
-    comparator_max_comparator_module.io.in1 <= io.in1 @[comparator.scala 124:30]
-    comparator_max_comparator_module.io.in2 <= io.in2 @[comparator.scala 125:30]
-    comparator_max_comparator_module.io.earlyTerminate <= UInt<1>("h0") @[comparator.scala 127:41]
-    comparator_max_comparator_module.io.start <= UInt<1>("h1") @[comparator.scala 128:32]
-    comparator_max_earlyTerminate1 <= comparator_max_comparator_module.io.earlyTerminate1 @[comparator.scala 133:21]
-    comparator_max_earlyTerminate2 <= comparator_max_comparator_module.io.earlyTerminate2 @[comparator.scala 134:21]
-    comparator_max <= comparator_max_comparator_module.io.max_min @[comparator.scala 137:20]
-    io.max <= comparator_max @[top.scala 21:12]
+    inst minMaxTree_minMaxTree of MinMaxTree @[min_max.scala 68:28]
+    minMaxTree_minMaxTree.clock <= clock
+    minMaxTree_minMaxTree.reset <= reset
+    wire minMaxTree : UInt<8> @[min_max.scala 69:25]
+    minMaxTree_minMaxTree.io.start <= UInt<1>("h1") @[min_max.scala 71:25]
+    minMaxTree_minMaxTree.io.in1 <= io.in1 @[min_max.scala 73:23]
+    minMaxTree_minMaxTree.io.in2 <= io.in2 @[min_max.scala 74:23]
+    minMaxTree <= minMaxTree_minMaxTree.io.outResult @[min_max.scala 76:15]
+    io.max <= minMaxTree @[top.scala 21:12]
 
