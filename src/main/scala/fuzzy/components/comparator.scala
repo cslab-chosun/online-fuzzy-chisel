@@ -28,23 +28,30 @@ class Comparator(isGreater : Boolean = true) extends Module {
   	  val state = RegInit(sIdle)
   	  val startRisingEdge = io.start & !RegNext(io.start)
 
-  	  val earlyTerminate1 = WireInit(false.B)
-      val earlyTerminate2 = WireInit(false.B)
+  	  val earlyTerminate1 = RegInit(false.B)
+      val earlyTerminate2 = RegInit(false.B)
       val max_output = WireInit(0.U(1.W))
 
 
   	  switch(state) {
 
   		is(sIdle){ 
-  			when (io.start === true.B) {
+
+  			printf("state : %d\n", state)
+
+  			when (startRisingEdge === true.B) {
   				state := sInit
   			}
    		}
 		is(sInit){
+
+			printf("state : %d\n", state)
+
 			when (io.earlyTerminate === true.B) {
 
 				earlyTerminate1 := true.B
 				earlyTerminate2 := true.B
+				printf("state : %d first if 1\n", state)
 
 				state := sIdle
 
@@ -52,12 +59,14 @@ class Comparator(isGreater : Boolean = true) extends Module {
 
 				earlyTerminate1 := true.B
 				earlyTerminate2 := false.B
+				printf("state : %d first if 2\n", state)
 
 				max_output := io.in1
 
 				state := sIdle
 
 			} .elsewhen (io.in1 === 0.U && io.in2 === 1.U) {
+				printf("state : %d first if 3\n", state)
 
 				earlyTerminate1 := false.B
 				earlyTerminate2 := true.B
@@ -67,7 +76,8 @@ class Comparator(isGreater : Boolean = true) extends Module {
 				state := sIdle
 
 			} .otherwise {
-				
+				printf("state : %d first if 4\n", state)
+
 				//
 				// the greater value is not found yet as 
 				// the values are equal (1 == 1) or (0 == 0)
