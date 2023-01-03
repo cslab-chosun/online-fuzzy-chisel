@@ -3,7 +3,7 @@ package fuzzy.components
 import chisel3._
 import chisel3.util._
 
-class Comparator(isGreater : Boolean = true) extends Module {
+class Comparator(isMax : Boolean = true) extends Module {
 
     val io = IO(new Bundle {
 
@@ -21,7 +21,7 @@ class Comparator(isGreater : Boolean = true) extends Module {
 		//
 		val earlyTerminate1 = Output(Bool())
 		val earlyTerminate2 = Output(Bool())
-		val max = Output(UInt(1.W))
+		val max_min = Output(UInt(1.W))
     })
 
       val sIdle :: sInit :: Nil = Enum(2)
@@ -30,14 +30,12 @@ class Comparator(isGreater : Boolean = true) extends Module {
 
   	  val earlyTerminate1 = RegInit(false.B)
       val earlyTerminate2 = RegInit(false.B)
-      val max_output = WireInit(0.U(1.W))
+      val max_min_output = WireInit(0.U(1.W))
 
 
   	  switch(state) {
 
   		is(sIdle){ 
-
-  			printf("state : %d\n", state)
 
   			when (startRisingEdge === true.B) {
   				state := sInit
@@ -45,44 +43,52 @@ class Comparator(isGreater : Boolean = true) extends Module {
    		}
 		is(sInit){
 
-			printf("state : %d\n", state)
-
 			when (io.earlyTerminate === true.B) {
 
 				earlyTerminate1 := true.B
 				earlyTerminate2 := true.B
-				printf("state : %d first if 1\n", state)
 
 				state := sIdle
 
 			} .elsewhen (io.in1 === 1.U && io.in2 === 0.U) {
 
-				earlyTerminate1 := true.B
-				earlyTerminate2 := false.B
-				printf("state : %d first if 2\n", state)
+				if (isMax == true) {
+					earlyTerminate1 := true.B
+					earlyTerminate2 := false.B
+					max_min_output := io.in1
+				}
+				else {
 
-				max_output := io.in1
+					earlyTerminate1 := false.B
+					earlyTerminate2 := true.B
+					max_min_output := io.in2
+				}
 
 				state := sIdle
 
 			} .elsewhen (io.in1 === 0.U && io.in2 === 1.U) {
-				printf("state : %d first if 3\n", state)
 
-				earlyTerminate1 := false.B
-				earlyTerminate2 := true.B
+				if (isMax == true) {
+					earlyTerminate1 := false.B
+					earlyTerminate2 := true.B
+					max_min_output := io.in2
+				}
+				else {
 
-				max_output := io.in2
-
+					earlyTerminate1 := true.B
+					earlyTerminate2 := false.B
+					max_min_output := io.in1
+				}
+				
 				state := sIdle
 
 			} .otherwise {
-				printf("state : %d first if 4\n", state)
 
 				//
 				// the greater value is not found yet as 
 				// the values are equal (1 == 1) or (0 == 0)
 				//
-				max_output := io.in1 // the io.in1 and io.in2 are the same
+				max_min_output := io.in1 // the io.in1 and io.in2 are the same
 
 				earlyTerminate1 := false.B
 				earlyTerminate1 := false.B
@@ -98,19 +104,19 @@ class Comparator(isGreater : Boolean = true) extends Module {
 	io.earlyTerminate1 := earlyTerminate1
 	io.earlyTerminate2 := earlyTerminate2
 
-	io.max := max_output
+	io.max_min := max_min_output
 }
 
 object Comparator {
 
-  def apply(isGreater : Boolean = true)(start : Bool, input1 : UInt, input2 : UInt, earlyTerminatation : Bool): UInt = {
+  def apply(isMax : Boolean = true)(start : Bool, input1 : UInt, input2 : UInt, earlyTerminatation : Bool): UInt = {
 
-    val comparator_module = Module(new Comparator(isGreater))
+    val comparator_module = Module(new Comparator(isMax))
 
     val earlyTerminate1 = WireInit(false.B)
     val earlyTerminate2 = WireInit(false.B)
 
-    val max_output = Wire(UInt(1.W))
+    val max_min_output = Wire(UInt(1.W))
 
     //
     // Configure the input signals
@@ -128,11 +134,11 @@ object Comparator {
     earlyTerminate2 := comparator_module.io.earlyTerminate2
 
 
-    max_output := comparator_module.io.max
+    max_min_output := comparator_module.io.max_min
 
     //
     // Return the maximum input
     //
-    max_output
+    max_min_output
   }
 }
