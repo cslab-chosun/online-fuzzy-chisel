@@ -28,7 +28,7 @@ class ComparatorTestExample extends AnyFlatSpec with
 				//
 				dut.io.start.poke(1.U)
 				
-				for (i <- 0 until 16) {
+				for (i <- 0 until log2Ceil(test1.litValue.toInt)) {
 
 					println("================================================================\n")
 
@@ -44,14 +44,31 @@ class ComparatorTestExample extends AnyFlatSpec with
 
 					println("")
 
-					println(s"early terminate 1 : ${dut.io.earlyTerminate1.peek().litValue.toInt.toBinaryString}")
-					println(s"early terminate 2 : ${dut.io.earlyTerminate2.peek().litValue.toInt.toBinaryString}")
+					println(s"early termination 1 : ${dut.io.earlyTerminate1.peek().litValue.toInt.toBinaryString}")
+					println(s"early termination 2 : ${dut.io.earlyTerminate2.peek().litValue.toInt.toBinaryString}")
 
 					println("")
 
 					println(s"max : ${dut.io.max.peek().litValue.toInt.toBinaryString}\n")
 
 					dut.clock.step(1)
+				}
+
+				//
+				// Test the results of the above module
+				//
+				if (test1.litValue.toInt > test2.litValue.toInt &&
+				 dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
+				 dut.io.earlyTerminate2.peek().litValue.toInt == 0){
+					println("First test is passed!")
+				}
+				else if (test1.litValue.toInt < test2.litValue.toInt &&
+				 dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
+				 dut.io.earlyTerminate2.peek().litValue.toInt == 1) {
+					println("First test is passed!")
+				}
+				else {
+					println("First test is NOT passed!")
 				}
 
 				//

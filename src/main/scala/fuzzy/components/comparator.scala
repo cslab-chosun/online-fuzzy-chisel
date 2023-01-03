@@ -84,6 +84,9 @@ class Comparator(isGreater : Boolean = true) extends Module {
 				//
 				max_output := io.in1 // the io.in1 and io.in2 are the same
 
+				earlyTerminate1 := false.B
+				earlyTerminate1 := false.B
+
 				state := sInit // not needed
 			}
    		}
