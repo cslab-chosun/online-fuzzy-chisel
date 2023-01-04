@@ -63,15 +63,15 @@ circuit FuzzyController :
     output io : { flip start : UInt<1>, flip in1 : UInt<8>, flip in2 : UInt<8>, outResult : UInt<8>}
 
     reg regMinVec : UInt<8>[8], clock with :
-      reset => (UInt<1>("h0"), regMinVec) @[min_max.scala 28:24]
+      reset => (UInt<1>("h0"), regMinVec) @[min_max.scala 29:24]
     reg regBitIndx : UInt<3>, clock with :
-      reset => (reset, UInt<3>("h0")) @[min_max.scala 30:29]
-    reg regVecIndx : UInt<3>, clock with :
       reset => (reset, UInt<3>("h0")) @[min_max.scala 31:29]
-    node _T = dshr(io.in1, regBitIndx) @[min_max.scala 33:76]
-    node _T_1 = bits(_T, 0, 0) @[min_max.scala 33:76]
-    node _T_2 = dshr(io.in2, regBitIndx) @[min_max.scala 33:96]
-    node _T_3 = bits(_T_2, 0, 0) @[min_max.scala 33:96]
+    reg regVecIndx : UInt<3>, clock with :
+      reset => (reset, UInt<3>("h0")) @[min_max.scala 32:29]
+    node _T = dshr(io.in1, regBitIndx) @[min_max.scala 34:76]
+    node _T_1 = bits(_T, 0, 0) @[min_max.scala 34:76]
+    node _T_2 = dshr(io.in2, regBitIndx) @[min_max.scala 34:96]
+    node _T_3 = bits(_T_2, 0, 0) @[min_max.scala 34:96]
     inst comparatorModule of Comparator @[comparator.scala 114:34]
     comparatorModule.clock <= clock
     comparatorModule.reset <= reset
@@ -89,40 +89,40 @@ circuit FuzzyController :
     maxMinOutput <= comparatorModule.io.maxMin @[comparator.scala 137:18]
     node earlyTerminated = and(earlyTerminate1, earlyTerminate2) @[comparator.scala 139:43]
     node selectedInput = mux(earlyTerminate1, UInt<1>("h0"), UInt<1>("h1")) @[comparator.scala 144:28]
-    node _T_4 = neq(earlyTerminated, UInt<1>("h1")) @[min_max.scala 35:27]
-    when _T_4 : @[min_max.scala 35:39]
-      node _regBitIndx_T = add(regBitIndx, UInt<1>("h1")) @[min_max.scala 36:34]
-      node _regBitIndx_T_1 = tail(_regBitIndx_T, 1) @[min_max.scala 36:34]
-      regBitIndx <= _regBitIndx_T_1 @[min_max.scala 36:20]
+    node _T_4 = neq(earlyTerminated, UInt<1>("h1")) @[min_max.scala 36:27]
+    when _T_4 : @[min_max.scala 36:39]
+      node _regBitIndx_T = add(regBitIndx, UInt<1>("h1")) @[min_max.scala 37:34]
+      node _regBitIndx_T_1 = tail(_regBitIndx_T, 1) @[min_max.scala 37:34]
+      regBitIndx <= _regBitIndx_T_1 @[min_max.scala 37:20]
     else :
-      regBitIndx <= UInt<1>("h0") @[min_max.scala 42:20]
-      node _T_5 = eq(selectedInput, UInt<1>("h0")) @[min_max.scala 44:29]
-      when _T_5 : @[min_max.scala 44:38]
-        regMinVec[regVecIndx] <= io.in1 @[min_max.scala 45:39]
+      regBitIndx <= UInt<1>("h0") @[min_max.scala 43:20]
+      node _T_5 = eq(selectedInput, UInt<1>("h0")) @[min_max.scala 45:29]
+      when _T_5 : @[min_max.scala 45:38]
+        regMinVec[regVecIndx] <= io.in1 @[min_max.scala 46:39]
       else :
-        regMinVec[regVecIndx] <= io.in2 @[min_max.scala 47:39]
-        node _regVecIndx_T = add(regVecIndx, UInt<1>("h1")) @[min_max.scala 48:42]
-        node _regVecIndx_T_1 = tail(_regVecIndx_T, 1) @[min_max.scala 48:42]
-        regVecIndx <= _regVecIndx_T_1 @[min_max.scala 48:28]
-      node _regVecIndx_T_2 = add(regVecIndx, UInt<1>("h1")) @[min_max.scala 54:34]
-      node _regVecIndx_T_3 = tail(_regVecIndx_T_2, 1) @[min_max.scala 54:34]
-      regVecIndx <= _regVecIndx_T_3 @[min_max.scala 54:20]
-    node _io_outResult_T = add(regMinVec[0], regMinVec[7]) @[min_max.scala 60:34]
-    node _io_outResult_T_1 = tail(_io_outResult_T, 1) @[min_max.scala 60:34]
-    io.outResult <= _io_outResult_T_1 @[min_max.scala 60:18]
+        regMinVec[regVecIndx] <= io.in2 @[min_max.scala 48:39]
+        node _regVecIndx_T = add(regVecIndx, UInt<1>("h1")) @[min_max.scala 49:42]
+        node _regVecIndx_T_1 = tail(_regVecIndx_T, 1) @[min_max.scala 49:42]
+        regVecIndx <= _regVecIndx_T_1 @[min_max.scala 49:28]
+      node _regVecIndx_T_2 = add(regVecIndx, UInt<1>("h1")) @[min_max.scala 55:34]
+      node _regVecIndx_T_3 = tail(_regVecIndx_T_2, 1) @[min_max.scala 55:34]
+      regVecIndx <= _regVecIndx_T_3 @[min_max.scala 55:20]
+    node _io_outResult_T = add(regMinVec[0], regMinVec[7]) @[min_max.scala 61:34]
+    node _io_outResult_T_1 = tail(_io_outResult_T, 1) @[min_max.scala 61:34]
+    io.outResult <= _io_outResult_T_1 @[min_max.scala 61:18]
 
   module FuzzyController :
     input clock : Clock
     input reset : UInt<1>
     output io : { flip in1 : UInt<8>, flip in2 : UInt<8>, max : UInt<8>}
 
-    inst minMaxTree_minMaxTree of MinMaxTree @[min_max.scala 68:28]
+    inst minMaxTree_minMaxTree of MinMaxTree @[min_max.scala 69:28]
     minMaxTree_minMaxTree.clock <= clock
     minMaxTree_minMaxTree.reset <= reset
-    wire minMaxTree : UInt<8> @[min_max.scala 69:25]
-    minMaxTree_minMaxTree.io.start <= UInt<1>("h1") @[min_max.scala 71:25]
-    minMaxTree_minMaxTree.io.in1 <= io.in1 @[min_max.scala 73:23]
-    minMaxTree_minMaxTree.io.in2 <= io.in2 @[min_max.scala 74:23]
-    minMaxTree <= minMaxTree_minMaxTree.io.outResult @[min_max.scala 76:15]
+    wire minMaxTree : UInt<8> @[min_max.scala 70:25]
+    minMaxTree_minMaxTree.io.start <= UInt<1>("h1") @[min_max.scala 72:25]
+    minMaxTree_minMaxTree.io.in1 <= io.in1 @[min_max.scala 74:23]
+    minMaxTree_minMaxTree.io.in2 <= io.in2 @[min_max.scala 75:23]
+    minMaxTree <= minMaxTree_minMaxTree.io.outResult @[min_max.scala 77:15]
     io.max <= minMaxTree @[top.scala 21:12]
 

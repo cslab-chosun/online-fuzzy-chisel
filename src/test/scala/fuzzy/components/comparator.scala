@@ -5,11 +5,11 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 import fuzzy.components._
 
-class ComparatorTestGreater extends AnyFlatSpec with
+class ComparatorTest extends AnyFlatSpec with
 	ChiselScalatestTester {
 		"DUT" should "pass" in {
 			
-			test(new Comparator(true)) { dut =>
+			test(new Comparator(true, false)) { dut =>
 
 				//
 				// First, start with module in an inactive state
@@ -77,7 +77,7 @@ class ComparatorTestGreater extends AnyFlatSpec with
 				dut.io.start.poke(0.U)
 		}
 		
-			test(new Comparator(false)) { dut =>
+			test(new Comparator(false, false)) { dut =>
 
 				//
 				// First, start with module in an inactive state

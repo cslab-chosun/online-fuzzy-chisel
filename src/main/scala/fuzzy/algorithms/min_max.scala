@@ -1,4 +1,3 @@
-
 package fuzzy.algorithms
 
 import chisel3._
@@ -7,7 +6,7 @@ import chisel3.util._
 import fuzzy.components._
 import fuzzy.utils._
 
-class MinMaxTree(VECTOR_LEN : Int = 8) extends Module {
+class MinMaxTree(VECTOR_LEN : Int = 8, debug : Boolean = false) extends Module {
 
     val io = IO(new Bundle {
 
@@ -22,48 +21,73 @@ class MinMaxTree(VECTOR_LEN : Int = 8) extends Module {
         //
         // Output signals
         //
+        //
+        val askForNewNumber = Output(Bool())
         val outResult = Output(UInt(8.W))
     })
+
+    val askForNewNumber = RegInit(false.B) // maximum input index is 8 => 3-bits
 
     val regMinVec = Reg(Vec(VECTOR_LEN, UInt(8.W)))
 
     val regBitIndx = RegInit(0.U(3.W)) // maximum input index is 8 => 3-bits
     val regVecIndx = RegInit(0.U(3.W)) // maximum vector index is 8 => 3-bits
 
-    val (selectedInput, earlyTerminated) = Comparator(false)(true.B, io.in1(regBitIndx), io.in2(regBitIndx), false.B /* no external early termination */)
+val (selectedInput, earlyTerminated) = Comparator(false, true)(io.start, io.in1(regBitIndx), io.in2(regBitIndx), false.B /* no external early termination */)
 
-    when (earlyTerminated =/= true.B) {
-    	regBitIndx := regBitIndx + 1.U
-    } .otherwise {
+when (io.start === true.B){
 
-    	//
-    	// Reset the index register for bits
-    	//
-    	regBitIndx := 0.U
+   when (earlyTerminated =/= true.B) {
+      regBitIndx := regBitIndx + 1.U
+      askForNewNumber := false.B
 
-    	when (selectedInput === 0.U) {
-    		regMinVec(regVecIndx) := io.in1
-    	} .otherwise {
-    		regMinVec(regVecIndx) := io.in2
-    		regVecIndx := regVecIndx + 1.U
-    	}
+      if (debug) {
+         printf("dbg, MinMaxTree debug : earlyTerminated %d, selectedInput : %d | io.in1(%d) = %d, io.in2(%d) = %d\n", 
+            earlyTerminated, selectedInput, regBitIndx, io.in1(regBitIndx), regBitIndx, io.in2(regBitIndx))         
+     }
 
-    	//
-    	// add the vector index
-    	//
-    	regVecIndx := regVecIndx + 1.U
-    }
+ } .otherwise {
 
-    //
-    // Set the output
-    //
-    io.outResult := regMinVec(0) + regMinVec(7) // test should be removed
+  //
+  // Reset the index register for bits
+  //
+  regBitIndx := 0.U
+
+  when (selectedInput === 0.U) {
+     regMinVec(regVecIndx) := io.in1
+
+     if (debug) {
+         printf("dbg, regMinVec(%d) : %x |\n", regVecIndx, io.in1) 
+     }
+
+ } .otherwise {
+     regMinVec(regVecIndx) := io.in2
+
+     if (debug) {
+         printf("dbg, regMinVec(%d) : %x |\n", regVecIndx, io.in2) 
+     }
+ }
+
+ //
+ // add the vector index
+ //
+ regVecIndx := regVecIndx + 1.U
+ askForNewNumber := true.B
+}
+
+}
+
+//
+// Set the output
+//
+io.outResult := regMinVec(0) + regMinVec(1) + regMinVec(2) + regMinVec(3) + regMinVec(4) + regMinVec(5) + regMinVec(6) + regMinVec(7)   // test should be removed
+io.askForNewNumber := askForNewNumber
 
 }
 
 object MinMaxTree {
 
-  def apply(VECTOR_LEN : Int = 8)(in1 : UInt, in2 : UInt, start : Bool) : UInt = {
+  def apply(VECTOR_LEN : Int = 8, debug : Boolean = false)(in1 : UInt, in2 : UInt, start : Bool) : UInt = {
 
     val minMaxTree = Module(new MinMaxTree(VECTOR_LEN))
     val outResult = Wire(UInt(8.W))
@@ -79,5 +103,5 @@ object MinMaxTree {
     // Return the result
     //
     outResult
-  }
+}
 }

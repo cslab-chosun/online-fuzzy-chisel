@@ -3,7 +3,7 @@ package fuzzy.components
 import chisel3._
 import chisel3.util._
 
-class Comparator(isMax : Boolean = true) extends Module {
+class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module {
 
     val io = IO(new Bundle {
 
@@ -37,13 +37,26 @@ class Comparator(isMax : Boolean = true) extends Module {
 
   		is(sIdle){ 
 
+  			if (debug) {
+  				printf("dbg, comparator debug: in idle state\n")
+  			}
+
   			when (startRisingEdge === true.B) {
+
+	  			if (debug) {
+	  				printf("dbg, comparator debug: module will go to init state\n")
+	  			}
+
   				state := sInit
   			}
    		}
 		is(sInit){
 
 			when (io.earlyTerminate === true.B) {
+
+				if (debug) {
+	  			printf("dbg, comparator debug: global earlyTerminate raised\n")
+	  		}
 
 				earlyTerminate1 := true.B
 				earlyTerminate2 := true.B
@@ -53,15 +66,26 @@ class Comparator(isMax : Boolean = true) extends Module {
 			} .elsewhen (io.in1 === 1.U && io.in2 === 0.U) {
 
 				if (isMax == true) {
+
 					earlyTerminate1 := true.B
 					earlyTerminate2 := false.B
 					maxMinOutput := io.in1
-				}
+
+					if (debug) {
+		  			printf("dbg, comparator debug: earlyTerminate1 => true\n")
+		  		}
+
+	  		}
 				else {
 
 					earlyTerminate1 := false.B
 					earlyTerminate2 := true.B
 					maxMinOutput := io.in2
+
+					if (debug) {
+			  		printf("dbg, comparator debug: earlyTerminate2 => true\n")
+			  	}
+
 				}
 
 				state := sIdle
@@ -72,12 +96,20 @@ class Comparator(isMax : Boolean = true) extends Module {
 					earlyTerminate1 := false.B
 					earlyTerminate2 := true.B
 					maxMinOutput := io.in2
+
+					if (debug) {
+			  		printf("dbg, comparator debug: earlyTerminate2 => true\n")
+			  	}
 				}
 				else {
 
 					earlyTerminate1 := true.B
 					earlyTerminate2 := false.B
 					maxMinOutput := io.in1
+
+					if (debug) {
+			  		printf("dbg, comparator debug: earlyTerminate1 => true\n")
+			  	}					
 				}
 				
 				state := sIdle
@@ -94,8 +126,12 @@ class Comparator(isMax : Boolean = true) extends Module {
 				earlyTerminate1 := false.B
 
 				state := sInit // not needed
+
+				if (debug) {
+			  	printf("dbg, comparator debug: both bits are equal\n")
+			  }
 			}
-   		}
+   	}
 	}
 
 	//
@@ -109,12 +145,12 @@ class Comparator(isMax : Boolean = true) extends Module {
 
 object Comparator {
 
-  def apply(isMax : Boolean = true)(start : Bool, input1 : UInt, input2 : UInt, earlyTerminatation : Bool): (Bool, Bool) = {
+  def apply(isMax : Boolean = true, debug : Boolean = false)(start : Bool, input1 : UInt, input2 : UInt, earlyTerminatation : Bool): (Bool, Bool) = {
 
-    val comparatorModule = Module(new Comparator(isMax))
+    val comparatorModule = Module(new Comparator(isMax, debug))
 
-    val earlyTerminate1 = WireInit(false.B)
-    val earlyTerminate2 = WireInit(false.B)
+    val earlyTerminate1 = Wire(Bool())
+    val earlyTerminate2 = Wire(Bool())
 
     val maxMinOutput = Wire(UInt(1.W))
 
@@ -123,6 +159,7 @@ object Comparator {
     //
     comparatorModule.io.in1 := input1
     comparatorModule.io.in2 := input2
+
 
     comparatorModule.io.earlyTerminate := earlyTerminatation
     comparatorModule.io.start := start
@@ -133,10 +170,13 @@ object Comparator {
     earlyTerminate1 := comparatorModule.io.earlyTerminate1
     earlyTerminate2 := comparatorModule.io.earlyTerminate2
 
-
+    if (debug){
+    	printf("dbg, comparator method debug: input1 : %d, input2 : %d | earlyTerminate1 : %d, earlyTerminate2 : %d\n", input1, input2, earlyTerminate1, earlyTerminate2)
+    }
+    
     maxMinOutput := comparatorModule.io.maxMin
 
-    val earlyTerminated = earlyTerminate1 & earlyTerminate2
+    val earlyTerminated = earlyTerminate1 | earlyTerminate2
 
     //
     // Select the input based on one of the received signals

@@ -60,18 +60,18 @@ module MinMaxTree(
   wire  comparatorModule_io_in2; // @[comparator.scala 114:34]
   wire  comparatorModule_io_earlyTerminate1; // @[comparator.scala 114:34]
   wire  comparatorModule_io_earlyTerminate2; // @[comparator.scala 114:34]
-  reg [7:0] regMinVec_0; // @[min_max.scala 28:24]
-  reg [7:0] regMinVec_7; // @[min_max.scala 28:24]
-  reg [2:0] regBitIndx; // @[min_max.scala 30:29]
-  reg [2:0] regVecIndx; // @[min_max.scala 31:29]
-  wire [7:0] _T = io_in1 >> regBitIndx; // @[min_max.scala 33:76]
-  wire [7:0] _T_2 = io_in2 >> regBitIndx; // @[min_max.scala 33:96]
+  reg [7:0] regMinVec_0; // @[min_max.scala 29:24]
+  reg [7:0] regMinVec_7; // @[min_max.scala 29:24]
+  reg [2:0] regBitIndx; // @[min_max.scala 31:29]
+  reg [2:0] regVecIndx; // @[min_max.scala 32:29]
+  wire [7:0] _T = io_in1 >> regBitIndx; // @[min_max.scala 34:76]
+  wire [7:0] _T_2 = io_in2 >> regBitIndx; // @[min_max.scala 34:96]
   wire  earlyTerminate1 = comparatorModule_io_earlyTerminate1;
   wire  earlyTerminate2 = comparatorModule_io_earlyTerminate2;
   wire  earlyTerminated = earlyTerminate1 & earlyTerminate2; // @[comparator.scala 139:43]
   wire  selectedInput = earlyTerminate1 ? 1'h0 : 1'h1; // @[comparator.scala 144:28]
-  wire [2:0] _regBitIndx_T_1 = regBitIndx + 3'h1; // @[min_max.scala 36:34]
-  wire [2:0] _regVecIndx_T_1 = regVecIndx + 3'h1; // @[min_max.scala 48:42]
+  wire [2:0] _regBitIndx_T_1 = regBitIndx + 3'h1; // @[min_max.scala 37:34]
+  wire [2:0] _regVecIndx_T_1 = regVecIndx + 3'h1; // @[min_max.scala 49:42]
   Comparator comparatorModule ( // @[comparator.scala 114:34]
     .clock(comparatorModule_clock),
     .reset(comparatorModule_reset),
@@ -80,41 +80,41 @@ module MinMaxTree(
     .io_earlyTerminate1(comparatorModule_io_earlyTerminate1),
     .io_earlyTerminate2(comparatorModule_io_earlyTerminate2)
   );
-  assign io_outResult = regMinVec_0 + regMinVec_7; // @[min_max.scala 60:34]
+  assign io_outResult = regMinVec_0 + regMinVec_7; // @[min_max.scala 61:34]
   assign comparatorModule_clock = clock;
   assign comparatorModule_reset = reset;
-  assign comparatorModule_io_in1 = _T[0]; // @[min_max.scala 33:76]
-  assign comparatorModule_io_in2 = _T_2[0]; // @[min_max.scala 33:96]
+  assign comparatorModule_io_in1 = _T[0]; // @[min_max.scala 34:76]
+  assign comparatorModule_io_in2 = _T_2[0]; // @[min_max.scala 34:96]
   always @(posedge clock) begin
-    if (!(~earlyTerminated)) begin // @[min_max.scala 35:39]
-      if (~selectedInput) begin // @[min_max.scala 44:38]
-        if (3'h0 == regVecIndx) begin // @[min_max.scala 45:39]
-          regMinVec_0 <= io_in1; // @[min_max.scala 45:39]
+    if (!(~earlyTerminated)) begin // @[min_max.scala 36:39]
+      if (~selectedInput) begin // @[min_max.scala 45:38]
+        if (3'h0 == regVecIndx) begin // @[min_max.scala 46:39]
+          regMinVec_0 <= io_in1; // @[min_max.scala 46:39]
         end
-      end else if (3'h0 == regVecIndx) begin // @[min_max.scala 47:39]
-        regMinVec_0 <= io_in2; // @[min_max.scala 47:39]
+      end else if (3'h0 == regVecIndx) begin // @[min_max.scala 48:39]
+        regMinVec_0 <= io_in2; // @[min_max.scala 48:39]
       end
     end
-    if (!(~earlyTerminated)) begin // @[min_max.scala 35:39]
-      if (~selectedInput) begin // @[min_max.scala 44:38]
-        if (3'h7 == regVecIndx) begin // @[min_max.scala 45:39]
-          regMinVec_7 <= io_in1; // @[min_max.scala 45:39]
+    if (!(~earlyTerminated)) begin // @[min_max.scala 36:39]
+      if (~selectedInput) begin // @[min_max.scala 45:38]
+        if (3'h7 == regVecIndx) begin // @[min_max.scala 46:39]
+          regMinVec_7 <= io_in1; // @[min_max.scala 46:39]
         end
-      end else if (3'h7 == regVecIndx) begin // @[min_max.scala 47:39]
-        regMinVec_7 <= io_in2; // @[min_max.scala 47:39]
+      end else if (3'h7 == regVecIndx) begin // @[min_max.scala 48:39]
+        regMinVec_7 <= io_in2; // @[min_max.scala 48:39]
       end
-    end
-    if (reset) begin // @[min_max.scala 30:29]
-      regBitIndx <= 3'h0; // @[min_max.scala 30:29]
-    end else if (~earlyTerminated) begin // @[min_max.scala 35:39]
-      regBitIndx <= _regBitIndx_T_1; // @[min_max.scala 36:20]
-    end else begin
-      regBitIndx <= 3'h0; // @[min_max.scala 42:20]
     end
     if (reset) begin // @[min_max.scala 31:29]
-      regVecIndx <= 3'h0; // @[min_max.scala 31:29]
-    end else if (!(~earlyTerminated)) begin // @[min_max.scala 35:39]
-      regVecIndx <= _regVecIndx_T_1; // @[min_max.scala 54:20]
+      regBitIndx <= 3'h0; // @[min_max.scala 31:29]
+    end else if (~earlyTerminated) begin // @[min_max.scala 36:39]
+      regBitIndx <= _regBitIndx_T_1; // @[min_max.scala 37:20]
+    end else begin
+      regBitIndx <= 3'h0; // @[min_max.scala 43:20]
+    end
+    if (reset) begin // @[min_max.scala 32:29]
+      regVecIndx <= 3'h0; // @[min_max.scala 32:29]
+    end else if (!(~earlyTerminated)) begin // @[min_max.scala 36:39]
+      regVecIndx <= _regVecIndx_T_1; // @[min_max.scala 55:20]
     end
   end
 endmodule
@@ -125,21 +125,21 @@ module FuzzyController(
   input  [7:0] io_in2,
   output [7:0] io_max
 );
-  wire  minMaxTree_minMaxTree_clock; // @[min_max.scala 68:28]
-  wire  minMaxTree_minMaxTree_reset; // @[min_max.scala 68:28]
-  wire [7:0] minMaxTree_minMaxTree_io_in1; // @[min_max.scala 68:28]
-  wire [7:0] minMaxTree_minMaxTree_io_in2; // @[min_max.scala 68:28]
-  wire [7:0] minMaxTree_minMaxTree_io_outResult; // @[min_max.scala 68:28]
-  MinMaxTree minMaxTree_minMaxTree ( // @[min_max.scala 68:28]
+  wire  minMaxTree_minMaxTree_clock; // @[min_max.scala 69:28]
+  wire  minMaxTree_minMaxTree_reset; // @[min_max.scala 69:28]
+  wire [7:0] minMaxTree_minMaxTree_io_in1; // @[min_max.scala 69:28]
+  wire [7:0] minMaxTree_minMaxTree_io_in2; // @[min_max.scala 69:28]
+  wire [7:0] minMaxTree_minMaxTree_io_outResult; // @[min_max.scala 69:28]
+  MinMaxTree minMaxTree_minMaxTree ( // @[min_max.scala 69:28]
     .clock(minMaxTree_minMaxTree_clock),
     .reset(minMaxTree_minMaxTree_reset),
     .io_in1(minMaxTree_minMaxTree_io_in1),
     .io_in2(minMaxTree_minMaxTree_io_in2),
     .io_outResult(minMaxTree_minMaxTree_io_outResult)
   );
-  assign io_max = minMaxTree_minMaxTree_io_outResult; // @[min_max.scala 69:25 76:15]
+  assign io_max = minMaxTree_minMaxTree_io_outResult; // @[min_max.scala 70:25 77:15]
   assign minMaxTree_minMaxTree_clock = clock;
   assign minMaxTree_minMaxTree_reset = reset;
-  assign minMaxTree_minMaxTree_io_in1 = io_in1; // @[min_max.scala 73:23]
-  assign minMaxTree_minMaxTree_io_in2 = io_in2; // @[min_max.scala 74:23]
+  assign minMaxTree_minMaxTree_io_in1 = io_in1; // @[min_max.scala 74:23]
+  assign minMaxTree_minMaxTree_io_in2 = io_in2; // @[min_max.scala 75:23]
 endmodule
