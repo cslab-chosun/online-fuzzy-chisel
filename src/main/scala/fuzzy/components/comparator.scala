@@ -12,9 +12,9 @@ class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module
     	//
     	val start = Input(Bool())
 
-        val earlyTerminate = Input(Bool())
-        val in1 = Input(UInt(1.W))
-        val in2 = Input(UInt(1.W))
+      val earlyTerminate = Input(Bool())
+      val in1 = Input(UInt(1.W))
+      val in2 = Input(UInt(1.W))
 
 		//
 		// Output signals
@@ -38,7 +38,7 @@ class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module
   		is(sIdle){ 
 
   			if (debug) {
-  				printf("dbg, comparator debug: in idle state\n")
+  				printf("dbg, comparator debug: in idle state | startRisingEdge : %d, start : %d\n", startRisingEdge, io.start)
   			}
 
   			when (startRisingEdge === true.B) {
@@ -171,7 +171,7 @@ object Comparator {
     earlyTerminate2 := comparatorModule.io.earlyTerminate2
 
     if (debug){
-    	printf("dbg, comparator method debug: input1 : %d, input2 : %d | earlyTerminate1 : %d, earlyTerminate2 : %d\n", input1, input2, earlyTerminate1, earlyTerminate2)
+    	printf("dbg, comparator method debug | start : %d | input1 : %d, input2 : %d | earlyTerminate1 : %d, earlyTerminate2 : %d\n", start, input1, input2, earlyTerminate1, earlyTerminate2)
     }
     
     maxMinOutput := comparatorModule.io.maxMin
@@ -182,6 +182,7 @@ object Comparator {
     // Select the input based on one of the received signals
     //
     val selectedInput = Mux(earlyTerminate1, false.B, true.B)
+
 
     //
     // Return the maximum input
