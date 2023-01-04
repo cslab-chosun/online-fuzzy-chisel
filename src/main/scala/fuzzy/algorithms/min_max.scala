@@ -30,9 +30,10 @@ class MinMaxTree(VECTOR_LEN : Int = 8, debug : Boolean = false) extends Module {
 
     val regMinVec = Reg(Vec(VECTOR_LEN, UInt(8.W)))
 
-    val regBitIndx = RegInit(0.U(3.W)) // maximum input index is 8 => 3-bits
+    val regBitIndx = RegInit((VECTOR_LEN - 1).U(3.W)) // maximum input index is 8 => 3-bits
     val regVecIndx = RegInit(0.U(3.W)) // maximum vector index is 8 => 3-bits
     val compStartBit = io.start & ~askForNewNumber
+    val regToEqualNums = RegInit(false.B)
 
 val (selectedInput, earlyTerminated) = Comparator(false, true)(compStartBit, io.in1(regBitIndx), io.in2(regBitIndx), false.B /* no external early termination */)
 
@@ -43,8 +44,15 @@ when (io.start === true.B){
     }
 
     askForNewNumber := false.B
-    when (earlyTerminated =/= true.B || askForNewNumber === true.B) {
-      regBitIndx := regBitIndx + 1.U
+    when ((earlyTerminated =/= true.B || askForNewNumber === true.B) && regToEqualNums =/= true.B)  {
+      regBitIndx := regBitIndx - 1.U
+
+      //
+      // Check for the last bit
+      //
+      when (regBitIndx === 0.U) {
+        regToEqualNums := true.B
+      } 
 
       if (debug) {
          printf("dbg, MinMaxTree debug : earlyTerminated %d, selectedInput : %d | io.in1(%d) = %d, io.in2(%d) = %d\n", 
@@ -54,9 +62,10 @@ when (io.start === true.B){
      } .otherwise {
 
       //
-      // Reset the index register for bits
+      // Reset the index register for bits abd also the equality check
       //
-      regBitIndx := 0.U
+      regBitIndx := (VECTOR_LEN - 1).U
+      regToEqualNums := false.B
 
       when (selectedInput === 0.U) {
          regMinVec(regVecIndx) := io.in1

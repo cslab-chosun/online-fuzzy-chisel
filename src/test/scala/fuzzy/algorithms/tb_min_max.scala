@@ -133,6 +133,5 @@ class MinMaxTester extends AnyFlatSpec with
 
 				println("\n-----------------------------------------------------------------------\n")
 		}
-
 	}
 }

@@ -37,6 +37,9 @@ class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module
 
   		is(sIdle){ 
 
+  			earlyTerminate1 := false.B
+				earlyTerminate2 := false.B
+
   			if (debug) {
   				printf("dbg, comparator debug: in idle state | startRisingEdge : %d, start : %d\n", startRisingEdge, io.start)
   			}
@@ -123,7 +126,7 @@ class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module
 				maxMinOutput := io.in1 // the io.in1 and io.in2 are the same
 
 				earlyTerminate1 := false.B
-				earlyTerminate1 := false.B
+				earlyTerminate2 := false.B
 
 				state := sInit // not needed
 
