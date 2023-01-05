@@ -26,7 +26,7 @@ class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module
 
       val sIdle :: sInit :: Nil = Enum(2)
   	  val state = RegInit(sIdle)
-  	  val startRisingEdge = io.start & !RegNext(io.start)
+  	  //val startRisingEdge = io.start & !RegNext(io.start)
 
   	  val earlyTerminate1 = RegInit(false.B)
       val earlyTerminate2 = RegInit(false.B)
@@ -41,10 +41,10 @@ class Comparator(isMax : Boolean = true, debug : Boolean = false) extends Module
 				earlyTerminate2 := false.B
 
   			if (debug) {
-  				printf("dbg, comparator debug: in idle state | startRisingEdge : %d, start : %d\n", startRisingEdge, io.start)
+  				printf("dbg, comparator debug: in idle state | start : %d\n", io.start)
   			}
 
-  			when (startRisingEdge === true.B) {
+  			when (io.start === true.B) {
 
 	  			if (debug) {
 	  				printf("dbg, comparator debug: module will go to init state\n")
