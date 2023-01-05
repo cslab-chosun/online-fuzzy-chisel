@@ -9,18 +9,30 @@ Overall test:
 sbt test
 ```
 
-Run the min-max tester:
+### Online comparator
 
 ```sh
-sbt "testOnly MinMaxTester -- -DwriteVcd=1"
+sbt "testOnly OnlineComparatorTest -- -DwriteVcd=1"
 ```
 
 In order to see the waves:
 ```sh
-gtkwave ./test_run_dir/DUT_should_pass/MinMaxTree.vcd
+gtkwave ./test_run_dir/DUT_should_pass/OnlineComparator.vcd
 ```
 
-## Creating Codes 
+
+### Serial min-max tester (online comparator)
+
+```sh
+sbt "testOnly MinMaxSerialOnlineComparatorTest -- -DwriteVcd=1"
+```
+
+In order to see the waves:
+```sh
+gtkwave ./test_run_dir/DUT_should_pass/MinMaxSerialOnlineComparator.vcd
+```
+
+## Creating codes 
 
 The following command generates HDL files.
 

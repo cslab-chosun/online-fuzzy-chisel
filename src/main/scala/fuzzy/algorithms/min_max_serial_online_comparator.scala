@@ -6,7 +6,7 @@ import chisel3.util._
 import fuzzy.components._
 import fuzzy.utils._
 
-class MinMaxTree(VECTOR_LEN: Int = 8, debug: Boolean = false) extends Module {
+class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false) extends Module {
 
   val io = IO(new Bundle {
 
@@ -37,7 +37,7 @@ class MinMaxTree(VECTOR_LEN: Int = 8, debug: Boolean = false) extends Module {
   val compStartBit = io.start & ~askForNewNumber
   val regToEqualNums = RegInit(false.B)
 
-  val (selectedInput, earlyTerminated) = Comparator(false, false)(
+  val (selectedInput, earlyTerminated, minOutput) = OnlineComparator(false, false)(
     compStartBit,
     io.in1(regBitIndx),
     io.in2(regBitIndx),
@@ -128,14 +128,14 @@ class MinMaxTree(VECTOR_LEN: Int = 8, debug: Boolean = false) extends Module {
 
 }
 
-object MinMaxTree {
+object MinMaxSerialOnlineComparator {
 
   def apply(
       VECTOR_LEN: Int = 8,
       debug: Boolean = false
   )(in1: UInt, in2: UInt, start: Bool): UInt = {
 
-    val minMaxTree = Module(new MinMaxTree(VECTOR_LEN, debug))
+    val minMaxTree = Module(new MinMaxSerialOnlineComparator(VECTOR_LEN, debug))
     val outResult = Wire(UInt(8.W))
 
     minMaxTree.io.start := start
