@@ -1,4 +1,3 @@
-
 package fuzzy
 
 import chisel3._
@@ -16,9 +15,10 @@ class FuzzyController() extends Module {
     val max = Output(UInt(8.W))
   })
 
-    val minMaxTree =  MinMaxTree(MinMaxTreeConsts.VECTOR_LEN)(io.in1, io.in2, true.B)
+  val minMaxTree =
+    MinMaxTree(MinMaxTreeConsts.VECTOR_LEN)(io.in1, io.in2, true.B)
 
-    io.max := minMaxTree
+  io.max := minMaxTree
 }
 
 //-----------------------------------------------

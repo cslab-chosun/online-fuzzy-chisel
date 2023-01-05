@@ -9,7 +9,7 @@ class MinMaxTester extends AnyFlatSpec with
 	ChiselScalatestTester {
 		"DUT" should "pass" in {
 			
-			test(new MinMaxTree(8, true)) { dut =>
+			test(new MinMaxTree(8, false)) { dut =>
 
 				//
 				// First, start with module in an inactive state
@@ -53,7 +53,7 @@ class MinMaxTester extends AnyFlatSpec with
 				// First test, the state at firstshould be [0x12, 0x2, 0x55, X, X, X, X, X]
 				//
 				dut.io.in1.poke(0x55.U)
-				dut.io.in2.poke(0x85.U)
+				dut.io.in2.poke(0x7a.U)
 
 				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
 
