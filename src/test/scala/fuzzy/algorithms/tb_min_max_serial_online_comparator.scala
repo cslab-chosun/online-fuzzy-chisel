@@ -20,7 +20,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, X, X, X, X, X, X, X]
+				// First test, the state at first should be [0x12, X, X, X, X, X, X, X]
 				//
 				dut.io.in1.poke(0x12.U)
 				dut.io.in2.poke(0x17.U)
@@ -36,7 +36,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, X, X, X, X, X, X]
+				// First test, the state at first should be [0x12, 0x2, X, X, X, X, X, X]
 				//
 				dut.io.in1.poke(0x65.U)
 				dut.io.in2.poke(0x2.U)
@@ -50,7 +50,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, 0x55, X, X, X, X, X]
+				// First test, the state at first should be [0x12, 0x2, 0x55, X, X, X, X, X]
 				//
 				dut.io.in1.poke(0x55.U)
 				dut.io.in2.poke(0x7a.U)
@@ -64,7 +64,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, 0x55, 0x27, X, X, X, X]
+				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, X, X, X, X]
 				//
 				dut.io.in1.poke(0x78.U)
 				dut.io.in2.poke(0x27.U)
@@ -78,7 +78,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, 0x55, 0x27, 0x0, X, X, X]
+				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, X, X, X]
 				//
 				dut.io.in1.poke(0x18.U)
 				dut.io.in2.poke(0x0.U)
@@ -92,7 +92,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, X, X]
+				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, X, X]
 				//
 				dut.io.in1.poke(0x0.U)
 				dut.io.in2.poke(0x0.U)
@@ -106,7 +106,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, 0x1, X]
+				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, 0x1, X]
 				//
 				dut.io.in1.poke(0x1.U)
 				dut.io.in2.poke(0x29.U)
@@ -120,7 +120,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
-				// First test, the state at firstshould be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, 0x1, 0x17]
+				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, 0x1, 0x17]
 				//
 				dut.io.in1.poke(0x45.U)
 				dut.io.in2.poke(0x17.U)
@@ -132,6 +132,11 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
 
 				println("\n-----------------------------------------------------------------------\n")
+
+				//
+				// Stepping clock for further tests
+				//
+				dut.clock.step(100)
 		}
 	}
 }
