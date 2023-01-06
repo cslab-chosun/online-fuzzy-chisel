@@ -287,6 +287,8 @@ object MinMaxSerialOnlineComparator {
 
     val minMaxTree = Module(new MinMaxSerialOnlineComparator(VECTOR_LEN, debug))
     val outResult = Wire(UInt(8.W))
+    val askForNewNumber = Wire(Bool())
+    val outResultValid = Wire(Bool())
 
     minMaxTree.io.start := start
 
@@ -295,9 +297,12 @@ object MinMaxSerialOnlineComparator {
 
     outResult := minMaxTree.io.outResult
 
+    askForNewNumber := minMaxTree.io.askForNewNumber
+    outResultValid := minMaxTree.io.outResultValid
+
     //
     // Return the result
     //
-    outResult
+    (outResult, outResultValid, askForNewNumber)
   }
 }
