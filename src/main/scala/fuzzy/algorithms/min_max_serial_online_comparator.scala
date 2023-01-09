@@ -283,7 +283,7 @@ object MinMaxSerialOnlineComparator {
   def apply(
       VECTOR_LEN: Int = 8,
       debug: Boolean = false
-  )(in1: UInt, in2: UInt, start: Bool): UInt = {
+  )(in1: UInt, in2: UInt, start: Bool): (UInt, Bool, Bool) = {
 
     val minMaxTree = Module(new MinMaxSerialOnlineComparator(VECTOR_LEN, debug))
     val outResult = Wire(UInt(8.W))

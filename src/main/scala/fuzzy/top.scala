@@ -18,7 +18,7 @@ class FuzzyController() extends Module {
   val minMaxTree =
     MinMaxSerialOnlineComparator(MinMaxTreeConsts.VECTOR_LEN)(io.in1, io.in2, true.B)
 
-  io.max := minMaxTree
+  io.max := minMaxTree._1
 }
 
 //-----------------------------------------------

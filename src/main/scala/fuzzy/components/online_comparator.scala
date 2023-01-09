@@ -195,7 +195,7 @@ object OnlineComparator {
     val selectedInput = Mux(earlyTerminate1, false.B, true.B)
 
     //
-    // Return the maximum input
+    // Return the maximum/minimum input
     //
     (selectedInput, earlyTerminated, maxMinOutput)
   }
