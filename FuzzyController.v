@@ -131,7 +131,7 @@ module MinMaxSerialOnlineComparator(
   reg [6:0] regStorageVec_7; // @[min_max_serial_online_comparator.scala 41:26]
   reg [2:0] regBitIndx; // @[min_max_serial_online_comparator.scala 43:27]
   reg [2:0] regVecIndx; // @[min_max_serial_online_comparator.scala 46:27]
-  reg  regMaxVecIndx; // @[min_max_serial_online_comparator.scala 49:30]
+  reg [2:0] regMaxVecIndx; // @[min_max_serial_online_comparator.scala 49:30]
   reg  regToEqualNums; // @[min_max_serial_online_comparator.scala 54:31]
   reg [1:0] state; // @[min_max_serial_online_comparator.scala 57:22]
   wire [6:0] _T = io_in1 >> regBitIndx; // @[min_max_serial_online_comparator.scala 62:13]
@@ -166,34 +166,29 @@ module MinMaxSerialOnlineComparator(
   wire [6:0] _GEN_14 = 3'h5 == regVecIndx ? io_in2 : regStorageVec_5; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
   wire [6:0] _GEN_15 = 3'h6 == regVecIndx ? io_in2 : regStorageVec_6; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
   wire [6:0] _GEN_16 = 3'h7 == regVecIndx ? io_in2 : regStorageVec_7; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire  _T_13 = regVecIndx == 3'h7; // @[min_max_serial_online_comparator.scala 147:25]
   wire [1:0] _GEN_25 = regVecIndx == 3'h7 ? 2'h2 : state; // @[min_max_serial_online_comparator.scala 147:49 148:17 57:22]
   wire [6:0] _GEN_26 = regVecIndx == 3'h7 ? regStorageVec_0 : outResult; // @[min_max_serial_online_comparator.scala 147:49 153:19 39:26]
   wire [2:0] _regVecIndx_T_1 = regVecIndx + 3'h1; // @[min_max_serial_online_comparator.scala 170:34]
   wire  _GEN_30 = _T_10 & _GEN_0; // @[min_max_serial_online_comparator.scala 99:9]
   wire [6:0] _input1Max_T = outResult >> regBitIndx; // @[min_max_serial_online_comparator.scala 189:29]
-  wire [6:0] _GEN_44 = regMaxVecIndx ? regStorageVec_1 : regStorageVec_0; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [1:0] _GEN_107 = {{1'd0}, regMaxVecIndx}; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_45 = 2'h2 == _GEN_107 ? regStorageVec_2 : _GEN_44; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_46 = 2'h3 == _GEN_107 ? regStorageVec_3 : _GEN_45; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [2:0] _GEN_109 = {{2'd0}, regMaxVecIndx}; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_47 = 3'h4 == _GEN_109 ? regStorageVec_4 : _GEN_46; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_48 = 3'h5 == _GEN_109 ? regStorageVec_5 : _GEN_47; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_49 = 3'h6 == _GEN_109 ? regStorageVec_6 : _GEN_48; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_50 = 3'h7 == _GEN_109 ? regStorageVec_7 : _GEN_49; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_44 = 3'h1 == regMaxVecIndx ? regStorageVec_1 : regStorageVec_0; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_45 = 3'h2 == regMaxVecIndx ? regStorageVec_2 : _GEN_44; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_46 = 3'h3 == regMaxVecIndx ? regStorageVec_3 : _GEN_45; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_47 = 3'h4 == regMaxVecIndx ? regStorageVec_4 : _GEN_46; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_48 = 3'h5 == regMaxVecIndx ? regStorageVec_5 : _GEN_47; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_49 = 3'h6 == regMaxVecIndx ? regStorageVec_6 : _GEN_48; // @[min_max_serial_online_comparator.scala 190:{48,48}]
+  wire [6:0] _GEN_50 = 3'h7 == regMaxVecIndx ? regStorageVec_7 : _GEN_49; // @[min_max_serial_online_comparator.scala 190:{48,48}]
   wire [6:0] _input2Max_T = _GEN_50 >> regBitIndx; // @[min_max_serial_online_comparator.scala 190:48]
   wire  _T_17 = ~earlyTerminatedMax & _T_9; // @[min_max_serial_online_comparator.scala 195:43]
   wire [6:0] _GEN_52 = selectedInputMax ? _GEN_50 : outResult; // @[min_max_serial_online_comparator.scala 231:40 236:21 39:26]
-  wire [1:0] _GEN_53 = _T_13 ? 2'h3 : state; // @[min_max_serial_online_comparator.scala 249:49 250:17 57:22]
+  wire [1:0] _GEN_53 = regMaxVecIndx == 3'h7 ? 2'h3 : state; // @[min_max_serial_online_comparator.scala 249:52 250:17 57:22]
+  wire [2:0] _regMaxVecIndx_T_1 = regMaxVecIndx + 3'h1; // @[min_max_serial_online_comparator.scala 256:40]
   wire [2:0] _GEN_54 = _T_17 ? _regBitIndx_T_1 : 3'h7; // @[min_max_serial_online_comparator.scala 196:8 198:20 224:20]
   wire  _GEN_55 = _T_17 & _GEN_0; // @[min_max_serial_online_comparator.scala 196:8 226:24]
   wire [6:0] _GEN_56 = _T_17 ? outResult : _GEN_52; // @[min_max_serial_online_comparator.scala 196:8 39:26]
   wire [1:0] _GEN_57 = _T_17 ? state : _GEN_53; // @[min_max_serial_online_comparator.scala 196:8 57:22]
-  wire  _GEN_58 = _T_17 ? regMaxVecIndx : regMaxVecIndx + 1'h1; // @[min_max_serial_online_comparator.scala 196:8 256:23 49:30]
-  wire  _GEN_67 = 2'h2 == state ? _GEN_58 : regMaxVecIndx; // @[min_max_serial_online_comparator.scala 80:17 49:30]
+  wire [2:0] _GEN_58 = _T_17 ? regMaxVecIndx : _regMaxVecIndx_T_1; // @[min_max_serial_online_comparator.scala 196:8 256:23 49:30]
   wire  _GEN_83 = 2'h1 == state ? 1'h0 : 2'h2 == state; // @[min_max_serial_online_comparator.scala 80:17]
-  wire  _GEN_86 = 2'h1 == state ? regMaxVecIndx : _GEN_67; // @[min_max_serial_online_comparator.scala 80:17 49:30]
-  wire  _GEN_105 = 2'h0 == state ? regMaxVecIndx : _GEN_86; // @[min_max_serial_online_comparator.scala 80:17 49:30]
   OnlineComparator comparatorModule ( // @[online_comparator.scala 155:34]
     .clock(comparatorModule_clock),
     .reset(comparatorModule_reset),
@@ -356,7 +351,15 @@ module MinMaxSerialOnlineComparator(
         end
       end
     end
-    regMaxVecIndx <= reset | _GEN_105; // @[min_max_serial_online_comparator.scala 49:{30,30}]
+    if (reset) begin // @[min_max_serial_online_comparator.scala 49:30]
+      regMaxVecIndx <= 3'h1; // @[min_max_serial_online_comparator.scala 49:30]
+    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
+      if (!(2'h1 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
+        if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
+          regMaxVecIndx <= _GEN_58;
+        end
+      end
+    end
     if (reset) begin // @[min_max_serial_online_comparator.scala 54:31]
       regToEqualNums <= 1'h0; // @[min_max_serial_online_comparator.scala 54:31]
     end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
@@ -404,21 +407,21 @@ module FuzzyController(
   input  [7:0] io_in2,
   output [7:0] io_max
 );
-  wire  minMaxTree_minMaxTree_clock; // @[min_max_serial_online_comparator.scala 288:28]
-  wire  minMaxTree_minMaxTree_reset; // @[min_max_serial_online_comparator.scala 288:28]
-  wire [6:0] minMaxTree_minMaxTree_io_in1; // @[min_max_serial_online_comparator.scala 288:28]
-  wire [6:0] minMaxTree_minMaxTree_io_in2; // @[min_max_serial_online_comparator.scala 288:28]
-  wire [6:0] minMaxTree_minMaxTree_io_outResult; // @[min_max_serial_online_comparator.scala 288:28]
-  MinMaxSerialOnlineComparator minMaxTree_minMaxTree ( // @[min_max_serial_online_comparator.scala 288:28]
-    .clock(minMaxTree_minMaxTree_clock),
-    .reset(minMaxTree_minMaxTree_reset),
-    .io_in1(minMaxTree_minMaxTree_io_in1),
-    .io_in2(minMaxTree_minMaxTree_io_in2),
-    .io_outResult(minMaxTree_minMaxTree_io_outResult)
+  wire  minMaxTree_clock; // @[min_max_serial_online_comparator.scala 288:28]
+  wire  minMaxTree_reset; // @[min_max_serial_online_comparator.scala 288:28]
+  wire [6:0] minMaxTree_io_in1; // @[min_max_serial_online_comparator.scala 288:28]
+  wire [6:0] minMaxTree_io_in2; // @[min_max_serial_online_comparator.scala 288:28]
+  wire [6:0] minMaxTree_io_outResult; // @[min_max_serial_online_comparator.scala 288:28]
+  MinMaxSerialOnlineComparator minMaxTree ( // @[min_max_serial_online_comparator.scala 288:28]
+    .clock(minMaxTree_clock),
+    .reset(minMaxTree_reset),
+    .io_in1(minMaxTree_io_in1),
+    .io_in2(minMaxTree_io_in2),
+    .io_outResult(minMaxTree_io_outResult)
   );
-  assign io_max = {{1'd0}, minMaxTree_minMaxTree_io_outResult}; // @[min_max_serial_online_comparator.scala 289:25 296:15]
-  assign minMaxTree_minMaxTree_clock = clock;
-  assign minMaxTree_minMaxTree_reset = reset;
-  assign minMaxTree_minMaxTree_io_in1 = io_in1[6:0]; // @[min_max_serial_online_comparator.scala 293:23]
-  assign minMaxTree_minMaxTree_io_in2 = io_in2[6:0]; // @[min_max_serial_online_comparator.scala 294:23]
+  assign io_max = {{1'd0}, minMaxTree_io_outResult}; // @[min_max_serial_online_comparator.scala 289:25 298:15]
+  assign minMaxTree_clock = clock;
+  assign minMaxTree_reset = reset;
+  assign minMaxTree_io_in1 = io_in1[6:0]; // @[min_max_serial_online_comparator.scala 295:23]
+  assign minMaxTree_io_in2 = io_in2[6:0]; // @[min_max_serial_online_comparator.scala 296:23]
 endmodule

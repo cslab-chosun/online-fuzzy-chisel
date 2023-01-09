@@ -44,12 +44,10 @@ class MinMaxParallelRegularComparatorTest extends AnyFlatSpec with
 
 				dut.io.start.poke(1.U)
 				
-				/*
 				do {
 					dut.clock.step(1)
 				} while (dut.io.outResultValid.peek().litValue.toInt == 0)
-				*/
-
+				
 				println("\n-----------------------------------------------------------------------\n")
 
 				//

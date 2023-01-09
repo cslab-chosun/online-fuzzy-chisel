@@ -34,6 +34,9 @@ class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = fals
 
   val regStorageVec = Reg(Vec(VECTOR_LEN, UInt(7.W)))
   val minStart = RegInit(false.B)
+  val maxStart = RegInit(false.B)
+
+  val regMaxStage = RegInit(0.U(log2Up(log2Ceil(VECTOR_LEN)).W)) // actually it should be: log2Up(log2Ceil(VECTOR_LEN))
 
   val sIdle :: sMin :: sMax :: sFinished :: Nil = Enum(4)
   val state = RegInit(sIdle)
@@ -58,13 +61,23 @@ class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = fals
 
         state := sMax
         minStart := false.B
+        maxStart := true.B
     }
     is(sMax){
-      state := sFinished
+
+        when (log2Ceil(VECTOR_LEN).U > regMaxStage){
+          for (i <- 0 until VECTOR_LEN / 2) {
+            regStorageVec(i) := Comparator(true, false)(maxStart, regStorageVec(i.U * 2.U), regStorageVec((i.U * 2.U) + 1.U))
+          }
+          regMaxStage := regMaxStage + 1.U
+        } .otherwise {
+          state := sFinished
+        }
     }
     is(sFinished){
+      maxStart := false.B
       outResultValid := true.B
-      outResult := regStorageVec(0) + regStorageVec(1) + regStorageVec(2) + regStorageVec(3) + regStorageVec(4) + regStorageVec(5) + regStorageVec(6) + regStorageVec(7)
+      outResult := regStorageVec(0)
     }
   }
 

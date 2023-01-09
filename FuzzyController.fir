@@ -126,8 +126,8 @@ circuit FuzzyController :
       reset => (reset, UInt<3>("h7")) @[min_max_serial_online_comparator.scala 43:27]
     reg regVecIndx : UInt<3>, clock with :
       reset => (reset, UInt<3>("h0")) @[min_max_serial_online_comparator.scala 46:27]
-    reg regMaxVecIndx : UInt<1>, clock with :
-      reset => (reset, UInt<1>("h1")) @[min_max_serial_online_comparator.scala 49:30]
+    reg regMaxVecIndx : UInt<3>, clock with :
+      reset => (reset, UInt<3>("h1")) @[min_max_serial_online_comparator.scala 49:30]
     node _compStartBit_T = not(askForNewNumber) @[min_max_serial_online_comparator.scala 53:33]
     node compStartBit = and(io.start, _compStartBit_T) @[min_max_serial_online_comparator.scala 53:31]
     reg regToEqualNums : UInt<1>, clock with :
@@ -239,8 +239,8 @@ circuit FuzzyController :
               outResult <= regStorageVec[regMaxVecIndx] @[min_max_serial_online_comparator.scala 236:21]
             else :
               skip
-            node _T_20 = eq(regVecIndx, UInt<3>("h7")) @[min_max_serial_online_comparator.scala 249:25]
-            when _T_20 : @[min_max_serial_online_comparator.scala 249:49]
+            node _T_20 = eq(regMaxVecIndx, UInt<3>("h7")) @[min_max_serial_online_comparator.scala 249:28]
+            when _T_20 : @[min_max_serial_online_comparator.scala 249:52]
               state <= UInt<2>("h3") @[min_max_serial_online_comparator.scala 250:17]
             node _regMaxVecIndx_T = add(regMaxVecIndx, UInt<1>("h1")) @[min_max_serial_online_comparator.scala 256:40]
             node _regMaxVecIndx_T_1 = tail(_regMaxVecIndx_T, 1) @[min_max_serial_online_comparator.scala 256:40]
@@ -258,13 +258,17 @@ circuit FuzzyController :
     input reset : UInt<1>
     output io : { flip in1 : UInt<8>, flip in2 : UInt<8>, max : UInt<8>}
 
-    inst minMaxTree_minMaxTree of MinMaxSerialOnlineComparator @[min_max_serial_online_comparator.scala 288:28]
-    minMaxTree_minMaxTree.clock <= clock
-    minMaxTree_minMaxTree.reset <= reset
-    wire minMaxTree : UInt<8> @[min_max_serial_online_comparator.scala 289:25]
-    minMaxTree_minMaxTree.io.start <= UInt<1>("h1") @[min_max_serial_online_comparator.scala 291:25]
-    minMaxTree_minMaxTree.io.in1 <= io.in1 @[min_max_serial_online_comparator.scala 293:23]
-    minMaxTree_minMaxTree.io.in2 <= io.in2 @[min_max_serial_online_comparator.scala 294:23]
-    minMaxTree <= minMaxTree_minMaxTree.io.outResult @[min_max_serial_online_comparator.scala 296:15]
-    io.max <= minMaxTree @[top.scala 21:10]
+    inst minMaxTree of MinMaxSerialOnlineComparator @[min_max_serial_online_comparator.scala 288:28]
+    minMaxTree.clock <= clock
+    minMaxTree.reset <= reset
+    wire outResult : UInt<8> @[min_max_serial_online_comparator.scala 289:25]
+    wire askForNewNumber : UInt<1> @[min_max_serial_online_comparator.scala 290:31]
+    wire outResultValid : UInt<1> @[min_max_serial_online_comparator.scala 291:30]
+    minMaxTree.io.start <= UInt<1>("h1") @[min_max_serial_online_comparator.scala 293:25]
+    minMaxTree.io.in1 <= io.in1 @[min_max_serial_online_comparator.scala 295:23]
+    minMaxTree.io.in2 <= io.in2 @[min_max_serial_online_comparator.scala 296:23]
+    outResult <= minMaxTree.io.outResult @[min_max_serial_online_comparator.scala 298:15]
+    askForNewNumber <= minMaxTree.io.askForNewNumber @[min_max_serial_online_comparator.scala 300:21]
+    outResultValid <= minMaxTree.io.outResultValid @[min_max_serial_online_comparator.scala 301:20]
+    io.max <= outResult @[top.scala 21:10]
 
