@@ -94,8 +94,7 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
       }
     }
     is(sMax){
-      state := sMax
-
+      
       input1Min := regStorageVec(0)
       input2Min := regStorageVec(minMaxListCounter)
 
