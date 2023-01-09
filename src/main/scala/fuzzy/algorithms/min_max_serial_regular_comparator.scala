@@ -34,6 +34,59 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
     ) // we used 7 because the maximum input is between 0-100 (127)
   })
 
+  val regStorageVec = Reg(Vec(VECTOR_LEN, UInt(7.W)))
+  val minListCounter = RegInit(0.U((log2Ceil(VECTOR_LEN)).W))
+
+  val input1Min = WireInit(0.U(7.W))
+  val input2Min = WireInit(0.U(7.W))
+
+  val sIdle :: sMin :: sMax :: sFinished :: Nil = Enum(4)
+  val state = RegInit(sIdle)
+
+  val askForNewNumber = RegInit(false.B)
+  val outResultValid = RegInit(false.B)
+  val outResult = RegInit(0.U(7.W))
+
+  val minOutput =
+    Comparator(false, false)(
+      io.start,
+      input1Min,
+      input2Min,
+    )
+  
+  switch(state) {
+
+    is(sIdle) {
+      when (io.start) {
+        state := sMin
+      }
+    }
+
+    is(sMin){
+
+      input1Min := io.in1
+      input2Min := io.in2
+
+      regStorageVec(minListCounter) := minOutput
+      askForNewNumber := true.B
+
+      when (minListCounter === VECTOR_LEN.U - 1.U){
+        state := sMax
+      }.otherwise {
+        minListCounter := minListCounter + 1.U
+      }
+    }
+    is(sMax){
+      state := sMax
+    }
+  }
+
+  //
+  // Set the output wires and regs
+  //
+  io.askForNewNumber := askForNewNumber
+  io.outResultValid := regStorageVec(0) + regStorageVec (1) + regStorageVec (2) + regStorageVec (3) + regStorageVec (4) + regStorageVec (5) + regStorageVec (6) + regStorageVec (7)  
+  io.outResult := outResult
 
 }
 

@@ -23,7 +23,7 @@ class Comparator(isMax: Boolean = true, debug: Boolean = false) extends Module {
 
   // val startRisingEdge = io.start & !RegNext(io.start)
 
-  val maxMinOutput = RegInit(0.U(1.W))
+  val maxMinOutput = WireInit(0.U(1.W))
 
   when (io.in1 >= io.in2) {
 
@@ -56,10 +56,10 @@ object Comparator {
       start: Bool,
       input1: UInt,
       input2: UInt,
-  ): (Bool, UInt) = {
+  ): UInt = {
 
     val comparatorModule = Module(new Comparator(isMax, debug))
-
+    val Result = Wire(UInt(7.W))
     val maxMinOutput = Wire(UInt(1.W))
 
     //
@@ -90,6 +90,12 @@ object Comparator {
     //
     // Return the maximum/minimum input
     //
-    (selectedInput(0), maxMinOutput)
+    when (selectedInput(0) === false.B) {
+      Result := input1 // return the first input
+    } .otherwise {
+      Result := input2 // return the second input
+    }
+
+    Result
   }
 }
