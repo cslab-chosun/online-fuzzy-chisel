@@ -35,7 +35,7 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
   })
 
   val regStorageVec = Reg(Vec(VECTOR_LEN, UInt(7.W)))
-  val minListCounter = RegInit(0.U((log2Ceil(VECTOR_LEN)).W))
+  val minMaxListCounter = RegInit(0.U((log2Ceil(VECTOR_LEN)).W))
 
   val input1Min = WireInit(0.U(7.W))
   val input2Min = WireInit(0.U(7.W))
@@ -47,18 +47,29 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
   val outResultValid = RegInit(false.B)
   val outResult = RegInit(0.U(7.W))
 
+  val minStart = RegInit(false.B)
+  val maxStart = RegInit(false.B)
+
   val minOutput =
     Comparator(false, false)(
-      io.start,
+      minStart,
       input1Min,
       input2Min,
     )
-  
+
+  val maxOutput =
+    Comparator(true, false)(
+      maxStart,
+      input1Min,
+      input2Min,
+    )
+
   switch(state) {
 
     is(sIdle) {
       when (io.start) {
         state := sMin
+        minStart := true.B
       }
     }
 
@@ -67,17 +78,40 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
       input1Min := io.in1
       input2Min := io.in2
 
-      regStorageVec(minListCounter) := minOutput
+      regStorageVec(minMaxListCounter) := minOutput
       askForNewNumber := true.B
 
-      when (minListCounter === VECTOR_LEN.U - 1.U){
+      when (minMaxListCounter === VECTOR_LEN.U - 1.U){
         state := sMax
+
+        minStart := false.B
+        maxStart := true.B
+
+        minMaxListCounter := 1.U
+
       }.otherwise {
-        minListCounter := minListCounter + 1.U
+        minMaxListCounter := minMaxListCounter + 1.U
       }
     }
     is(sMax){
       state := sMax
+
+      input1Min := regStorageVec(0)
+      input2Min := regStorageVec(minMaxListCounter)
+
+      regStorageVec(0) := maxOutput
+
+      when (minMaxListCounter === VECTOR_LEN.U - 1.U){
+        state := sFinished
+        maxStart := false.B
+
+      }.otherwise {
+        minMaxListCounter := minMaxListCounter + 1.U
+      }
+    }
+    is(sFinished){
+      outResultValid := true.B
+      outResult := regStorageVec(0)
     }
   }
 
@@ -85,7 +119,7 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
   // Set the output wires and regs
   //
   io.askForNewNumber := askForNewNumber
-  io.outResultValid := regStorageVec(0) + regStorageVec (1) + regStorageVec (2) + regStorageVec (3) + regStorageVec (4) + regStorageVec (5) + regStorageVec (6) + regStorageVec (7)  
+  io.outResultValid := outResultValid  
   io.outResult := outResult
 
 }
