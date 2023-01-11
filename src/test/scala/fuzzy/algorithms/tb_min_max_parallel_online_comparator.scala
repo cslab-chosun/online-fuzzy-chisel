@@ -19,6 +19,11 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 				dut.io.start.poke(0.U)
 				dut.clock.step(1)
 
+				//
+				// Activate the start bit
+				//
+				dut.io.start.poke(1.U)
+
 				println("\n-----------------------------------------------------------------------\n")
 
 				//
@@ -39,6 +44,8 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 						//
 						// Show (just) the inputs for two arrays 
 						//
+
+						/*
 						println(s"\n\n=================================================== \n")
 						println(s"\ninput 1 : \n")
 
@@ -51,12 +58,15 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 						for (i <- 0 until VecLen) {
 		    				print(s"0b${dut.io.in2(i).peek().litValue.toInt.toHexString} - ")
 		  				}
-
-						dut.io.start.poke(1.U)
+		  				*/
 					}
+					dut.clock.step(1)
+					print(s"0b${dut.io.outResult.peek().litValue.toInt.toHexString} - ")
   				}
 
-				println("\n-----------------------------------------------------------------------\n")
+				for (i <- 0 until 7) {
+					print(s"0b${dut.io.outResult.peek().litValue.toInt.toHexString} - ")
+				}
 
 				//
 				// Stepping clock for further tests
