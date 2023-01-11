@@ -11,7 +11,7 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 
 			val VecLen : Int = 8
 
-			test(new MinMaxParallelOnlineComparator(VecLen, false)) { dut =>
+			test(new MinMaxParallelOnlineComparator(VecLen, true)) { dut =>
 
 				//
 				// First, start with module in an inactive state
@@ -23,6 +23,7 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 				// Activate the start bit
 				//
 				dut.io.start.poke(1.U)
+				dut.clock.step(2)
 
 				println("\n-----------------------------------------------------------------------\n")
 
@@ -61,11 +62,11 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 		  				*/
 					}
 					dut.clock.step(1)
-					print(s"0b${dut.io.outResult.peek().litValue.toInt.toHexString} - ")
+					//print(s"0b${dut.io.outResult.peek().litValue.toInt.toHexString} - ")
   				}
 
 				for (i <- 0 until 7) {
-					print(s"0b${dut.io.outResult.peek().litValue.toInt.toHexString} - ")
+					//print(s"0b${dut.io.outResult.peek().litValue.toInt.toHexString} - ")
 				}
 
 				//

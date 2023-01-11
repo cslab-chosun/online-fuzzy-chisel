@@ -11,7 +11,8 @@ class MinVectorStruct () extends Bundle {
     val selectedInput = Bool()
     val earlyTerminated = Bool()
     val minMaxOutput = UInt(1.W)
-    val externalEarlyTermination = Bool()
+    val earlyTerminated1 = Bool()
+    val earlyTerminated2 = Bool()
 }
 
 class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
@@ -43,7 +44,6 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
   val iMaxIndex = math.pow(2, N/2).toInt - 1
 
   val outResultValid = RegInit(false.B)
-  val outResult = RegInit(0.U(1.W))
 
   val regStorageVec = Reg(Vec(iMaxIndex, new MinVectorStruct)) 
 
@@ -64,42 +64,74 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
     is(sStarted) {
       
       currentIteration := currentIteration + 1.U
-      outResult := regStorageVec(0).minMaxOutput
 
-      when (currentIteration =/= N.U - 1.U + /* initiation delay */ log2Ceil(N).U + 1.U) {
+      // when (currentIteration =/= N.U - 1.U + /* initiation delay */ log2Ceil(N).U + 1.U /* should be removed*/ + 18.U) {
         for (i <- 0 until iMaxIndex) {
 
             if (i >= 0 && i <= (math.pow(2, (N/2) - 1).toInt - 2)) {
               // max
-                val (selectedInput, earlyTerminated, maxOutput) = 
+                val (selectedInput, earlyTerminate1, earlyTerminate2, maxOutput) = 
                      OnlineComparator2(true, false) (
                           io.start, // start bit
                           regStorageVec(2 * i + 1).minMaxOutput,
                           regStorageVec(2 * i + 2).minMaxOutput,
-                          regStorageVec(math.ceil((i - 1)/2).toInt).externalEarlyTermination
+                          if (i % 2 != 0) regStorageVec(math.ceil((i - 1)/2).toInt).earlyTerminated1 else regStorageVec(math.ceil((i - 1)/2).toInt).earlyTerminated2
                           )
                 regStorageVec(i).selectedInput := selectedInput
-                regStorageVec(i).earlyTerminated := earlyTerminated
+                regStorageVec(i).earlyTerminated1 := earlyTerminate1
+                regStorageVec(i).earlyTerminated2 := earlyTerminate2
                 regStorageVec(i).minMaxOutput := maxOutput
-              }
 
+                if (debug) {
+                  printf("max comparator : %d\n", i.U);
+                  printf("\tin1 : regStorageVec(%d).minMaxOutput = %d\n", (2 * i + 1).U, regStorageVec(2 * i + 1).minMaxOutput);
+                  printf("\tin2 : regStorageVec(%d).minMaxOutput = %d\n", (2 * i + 2).U, regStorageVec(2 * i + 2).minMaxOutput);
+                  if (i % 2 != 0) {
+                    printf("\tET : regStorageVec(%d).earlyTerminated1\n", (math.ceil((i - 1)/2).toInt).U);
+                  } else{
+                    printf("\tET : regStorageVec(%d).earlyTerminated2\n", (math.ceil((i - 1)/2).toInt).U);
+                  }
+                }
+              }
             else {
               // min
-                val (selectedInput, earlyTerminated, minOutput) = 
+                val (selectedInput, earlyTerminate1, earlyTerminate2, minOutput) = 
                      OnlineComparator2(false, false) (
                           io.start, // start bit
                           io.in1(i - N + 1),
                           io.in2(i - N + 1),
-                          regStorageVec(math.ceil((i - 1)/2).toInt).externalEarlyTermination
+                          if (i % 2 != 0) regStorageVec(math.ceil((i - 1)/2).toInt).earlyTerminated1 else regStorageVec(math.ceil((i - 1)/2).toInt).earlyTerminated2
                           )
                 regStorageVec(i).selectedInput := selectedInput
-                regStorageVec(i).earlyTerminated := earlyTerminated
+                regStorageVec(i).earlyTerminated1 := earlyTerminate1
+                regStorageVec(i).earlyTerminated2 := earlyTerminate2
                 regStorageVec(i).minMaxOutput := minOutput
+
+
+                if (debug) {
+                  printf("max comparator : %d\n", i.U);
+                  printf("\tin1 : io.in1(%d) = %d\n", (i - N + 1).U, io.in1(i - N + 1));
+                  printf("\tin2 : io.in2(%d) = %d\n", (i - N + 1).U, io.in2(i - N + 1));
+                  if (i % 2 != 0) {
+                    printf("\tET : regStorageVec(%d).earlyTerminated1\n", (math.ceil((i - 1)/2).toInt).U);
+                  } else{
+                    printf("\tET : regStorageVec(%d).earlyTerminated2\n", (math.ceil((i - 1)/2).toInt).U);
+                  }
+                }
+              
+
+
+
+
+
+
+
+
             }
           }
-        } .otherwise {
+        /*} .otherwise {
           state := sFinished
-        }
+        }*/
     }
     is(sFinished) {
 
@@ -113,7 +145,7 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
   //
   // Set the output
   //
-  io.outResult := outResult
+  io.outResult := regStorageVec(0).minMaxOutput
   io.outResultValid := outResultValid
 
 }

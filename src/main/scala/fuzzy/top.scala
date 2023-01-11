@@ -9,16 +9,33 @@ import fuzzy.utils._
 class FuzzyController() extends Module {
   val io = IO(new Bundle {
 
-    val in1 = Input(UInt(8.W))
-    val in2 = Input(UInt(8.W))
+    //
+    // Input signals
+    //
+    val start = Input(Bool())
 
-    val max = Output(UInt(8.W))
+    val in1 = Input(
+      Vec(MinMaxTreeConsts.VECTOR_LEN, UInt(1.W))
+    ) // This is a vector for the first bit of each element
+    val in2 = Input(
+      Vec(MinMaxTreeConsts.VECTOR_LEN, UInt(1.W))
+    ) // This is a vector for the first bit of each element
+
+    //
+    // Output signals
+    //
+    val outResultValid = Output(Bool())
+    val outResult = Output(
+      UInt(1.W)
+    )
+
   })
 
-  val minMaxTree =
-    MinMaxSerialOnlineComparator(MinMaxTreeConsts.VECTOR_LEN)(io.in1, io.in2, true.B)
+  val (outResult, outResultValid) =
+    MinMaxParallelOnlineComparator(MinMaxTreeConsts.VECTOR_LEN, false)(io.in1, io.in2, io.start)
 
-  io.max := minMaxTree._1
+  io.outResult := outResult
+  io.outResultValid := outResultValid
 }
 
 //-----------------------------------------------

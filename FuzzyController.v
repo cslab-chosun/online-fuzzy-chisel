@@ -1,427 +1,892 @@
-module OnlineComparator(
+module OnlineComparator2(
   input   clock,
   input   reset,
   input   io_start,
+  input   io_earlyTerminate,
   input   io_in1,
   input   io_in2,
   output  io_earlyTerminate1,
-  output  io_earlyTerminate2
+  output  io_earlyTerminate2,
+  output  io_maxMin
 );
-  reg  state; // @[online_comparator.scala 28:22]
-  reg  earlyTerminate1; // @[online_comparator.scala 31:32]
-  reg  earlyTerminate2; // @[online_comparator.scala 32:32]
-  wire  _GEN_0 = io_start | state; // @[online_comparator.scala 46:33 52:15 28:22]
-  wire  _T_6 = io_in1 & ~io_in2; // @[online_comparator.scala 68:33]
-  wire  _T_9 = ~io_in1 & io_in2; // @[online_comparator.scala 94:33]
-  wire  _GEN_4 = ~io_in1 & io_in2 ? 1'h0 : 1'h1; // @[online_comparator.scala 115:15 128:15 94:52]
-  assign io_earlyTerminate1 = earlyTerminate1; // @[online_comparator.scala 140:22]
-  assign io_earlyTerminate2 = earlyTerminate2; // @[online_comparator.scala 141:22]
+  reg [1:0] state; // @[online_comparator2.scala 28:22]
+  reg  earlyTerminate1; // @[online_comparator2.scala 31:32]
+  reg  earlyTerminate2; // @[online_comparator2.scala 32:32]
+  wire  _T_6 = io_in1 & ~io_in2; // @[online_comparator2.scala 68:33]
+  wire  _T_9 = ~io_in1 & io_in2; // @[online_comparator2.scala 94:33]
+  wire  _GEN_3 = ~io_in1 & io_in2 ? io_in2 : io_in1; // @[online_comparator2.scala 123:22 94:52 99:24]
+  wire [1:0] _GEN_4 = ~io_in1 & io_in2 ? 2'h2 : 2'h1; // @[online_comparator2.scala 115:15 128:15 94:52]
+  wire  _GEN_5 = io_in1 & ~io_in2 ? 1'h0 : _T_9; // @[online_comparator2.scala 68:52 72:27]
+  wire  _GEN_7 = io_in1 & ~io_in2 ? io_in1 : _GEN_3; // @[online_comparator2.scala 68:52 74:24]
+  wire [1:0] _GEN_8 = io_in1 & ~io_in2 ? 2'h2 : _GEN_4; // @[online_comparator2.scala 68:52 92:15]
+  wire  _GEN_9 = io_earlyTerminate | _GEN_5; // @[online_comparator2.scala 57:42 63:25]
+  wire  _GEN_10 = io_earlyTerminate | _T_6; // @[online_comparator2.scala 57:42 64:25]
+  wire  _GEN_12 = io_earlyTerminate ? 1'h0 : _GEN_7; // @[online_comparator2.scala 57:42]
+  wire  _GEN_13 = earlyTerminate1 ? io_in2 : io_in1; // @[online_comparator2.scala 137:41 138:22 140:22]
+  wire  _GEN_18 = 2'h1 == state ? _GEN_12 : 2'h2 == state & _GEN_13; // @[online_comparator2.scala 35:17]
+  assign io_earlyTerminate1 = earlyTerminate1; // @[online_comparator2.scala 148:22]
+  assign io_earlyTerminate2 = earlyTerminate2; // @[online_comparator2.scala 149:22]
+  assign io_maxMin = 2'h0 == state ? 1'h0 : _GEN_18; // @[online_comparator2.scala 35:17]
   always @(posedge clock) begin
-    if (reset) begin // @[online_comparator.scala 28:22]
-      state <= 1'h0; // @[online_comparator.scala 28:22]
-    end else if (~state) begin // @[online_comparator.scala 35:17]
-      state <= _GEN_0;
-    end else if (state) begin // @[online_comparator.scala 35:17]
-      if (io_in1 & ~io_in2) begin // @[online_comparator.scala 68:52]
-        state <= 1'h0; // @[online_comparator.scala 92:15]
+    if (reset) begin // @[online_comparator2.scala 28:22]
+      state <= 2'h0; // @[online_comparator2.scala 28:22]
+    end else if (2'h0 == state) begin // @[online_comparator2.scala 35:17]
+      if (io_start) begin // @[online_comparator2.scala 46:33]
+        state <= 2'h1; // @[online_comparator2.scala 52:15]
+      end
+    end else if (2'h1 == state) begin // @[online_comparator2.scala 35:17]
+      if (io_earlyTerminate) begin // @[online_comparator2.scala 57:42]
+        state <= 2'h2; // @[online_comparator2.scala 66:15]
       end else begin
-        state <= _GEN_4;
+        state <= _GEN_8;
       end
     end
-    if (reset) begin // @[online_comparator.scala 31:32]
-      earlyTerminate1 <= 1'h0; // @[online_comparator.scala 31:32]
-    end else if (~state) begin // @[online_comparator.scala 35:17]
-      earlyTerminate1 <= 1'h0; // @[online_comparator.scala 39:23]
-    end else if (state) begin // @[online_comparator.scala 35:17]
-      if (io_in1 & ~io_in2) begin // @[online_comparator.scala 68:52]
-        earlyTerminate1 <= 1'h0; // @[online_comparator.scala 82:27]
-      end else begin
-        earlyTerminate1 <= _T_9;
-      end
+    if (reset) begin // @[online_comparator2.scala 31:32]
+      earlyTerminate1 <= 1'h0; // @[online_comparator2.scala 31:32]
+    end else if (2'h0 == state) begin // @[online_comparator2.scala 35:17]
+      earlyTerminate1 <= 1'h0; // @[online_comparator2.scala 39:23]
+    end else if (2'h1 == state) begin // @[online_comparator2.scala 35:17]
+      earlyTerminate1 <= _GEN_9;
     end
-    if (reset) begin // @[online_comparator.scala 32:32]
-      earlyTerminate2 <= 1'h0; // @[online_comparator.scala 32:32]
-    end else if (~state) begin // @[online_comparator.scala 35:17]
-      earlyTerminate2 <= 1'h0; // @[online_comparator.scala 40:23]
-    end else if (state) begin // @[online_comparator.scala 35:17]
-      earlyTerminate2 <= _T_6;
+    if (reset) begin // @[online_comparator2.scala 32:32]
+      earlyTerminate2 <= 1'h0; // @[online_comparator2.scala 32:32]
+    end else if (2'h0 == state) begin // @[online_comparator2.scala 35:17]
+      earlyTerminate2 <= 1'h0; // @[online_comparator2.scala 40:23]
+    end else if (2'h1 == state) begin // @[online_comparator2.scala 35:17]
+      earlyTerminate2 <= _GEN_10;
     end
   end
 endmodule
-module OnlineComparator_1(
+module OnlineComparator2_7(
   input   clock,
   input   reset,
   input   io_start,
+  input   io_earlyTerminate,
   input   io_in1,
   input   io_in2,
-  output  io_earlyTerminate1,
-  output  io_earlyTerminate2
+  output  io_maxMin
 );
-  reg  state; // @[online_comparator.scala 28:22]
-  reg  earlyTerminate1; // @[online_comparator.scala 31:32]
-  reg  earlyTerminate2; // @[online_comparator.scala 32:32]
-  wire  _GEN_0 = io_start | state; // @[online_comparator.scala 46:33 52:15 28:22]
-  wire  _T_6 = io_in1 & ~io_in2; // @[online_comparator.scala 68:33]
-  wire  _T_9 = ~io_in1 & io_in2; // @[online_comparator.scala 94:33]
-  wire  _GEN_4 = ~io_in1 & io_in2 ? 1'h0 : 1'h1; // @[online_comparator.scala 115:15 128:15 94:52]
-  assign io_earlyTerminate1 = earlyTerminate1; // @[online_comparator.scala 140:22]
-  assign io_earlyTerminate2 = earlyTerminate2; // @[online_comparator.scala 141:22]
+  reg [1:0] state; // @[online_comparator2.scala 28:22]
+  reg  earlyTerminate1; // @[online_comparator2.scala 31:32]
+  wire  _T_6 = io_in1 & ~io_in2; // @[online_comparator2.scala 68:33]
+  wire [1:0] _GEN_4 = ~io_in1 & io_in2 ? 2'h2 : 2'h1; // @[online_comparator2.scala 115:15 128:15 94:52]
+  wire  _GEN_7 = io_in1 & ~io_in2 ? io_in2 : io_in1; // @[online_comparator2.scala 68:52 84:24]
+  wire [1:0] _GEN_8 = io_in1 & ~io_in2 ? 2'h2 : _GEN_4; // @[online_comparator2.scala 68:52 92:15]
+  wire  _GEN_9 = io_earlyTerminate | _T_6; // @[online_comparator2.scala 57:42 63:25]
+  wire  _GEN_12 = io_earlyTerminate ? 1'h0 : _GEN_7; // @[online_comparator2.scala 57:42]
+  wire  _GEN_13 = earlyTerminate1 ? io_in2 : io_in1; // @[online_comparator2.scala 137:41 138:22 140:22]
+  wire  _GEN_18 = 2'h1 == state ? _GEN_12 : 2'h2 == state & _GEN_13; // @[online_comparator2.scala 35:17]
+  assign io_maxMin = 2'h0 == state ? 1'h0 : _GEN_18; // @[online_comparator2.scala 35:17]
   always @(posedge clock) begin
-    if (reset) begin // @[online_comparator.scala 28:22]
-      state <= 1'h0; // @[online_comparator.scala 28:22]
-    end else if (~state) begin // @[online_comparator.scala 35:17]
-      state <= _GEN_0;
-    end else if (state) begin // @[online_comparator.scala 35:17]
-      if (io_in1 & ~io_in2) begin // @[online_comparator.scala 68:52]
-        state <= 1'h0; // @[online_comparator.scala 92:15]
+    if (reset) begin // @[online_comparator2.scala 28:22]
+      state <= 2'h0; // @[online_comparator2.scala 28:22]
+    end else if (2'h0 == state) begin // @[online_comparator2.scala 35:17]
+      if (io_start) begin // @[online_comparator2.scala 46:33]
+        state <= 2'h1; // @[online_comparator2.scala 52:15]
+      end
+    end else if (2'h1 == state) begin // @[online_comparator2.scala 35:17]
+      if (io_earlyTerminate) begin // @[online_comparator2.scala 57:42]
+        state <= 2'h2; // @[online_comparator2.scala 66:15]
       end else begin
-        state <= _GEN_4;
+        state <= _GEN_8;
       end
     end
-    if (reset) begin // @[online_comparator.scala 31:32]
-      earlyTerminate1 <= 1'h0; // @[online_comparator.scala 31:32]
-    end else if (~state) begin // @[online_comparator.scala 35:17]
-      earlyTerminate1 <= 1'h0; // @[online_comparator.scala 39:23]
-    end else if (state) begin // @[online_comparator.scala 35:17]
-      earlyTerminate1 <= _T_6;
-    end
-    if (reset) begin // @[online_comparator.scala 32:32]
-      earlyTerminate2 <= 1'h0; // @[online_comparator.scala 32:32]
-    end else if (~state) begin // @[online_comparator.scala 35:17]
-      earlyTerminate2 <= 1'h0; // @[online_comparator.scala 40:23]
-    end else if (state) begin // @[online_comparator.scala 35:17]
-      if (io_in1 & ~io_in2) begin // @[online_comparator.scala 68:52]
-        earlyTerminate2 <= 1'h0; // @[online_comparator.scala 73:27]
-      end else begin
-        earlyTerminate2 <= _T_9;
-      end
+    if (reset) begin // @[online_comparator2.scala 31:32]
+      earlyTerminate1 <= 1'h0; // @[online_comparator2.scala 31:32]
+    end else if (2'h0 == state) begin // @[online_comparator2.scala 35:17]
+      earlyTerminate1 <= 1'h0; // @[online_comparator2.scala 39:23]
+    end else if (2'h1 == state) begin // @[online_comparator2.scala 35:17]
+      earlyTerminate1 <= _GEN_9;
     end
   end
 endmodule
-module MinMaxSerialOnlineComparator(
-  input        clock,
-  input        reset,
-  input  [6:0] io_in1,
-  input  [6:0] io_in2,
-  output [6:0] io_outResult
+module MinMaxParallelOnlineComparator(
+  input   clock,
+  input   reset,
+  input   io_start,
+  input   io_in1_0,
+  input   io_in1_1,
+  input   io_in1_2,
+  input   io_in1_3,
+  input   io_in1_4,
+  input   io_in1_5,
+  input   io_in1_6,
+  input   io_in1_7,
+  input   io_in2_0,
+  input   io_in2_1,
+  input   io_in2_2,
+  input   io_in2_3,
+  input   io_in2_4,
+  input   io_in2_5,
+  input   io_in2_6,
+  input   io_in2_7,
+  output  io_outResultValid,
+  output  io_outResult
 );
-  wire  comparatorModule_clock; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_reset; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_io_start; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_io_in1; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_io_in2; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_io_earlyTerminate1; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_io_earlyTerminate2; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_clock; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_reset; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_io_start; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_io_in1; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_io_in2; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_io_earlyTerminate1; // @[online_comparator.scala 155:34]
-  wire  comparatorModule_1_io_earlyTerminate2; // @[online_comparator.scala 155:34]
-  reg  askForNewNumber; // @[min_max_serial_online_comparator.scala 37:32]
-  reg [6:0] outResult; // @[min_max_serial_online_comparator.scala 39:26]
-  reg [6:0] regStorageVec_0; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_1; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_2; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_3; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_4; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_5; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_6; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [6:0] regStorageVec_7; // @[min_max_serial_online_comparator.scala 41:26]
-  reg [2:0] regBitIndx; // @[min_max_serial_online_comparator.scala 43:27]
-  reg [2:0] regVecIndx; // @[min_max_serial_online_comparator.scala 46:27]
-  reg [2:0] regMaxVecIndx; // @[min_max_serial_online_comparator.scala 49:30]
-  reg  regToEqualNums; // @[min_max_serial_online_comparator.scala 54:31]
-  reg [1:0] state; // @[min_max_serial_online_comparator.scala 57:22]
-  wire [6:0] _T = io_in1 >> regBitIndx; // @[min_max_serial_online_comparator.scala 62:13]
-  wire [6:0] _T_2 = io_in2 >> regBitIndx; // @[min_max_serial_online_comparator.scala 63:13]
-  wire  earlyTerminate1 = comparatorModule_io_earlyTerminate1; // @[online_comparator.scala 157:31 174:21]
-  wire  earlyTerminate2 = comparatorModule_io_earlyTerminate2; // @[online_comparator.scala 158:31 175:21]
-  wire  earlyTerminated = earlyTerminate1 | earlyTerminate2; // @[online_comparator.scala 190:43]
-  wire  selectedInput = earlyTerminate1 ? 1'h0 : 1'h1; // @[online_comparator.scala 195:28]
-  reg  input1Max; // @[min_max_serial_online_comparator.scala 69:26]
-  reg  input2Max; // @[min_max_serial_online_comparator.scala 70:26]
-  wire  earlyTerminate1_1 = comparatorModule_1_io_earlyTerminate1; // @[online_comparator.scala 157:31 174:21]
-  wire  earlyTerminate2_1 = comparatorModule_1_io_earlyTerminate2; // @[online_comparator.scala 158:31 175:21]
-  wire  earlyTerminatedMax = earlyTerminate1_1 | earlyTerminate2_1; // @[online_comparator.scala 190:43]
-  wire  selectedInputMax = earlyTerminate1_1 ? 1'h0 : 1'h1; // @[online_comparator.scala 195:28]
-  wire  _T_9 = ~regToEqualNums; // @[min_max_serial_online_comparator.scala 98:86]
-  wire  _T_10 = (~earlyTerminated | askForNewNumber) & ~regToEqualNums; // @[min_max_serial_online_comparator.scala 98:68]
-  wire [2:0] _regBitIndx_T_1 = regBitIndx - 3'h1; // @[min_max_serial_online_comparator.scala 100:34]
-  wire  _GEN_0 = regBitIndx == 3'h0 | regToEqualNums; // @[min_max_serial_online_comparator.scala 105:34 106:26 54:31]
-  wire [6:0] _GEN_1 = 3'h0 == regVecIndx ? io_in1 : regStorageVec_0; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_2 = 3'h1 == regVecIndx ? io_in1 : regStorageVec_1; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_3 = 3'h2 == regVecIndx ? io_in1 : regStorageVec_2; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_4 = 3'h3 == regVecIndx ? io_in1 : regStorageVec_3; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_5 = 3'h4 == regVecIndx ? io_in1 : regStorageVec_4; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_6 = 3'h5 == regVecIndx ? io_in1 : regStorageVec_5; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_7 = 3'h6 == regVecIndx ? io_in1 : regStorageVec_6; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_8 = 3'h7 == regVecIndx ? io_in1 : regStorageVec_7; // @[min_max_serial_online_comparator.scala 130:{37,37} 41:26]
-  wire [6:0] _GEN_9 = 3'h0 == regVecIndx ? io_in2 : regStorageVec_0; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_10 = 3'h1 == regVecIndx ? io_in2 : regStorageVec_1; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_11 = 3'h2 == regVecIndx ? io_in2 : regStorageVec_2; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_12 = 3'h3 == regVecIndx ? io_in2 : regStorageVec_3; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_13 = 3'h4 == regVecIndx ? io_in2 : regStorageVec_4; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_14 = 3'h5 == regVecIndx ? io_in2 : regStorageVec_5; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_15 = 3'h6 == regVecIndx ? io_in2 : regStorageVec_6; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [6:0] _GEN_16 = 3'h7 == regVecIndx ? io_in2 : regStorageVec_7; // @[min_max_serial_online_comparator.scala 137:{37,37} 41:26]
-  wire [1:0] _GEN_25 = regVecIndx == 3'h7 ? 2'h2 : state; // @[min_max_serial_online_comparator.scala 147:49 148:17 57:22]
-  wire [6:0] _GEN_26 = regVecIndx == 3'h7 ? regStorageVec_0 : outResult; // @[min_max_serial_online_comparator.scala 147:49 153:19 39:26]
-  wire [2:0] _regVecIndx_T_1 = regVecIndx + 3'h1; // @[min_max_serial_online_comparator.scala 170:34]
-  wire  _GEN_30 = _T_10 & _GEN_0; // @[min_max_serial_online_comparator.scala 99:9]
-  wire [6:0] _input1Max_T = outResult >> regBitIndx; // @[min_max_serial_online_comparator.scala 189:29]
-  wire [6:0] _GEN_44 = 3'h1 == regMaxVecIndx ? regStorageVec_1 : regStorageVec_0; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_45 = 3'h2 == regMaxVecIndx ? regStorageVec_2 : _GEN_44; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_46 = 3'h3 == regMaxVecIndx ? regStorageVec_3 : _GEN_45; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_47 = 3'h4 == regMaxVecIndx ? regStorageVec_4 : _GEN_46; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_48 = 3'h5 == regMaxVecIndx ? regStorageVec_5 : _GEN_47; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_49 = 3'h6 == regMaxVecIndx ? regStorageVec_6 : _GEN_48; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _GEN_50 = 3'h7 == regMaxVecIndx ? regStorageVec_7 : _GEN_49; // @[min_max_serial_online_comparator.scala 190:{48,48}]
-  wire [6:0] _input2Max_T = _GEN_50 >> regBitIndx; // @[min_max_serial_online_comparator.scala 190:48]
-  wire  _T_17 = ~earlyTerminatedMax & _T_9; // @[min_max_serial_online_comparator.scala 195:43]
-  wire [6:0] _GEN_52 = selectedInputMax ? _GEN_50 : outResult; // @[min_max_serial_online_comparator.scala 231:40 236:21 39:26]
-  wire [1:0] _GEN_53 = regMaxVecIndx == 3'h7 ? 2'h3 : state; // @[min_max_serial_online_comparator.scala 249:52 250:17 57:22]
-  wire [2:0] _regMaxVecIndx_T_1 = regMaxVecIndx + 3'h1; // @[min_max_serial_online_comparator.scala 256:40]
-  wire [2:0] _GEN_54 = _T_17 ? _regBitIndx_T_1 : 3'h7; // @[min_max_serial_online_comparator.scala 196:8 198:20 224:20]
-  wire  _GEN_55 = _T_17 & _GEN_0; // @[min_max_serial_online_comparator.scala 196:8 226:24]
-  wire [6:0] _GEN_56 = _T_17 ? outResult : _GEN_52; // @[min_max_serial_online_comparator.scala 196:8 39:26]
-  wire [1:0] _GEN_57 = _T_17 ? state : _GEN_53; // @[min_max_serial_online_comparator.scala 196:8 57:22]
-  wire [2:0] _GEN_58 = _T_17 ? regMaxVecIndx : _regMaxVecIndx_T_1; // @[min_max_serial_online_comparator.scala 196:8 256:23 49:30]
-  wire  _GEN_83 = 2'h1 == state ? 1'h0 : 2'h2 == state; // @[min_max_serial_online_comparator.scala 80:17]
-  OnlineComparator comparatorModule ( // @[online_comparator.scala 155:34]
+  wire  comparatorModule_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_1_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_2_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_3_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_4_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_5_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_earlyTerminate1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_earlyTerminate2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_6_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_7_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_8_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_9_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_10_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_11_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_12_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_13_io_maxMin; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_clock; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_reset; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_io_start; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_io_earlyTerminate; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_io_in1; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_io_in2; // @[online_comparator2.scala 163:34]
+  wire  comparatorModule_14_io_maxMin; // @[online_comparator2.scala 163:34]
+  reg  outResultValid; // @[min_max_parallel_online_comparator.scala 46:31]
+  reg  outResult; // @[min_max_parallel_online_comparator.scala 47:26]
+  reg  regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_0_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_0_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_1_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_1_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_1_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_2_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_2_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_2_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_3_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_3_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_3_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_4_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_4_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_4_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_5_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_5_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_5_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_6_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_6_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_6_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_7_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_8_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_9_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_10_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_11_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_12_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_13_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg  regStorageVec_14_minMaxOutput; // @[min_max_parallel_online_comparator.scala 49:26]
+  reg [1:0] state; // @[min_max_parallel_online_comparator.scala 52:22]
+  reg [3:0] currentIteration; // @[min_max_parallel_online_comparator.scala 54:33]
+  wire  _T = 2'h0 == state; // @[min_max_parallel_online_comparator.scala 56:17]
+  wire [3:0] _currentIteration_T_1 = currentIteration + 4'h1; // @[min_max_parallel_online_comparator.scala 67:44]
+  wire [3:0] _T_6 = 4'h8 - 4'h1; // @[min_max_parallel_online_comparator.scala 70:38]
+  wire [3:0] _T_8 = _T_6 + 4'h3; // @[min_max_parallel_online_comparator.scala 70:44]
+  wire [3:0] _T_10 = _T_8 + 4'h1; // @[min_max_parallel_online_comparator.scala 70:83]
+  wire  earlyTerminate1 = comparatorModule_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate1_1 = comparatorModule_1_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate1_2 = comparatorModule_2_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate1_3 = comparatorModule_3_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate1_4 = comparatorModule_4_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate1_5 = comparatorModule_5_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate1_6 = comparatorModule_6_io_earlyTerminate1; // @[online_comparator2.scala 165:31 182:21]
+  wire  earlyTerminate2 = comparatorModule_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput = comparatorModule_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  earlyTerminate2_1 = comparatorModule_1_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput_1 = comparatorModule_1_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  earlyTerminate2_2 = comparatorModule_2_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput_2 = comparatorModule_2_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  earlyTerminate2_3 = comparatorModule_3_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput_3 = comparatorModule_3_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  earlyTerminate2_4 = comparatorModule_4_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput_4 = comparatorModule_4_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  earlyTerminate2_5 = comparatorModule_5_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput_5 = comparatorModule_5_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  earlyTerminate2_6 = comparatorModule_6_io_earlyTerminate2; // @[online_comparator2.scala 166:31 183:21]
+  wire  maxOutput_6 = comparatorModule_6_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput = comparatorModule_7_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_1 = comparatorModule_8_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_2 = comparatorModule_9_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_3 = comparatorModule_10_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_4 = comparatorModule_11_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_5 = comparatorModule_12_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_6 = comparatorModule_13_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  minOutput_7 = comparatorModule_14_io_maxMin; // @[online_comparator2.scala 168:28 196:18]
+  wire  _GEN_62 = 2'h2 == state | outResultValid; // @[min_max_parallel_online_comparator.scala 56:17 112:22 46:31]
+  OnlineComparator2 comparatorModule ( // @[online_comparator2.scala 163:34]
     .clock(comparatorModule_clock),
     .reset(comparatorModule_reset),
     .io_start(comparatorModule_io_start),
+    .io_earlyTerminate(comparatorModule_io_earlyTerminate),
     .io_in1(comparatorModule_io_in1),
     .io_in2(comparatorModule_io_in2),
     .io_earlyTerminate1(comparatorModule_io_earlyTerminate1),
-    .io_earlyTerminate2(comparatorModule_io_earlyTerminate2)
+    .io_earlyTerminate2(comparatorModule_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_io_maxMin)
   );
-  OnlineComparator_1 comparatorModule_1 ( // @[online_comparator.scala 155:34]
+  OnlineComparator2 comparatorModule_1 ( // @[online_comparator2.scala 163:34]
     .clock(comparatorModule_1_clock),
     .reset(comparatorModule_1_reset),
     .io_start(comparatorModule_1_io_start),
+    .io_earlyTerminate(comparatorModule_1_io_earlyTerminate),
     .io_in1(comparatorModule_1_io_in1),
     .io_in2(comparatorModule_1_io_in2),
     .io_earlyTerminate1(comparatorModule_1_io_earlyTerminate1),
-    .io_earlyTerminate2(comparatorModule_1_io_earlyTerminate2)
+    .io_earlyTerminate2(comparatorModule_1_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_1_io_maxMin)
   );
-  assign io_outResult = outResult; // @[min_max_serial_online_comparator.scala 275:16]
+  OnlineComparator2 comparatorModule_2 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_2_clock),
+    .reset(comparatorModule_2_reset),
+    .io_start(comparatorModule_2_io_start),
+    .io_earlyTerminate(comparatorModule_2_io_earlyTerminate),
+    .io_in1(comparatorModule_2_io_in1),
+    .io_in2(comparatorModule_2_io_in2),
+    .io_earlyTerminate1(comparatorModule_2_io_earlyTerminate1),
+    .io_earlyTerminate2(comparatorModule_2_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_2_io_maxMin)
+  );
+  OnlineComparator2 comparatorModule_3 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_3_clock),
+    .reset(comparatorModule_3_reset),
+    .io_start(comparatorModule_3_io_start),
+    .io_earlyTerminate(comparatorModule_3_io_earlyTerminate),
+    .io_in1(comparatorModule_3_io_in1),
+    .io_in2(comparatorModule_3_io_in2),
+    .io_earlyTerminate1(comparatorModule_3_io_earlyTerminate1),
+    .io_earlyTerminate2(comparatorModule_3_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_3_io_maxMin)
+  );
+  OnlineComparator2 comparatorModule_4 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_4_clock),
+    .reset(comparatorModule_4_reset),
+    .io_start(comparatorModule_4_io_start),
+    .io_earlyTerminate(comparatorModule_4_io_earlyTerminate),
+    .io_in1(comparatorModule_4_io_in1),
+    .io_in2(comparatorModule_4_io_in2),
+    .io_earlyTerminate1(comparatorModule_4_io_earlyTerminate1),
+    .io_earlyTerminate2(comparatorModule_4_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_4_io_maxMin)
+  );
+  OnlineComparator2 comparatorModule_5 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_5_clock),
+    .reset(comparatorModule_5_reset),
+    .io_start(comparatorModule_5_io_start),
+    .io_earlyTerminate(comparatorModule_5_io_earlyTerminate),
+    .io_in1(comparatorModule_5_io_in1),
+    .io_in2(comparatorModule_5_io_in2),
+    .io_earlyTerminate1(comparatorModule_5_io_earlyTerminate1),
+    .io_earlyTerminate2(comparatorModule_5_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_5_io_maxMin)
+  );
+  OnlineComparator2 comparatorModule_6 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_6_clock),
+    .reset(comparatorModule_6_reset),
+    .io_start(comparatorModule_6_io_start),
+    .io_earlyTerminate(comparatorModule_6_io_earlyTerminate),
+    .io_in1(comparatorModule_6_io_in1),
+    .io_in2(comparatorModule_6_io_in2),
+    .io_earlyTerminate1(comparatorModule_6_io_earlyTerminate1),
+    .io_earlyTerminate2(comparatorModule_6_io_earlyTerminate2),
+    .io_maxMin(comparatorModule_6_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_7 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_7_clock),
+    .reset(comparatorModule_7_reset),
+    .io_start(comparatorModule_7_io_start),
+    .io_earlyTerminate(comparatorModule_7_io_earlyTerminate),
+    .io_in1(comparatorModule_7_io_in1),
+    .io_in2(comparatorModule_7_io_in2),
+    .io_maxMin(comparatorModule_7_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_8 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_8_clock),
+    .reset(comparatorModule_8_reset),
+    .io_start(comparatorModule_8_io_start),
+    .io_earlyTerminate(comparatorModule_8_io_earlyTerminate),
+    .io_in1(comparatorModule_8_io_in1),
+    .io_in2(comparatorModule_8_io_in2),
+    .io_maxMin(comparatorModule_8_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_9 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_9_clock),
+    .reset(comparatorModule_9_reset),
+    .io_start(comparatorModule_9_io_start),
+    .io_earlyTerminate(comparatorModule_9_io_earlyTerminate),
+    .io_in1(comparatorModule_9_io_in1),
+    .io_in2(comparatorModule_9_io_in2),
+    .io_maxMin(comparatorModule_9_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_10 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_10_clock),
+    .reset(comparatorModule_10_reset),
+    .io_start(comparatorModule_10_io_start),
+    .io_earlyTerminate(comparatorModule_10_io_earlyTerminate),
+    .io_in1(comparatorModule_10_io_in1),
+    .io_in2(comparatorModule_10_io_in2),
+    .io_maxMin(comparatorModule_10_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_11 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_11_clock),
+    .reset(comparatorModule_11_reset),
+    .io_start(comparatorModule_11_io_start),
+    .io_earlyTerminate(comparatorModule_11_io_earlyTerminate),
+    .io_in1(comparatorModule_11_io_in1),
+    .io_in2(comparatorModule_11_io_in2),
+    .io_maxMin(comparatorModule_11_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_12 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_12_clock),
+    .reset(comparatorModule_12_reset),
+    .io_start(comparatorModule_12_io_start),
+    .io_earlyTerminate(comparatorModule_12_io_earlyTerminate),
+    .io_in1(comparatorModule_12_io_in1),
+    .io_in2(comparatorModule_12_io_in2),
+    .io_maxMin(comparatorModule_12_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_13 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_13_clock),
+    .reset(comparatorModule_13_reset),
+    .io_start(comparatorModule_13_io_start),
+    .io_earlyTerminate(comparatorModule_13_io_earlyTerminate),
+    .io_in1(comparatorModule_13_io_in1),
+    .io_in2(comparatorModule_13_io_in2),
+    .io_maxMin(comparatorModule_13_io_maxMin)
+  );
+  OnlineComparator2_7 comparatorModule_14 ( // @[online_comparator2.scala 163:34]
+    .clock(comparatorModule_14_clock),
+    .reset(comparatorModule_14_reset),
+    .io_start(comparatorModule_14_io_start),
+    .io_earlyTerminate(comparatorModule_14_io_earlyTerminate),
+    .io_in1(comparatorModule_14_io_in1),
+    .io_in2(comparatorModule_14_io_in2),
+    .io_maxMin(comparatorModule_14_io_maxMin)
+  );
+  assign io_outResultValid = outResultValid; // @[min_max_parallel_online_comparator.scala 120:21]
+  assign io_outResult = outResult; // @[min_max_parallel_online_comparator.scala 119:16]
   assign comparatorModule_clock = clock;
   assign comparatorModule_reset = reset;
-  assign comparatorModule_io_start = ~askForNewNumber; // @[min_max_serial_online_comparator.scala 53:33]
-  assign comparatorModule_io_in1 = _T[0]; // @[min_max_serial_online_comparator.scala 62:13]
-  assign comparatorModule_io_in2 = _T_2[0]; // @[min_max_serial_online_comparator.scala 63:13]
+  assign comparatorModule_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_io_earlyTerminate = regStorageVec_0_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_io_in1 = regStorageVec_1_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_io_in2 = regStorageVec_2_minMaxOutput; // @[online_comparator2.scala 174:29]
   assign comparatorModule_1_clock = clock;
   assign comparatorModule_1_reset = reset;
-  assign comparatorModule_1_io_start = 2'h0 == state ? 1'h0 : _GEN_83; // @[min_max_serial_online_comparator.scala 80:17]
-  assign comparatorModule_1_io_in1 = input1Max; // @[online_comparator.scala 165:29]
-  assign comparatorModule_1_io_in2 = input2Max; // @[online_comparator.scala 166:29]
+  assign comparatorModule_1_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_1_io_earlyTerminate = regStorageVec_0_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_1_io_in1 = regStorageVec_3_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_1_io_in2 = regStorageVec_4_minMaxOutput; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_2_clock = clock;
+  assign comparatorModule_2_reset = reset;
+  assign comparatorModule_2_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_2_io_earlyTerminate = regStorageVec_0_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_2_io_in1 = regStorageVec_5_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_2_io_in2 = regStorageVec_6_minMaxOutput; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_3_clock = clock;
+  assign comparatorModule_3_reset = reset;
+  assign comparatorModule_3_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_3_io_earlyTerminate = regStorageVec_1_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_3_io_in1 = regStorageVec_7_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_3_io_in2 = regStorageVec_8_minMaxOutput; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_4_clock = clock;
+  assign comparatorModule_4_reset = reset;
+  assign comparatorModule_4_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_4_io_earlyTerminate = regStorageVec_1_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_4_io_in1 = regStorageVec_9_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_4_io_in2 = regStorageVec_10_minMaxOutput; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_5_clock = clock;
+  assign comparatorModule_5_reset = reset;
+  assign comparatorModule_5_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_5_io_earlyTerminate = regStorageVec_2_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_5_io_in1 = regStorageVec_11_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_5_io_in2 = regStorageVec_12_minMaxOutput; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_6_clock = clock;
+  assign comparatorModule_6_reset = reset;
+  assign comparatorModule_6_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_6_io_earlyTerminate = regStorageVec_2_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_6_io_in1 = regStorageVec_13_minMaxOutput; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_6_io_in2 = regStorageVec_14_minMaxOutput; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_7_clock = clock;
+  assign comparatorModule_7_reset = reset;
+  assign comparatorModule_7_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_7_io_earlyTerminate = regStorageVec_3_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_7_io_in1 = io_in1_0; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_7_io_in2 = io_in2_0; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_8_clock = clock;
+  assign comparatorModule_8_reset = reset;
+  assign comparatorModule_8_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_8_io_earlyTerminate = regStorageVec_3_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_8_io_in1 = io_in1_1; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_8_io_in2 = io_in2_1; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_9_clock = clock;
+  assign comparatorModule_9_reset = reset;
+  assign comparatorModule_9_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_9_io_earlyTerminate = regStorageVec_4_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_9_io_in1 = io_in1_2; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_9_io_in2 = io_in2_2; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_10_clock = clock;
+  assign comparatorModule_10_reset = reset;
+  assign comparatorModule_10_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_10_io_earlyTerminate = regStorageVec_4_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_10_io_in1 = io_in1_3; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_10_io_in2 = io_in2_3; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_11_clock = clock;
+  assign comparatorModule_11_reset = reset;
+  assign comparatorModule_11_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_11_io_earlyTerminate = regStorageVec_5_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_11_io_in1 = io_in1_4; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_11_io_in2 = io_in2_4; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_12_clock = clock;
+  assign comparatorModule_12_reset = reset;
+  assign comparatorModule_12_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_12_io_earlyTerminate = regStorageVec_5_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_12_io_in1 = io_in1_5; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_12_io_in2 = io_in2_5; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_13_clock = clock;
+  assign comparatorModule_13_reset = reset;
+  assign comparatorModule_13_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_13_io_earlyTerminate = regStorageVec_6_earlyTerminated1; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_13_io_in1 = io_in1_6; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_13_io_in2 = io_in2_6; // @[online_comparator2.scala 174:29]
+  assign comparatorModule_14_clock = clock;
+  assign comparatorModule_14_reset = reset;
+  assign comparatorModule_14_io_start = io_start; // @[online_comparator2.scala 177:31]
+  assign comparatorModule_14_io_earlyTerminate = regStorageVec_6_earlyTerminated2; // @[online_comparator2.scala 176:40]
+  assign comparatorModule_14_io_in1 = io_in1_7; // @[online_comparator2.scala 173:29]
+  assign comparatorModule_14_io_in2 = io_in2_7; // @[online_comparator2.scala 174:29]
   always @(posedge clock) begin
-    if (reset) begin // @[min_max_serial_online_comparator.scala 37:32]
-      askForNewNumber <= 1'h0; // @[min_max_serial_online_comparator.scala 37:32]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (_T_10) begin // @[min_max_serial_online_comparator.scala 99:9]
-          askForNewNumber <= 1'h0; // @[min_max_serial_online_comparator.scala 96:23]
-        end else begin
-          askForNewNumber <= 1'h1; // @[min_max_serial_online_comparator.scala 171:25]
+    if (reset) begin // @[min_max_parallel_online_comparator.scala 46:31]
+      outResultValid <= 1'h0; // @[min_max_parallel_online_comparator.scala 46:31]
+    end else if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (!(2'h1 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        outResultValid <= _GEN_62;
+      end
+    end
+    if (reset) begin // @[min_max_parallel_online_comparator.scala 47:26]
+      outResult <= 1'h0; // @[min_max_parallel_online_comparator.scala 47:26]
+    end else if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        outResult <= regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 68:17]
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_0_minMaxOutput <= maxOutput; // @[min_max_parallel_online_comparator.scala 85:47]
         end
       end
     end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 39:26]
-      outResult <= 7'h0; // @[min_max_serial_online_comparator.scala 39:26]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          outResult <= _GEN_26;
-        end
-      end else if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        outResult <= _GEN_56;
-      end
-    end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_0 <= _GEN_1;
-          end else begin
-            regStorageVec_0 <= _GEN_9;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_0_earlyTerminated1 <= earlyTerminate1; // @[min_max_parallel_online_comparator.scala 83:51]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_1 <= _GEN_2;
-          end else begin
-            regStorageVec_1 <= _GEN_10;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_0_earlyTerminated2 <= earlyTerminate2; // @[min_max_parallel_online_comparator.scala 84:51]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_2 <= _GEN_3;
-          end else begin
-            regStorageVec_2 <= _GEN_11;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_1_minMaxOutput <= maxOutput_1; // @[min_max_parallel_online_comparator.scala 85:47]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_3 <= _GEN_4;
-          end else begin
-            regStorageVec_3 <= _GEN_12;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_1_earlyTerminated1 <= earlyTerminate1_1; // @[min_max_parallel_online_comparator.scala 83:51]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_4 <= _GEN_5;
-          end else begin
-            regStorageVec_4 <= _GEN_13;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_1_earlyTerminated2 <= earlyTerminate2_1; // @[min_max_parallel_online_comparator.scala 84:51]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_5 <= _GEN_6;
-          end else begin
-            regStorageVec_5 <= _GEN_14;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_2_minMaxOutput <= maxOutput_2; // @[min_max_parallel_online_comparator.scala 85:47]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_6 <= _GEN_7;
-          end else begin
-            regStorageVec_6 <= _GEN_15;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_2_earlyTerminated1 <= earlyTerminate1_2; // @[min_max_parallel_online_comparator.scala 83:51]
         end
       end
     end
-    if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          if (~selectedInput) begin // @[min_max_serial_online_comparator.scala 129:37]
-            regStorageVec_7 <= _GEN_8;
-          end else begin
-            regStorageVec_7 <= _GEN_16;
-          end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_2_earlyTerminated2 <= earlyTerminate2_2; // @[min_max_parallel_online_comparator.scala 84:51]
         end
       end
     end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 43:27]
-      regBitIndx <= 3'h7; // @[min_max_serial_online_comparator.scala 43:27]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (_T_10) begin // @[min_max_serial_online_comparator.scala 99:9]
-          regBitIndx <= _regBitIndx_T_1; // @[min_max_serial_online_comparator.scala 100:20]
-        end else begin
-          regBitIndx <= 3'h7;
-        end
-      end else if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        regBitIndx <= _GEN_54;
-      end
-    end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 46:27]
-      regVecIndx <= 3'h0; // @[min_max_serial_online_comparator.scala 46:27]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-          regVecIndx <= _regVecIndx_T_1; // @[min_max_serial_online_comparator.scala 170:20]
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_3_minMaxOutput <= maxOutput_3; // @[min_max_parallel_online_comparator.scala 85:47]
         end
       end
     end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 49:30]
-      regMaxVecIndx <= 3'h1; // @[min_max_serial_online_comparator.scala 49:30]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (!(2'h1 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-          regMaxVecIndx <= _GEN_58;
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_3_earlyTerminated1 <= earlyTerminate1_3; // @[min_max_parallel_online_comparator.scala 83:51]
         end
       end
     end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 54:31]
-      regToEqualNums <= 1'h0; // @[min_max_serial_online_comparator.scala 54:31]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        regToEqualNums <= _GEN_30;
-      end else if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-        regToEqualNums <= _GEN_55;
-      end
-    end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 57:22]
-      state <= 2'h0; // @[min_max_serial_online_comparator.scala 57:22]
-    end else if (2'h0 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-      state <= 2'h1; // @[min_max_serial_online_comparator.scala 83:13]
-    end else if (2'h1 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (!(_T_10)) begin // @[min_max_serial_online_comparator.scala 99:9]
-        state <= _GEN_25;
-      end
-    end else if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-      state <= _GEN_57;
-    end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 69:26]
-      input1Max <= 1'h0; // @[min_max_serial_online_comparator.scala 69:26]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (!(2'h1 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-          input1Max <= _input1Max_T[0]; // @[min_max_serial_online_comparator.scala 189:17]
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_3_earlyTerminated2 <= earlyTerminate2_3; // @[min_max_parallel_online_comparator.scala 84:51]
         end
       end
     end
-    if (reset) begin // @[min_max_serial_online_comparator.scala 70:26]
-      input2Max <= 1'h0; // @[min_max_serial_online_comparator.scala 70:26]
-    end else if (!(2'h0 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-      if (!(2'h1 == state)) begin // @[min_max_serial_online_comparator.scala 80:17]
-        if (2'h2 == state) begin // @[min_max_serial_online_comparator.scala 80:17]
-          input2Max <= _input2Max_T[0]; // @[min_max_serial_online_comparator.scala 190:17]
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_4_minMaxOutput <= maxOutput_4; // @[min_max_parallel_online_comparator.scala 85:47]
         end
       end
     end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_4_earlyTerminated1 <= earlyTerminate1_4; // @[min_max_parallel_online_comparator.scala 83:51]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_4_earlyTerminated2 <= earlyTerminate2_4; // @[min_max_parallel_online_comparator.scala 84:51]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_5_minMaxOutput <= maxOutput_5; // @[min_max_parallel_online_comparator.scala 85:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_5_earlyTerminated1 <= earlyTerminate1_5; // @[min_max_parallel_online_comparator.scala 83:51]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_5_earlyTerminated2 <= earlyTerminate2_5; // @[min_max_parallel_online_comparator.scala 84:51]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_6_minMaxOutput <= maxOutput_6; // @[min_max_parallel_online_comparator.scala 85:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_6_earlyTerminated1 <= earlyTerminate1_6; // @[min_max_parallel_online_comparator.scala 83:51]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_6_earlyTerminated2 <= earlyTerminate2_6; // @[min_max_parallel_online_comparator.scala 84:51]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_7_minMaxOutput <= minOutput; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_8_minMaxOutput <= minOutput_1; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_9_minMaxOutput <= minOutput_2; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_10_minMaxOutput <= minOutput_3; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_11_minMaxOutput <= minOutput_4; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_12_minMaxOutput <= minOutput_5; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_13_minMaxOutput <= minOutput_6; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        if (currentIteration != _T_10) begin // @[min_max_parallel_online_comparator.scala 70:90]
+          regStorageVec_14_minMaxOutput <= minOutput_7; // @[min_max_parallel_online_comparator.scala 100:47]
+        end
+      end
+    end
+    if (reset) begin // @[min_max_parallel_online_comparator.scala 52:22]
+      state <= 2'h0; // @[min_max_parallel_online_comparator.scala 52:22]
+    end else if (2'h0 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (io_start) begin // @[min_max_parallel_online_comparator.scala 60:34]
+        state <= 2'h1; // @[min_max_parallel_online_comparator.scala 61:15]
+      end
+    end else if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (!(currentIteration != _T_10)) begin // @[min_max_parallel_online_comparator.scala 70:90]
+        state <= 2'h2; // @[min_max_parallel_online_comparator.scala 104:17]
+      end
+    end
+    if (reset) begin // @[min_max_parallel_online_comparator.scala 54:33]
+      currentIteration <= 4'h0; // @[min_max_parallel_online_comparator.scala 54:33]
+    end else if (!(2'h0 == state)) begin // @[min_max_parallel_online_comparator.scala 56:17]
+      if (2'h1 == state) begin // @[min_max_parallel_online_comparator.scala 56:17]
+        currentIteration <= _currentIteration_T_1; // @[min_max_parallel_online_comparator.scala 67:24]
+      end
+    end
+    `ifndef SYNTHESIS
+    `ifdef PRINTF_COND
+      if (`PRINTF_COND) begin
+    `endif
+        if (_T & io_start & ~reset) begin
+          $fwrite(32'h80000002,"=============================================maximum index : %d\n",4'hf); // @[min_max_parallel_online_comparator.scala 62:15]
+        end
+    `ifdef PRINTF_COND
+      end
+    `endif
+    `endif // SYNTHESIS
   end
 endmodule
 module FuzzyController(
-  input        clock,
-  input        reset,
-  input  [7:0] io_in1,
-  input  [7:0] io_in2,
-  output [7:0] io_max
+  input   clock,
+  input   reset,
+  input   io_start,
+  input   io_in1_0,
+  input   io_in1_1,
+  input   io_in1_2,
+  input   io_in1_3,
+  input   io_in1_4,
+  input   io_in1_5,
+  input   io_in1_6,
+  input   io_in1_7,
+  input   io_in2_0,
+  input   io_in2_1,
+  input   io_in2_2,
+  input   io_in2_3,
+  input   io_in2_4,
+  input   io_in2_5,
+  input   io_in2_6,
+  input   io_in2_7,
+  output  io_outResultValid,
+  output  io_outResult
 );
-  wire  minMaxTree_clock; // @[min_max_serial_online_comparator.scala 288:28]
-  wire  minMaxTree_reset; // @[min_max_serial_online_comparator.scala 288:28]
-  wire [6:0] minMaxTree_io_in1; // @[min_max_serial_online_comparator.scala 288:28]
-  wire [6:0] minMaxTree_io_in2; // @[min_max_serial_online_comparator.scala 288:28]
-  wire [6:0] minMaxTree_io_outResult; // @[min_max_serial_online_comparator.scala 288:28]
-  MinMaxSerialOnlineComparator minMaxTree ( // @[min_max_serial_online_comparator.scala 288:28]
+  wire  minMaxTree_clock; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_reset; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_start; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_0; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_1; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_2; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_3; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_4; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_5; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_6; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in1_7; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_0; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_1; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_2; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_3; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_4; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_5; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_6; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_in2_7; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_outResultValid; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire  minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 131:28]
+  wire [7:0] outResult = {{7'd0}, minMaxTree_io_outResult}; // @[min_max_parallel_online_comparator.scala 132:25 140:15]
+  MinMaxParallelOnlineComparator minMaxTree ( // @[min_max_parallel_online_comparator.scala 131:28]
     .clock(minMaxTree_clock),
     .reset(minMaxTree_reset),
-    .io_in1(minMaxTree_io_in1),
-    .io_in2(minMaxTree_io_in2),
+    .io_start(minMaxTree_io_start),
+    .io_in1_0(minMaxTree_io_in1_0),
+    .io_in1_1(minMaxTree_io_in1_1),
+    .io_in1_2(minMaxTree_io_in1_2),
+    .io_in1_3(minMaxTree_io_in1_3),
+    .io_in1_4(minMaxTree_io_in1_4),
+    .io_in1_5(minMaxTree_io_in1_5),
+    .io_in1_6(minMaxTree_io_in1_6),
+    .io_in1_7(minMaxTree_io_in1_7),
+    .io_in2_0(minMaxTree_io_in2_0),
+    .io_in2_1(minMaxTree_io_in2_1),
+    .io_in2_2(minMaxTree_io_in2_2),
+    .io_in2_3(minMaxTree_io_in2_3),
+    .io_in2_4(minMaxTree_io_in2_4),
+    .io_in2_5(minMaxTree_io_in2_5),
+    .io_in2_6(minMaxTree_io_in2_6),
+    .io_in2_7(minMaxTree_io_in2_7),
+    .io_outResultValid(minMaxTree_io_outResultValid),
     .io_outResult(minMaxTree_io_outResult)
   );
-  assign io_max = {{1'd0}, minMaxTree_io_outResult}; // @[min_max_serial_online_comparator.scala 289:25 298:15]
+  assign io_outResultValid = minMaxTree_io_outResultValid; // @[min_max_parallel_online_comparator.scala 133:30 142:20]
+  assign io_outResult = outResult[0]; // @[top.scala 37:16]
   assign minMaxTree_clock = clock;
   assign minMaxTree_reset = reset;
-  assign minMaxTree_io_in1 = io_in1[6:0]; // @[min_max_serial_online_comparator.scala 295:23]
-  assign minMaxTree_io_in2 = io_in2[6:0]; // @[min_max_serial_online_comparator.scala 296:23]
+  assign minMaxTree_io_start = io_start; // @[min_max_parallel_online_comparator.scala 135:25]
+  assign minMaxTree_io_in1_0 = io_in1_0; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_1 = io_in1_1; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_2 = io_in1_2; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_3 = io_in1_3; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_4 = io_in1_4; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_5 = io_in1_5; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_6 = io_in1_6; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in1_7 = io_in1_7; // @[min_max_parallel_online_comparator.scala 137:23]
+  assign minMaxTree_io_in2_0 = io_in2_0; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_1 = io_in2_1; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_2 = io_in2_2; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_3 = io_in2_3; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_4 = io_in2_4; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_5 = io_in2_5; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_6 = io_in2_6; // @[min_max_parallel_online_comparator.scala 138:23]
+  assign minMaxTree_io_in2_7 = io_in2_7; // @[min_max_parallel_online_comparator.scala 138:23]
 endmodule

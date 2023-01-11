@@ -24,120 +24,122 @@ class OnlineComparator2(isMax: Boolean = true, debug: Boolean = false) extends M
     val maxMin = Output(UInt(1.W))
   })
 
-  val sIdle :: sInit :: sFinished :: Nil = Enum(3)
-  val state = RegInit(sIdle)
+  val sInit :: sFinished :: Nil = Enum(2)
+  val state = RegInit(sInit)
   // val startRisingEdge = io.start & !RegNext(io.start)
 
   val earlyTerminate1 = RegInit(false.B)
   val earlyTerminate2 = RegInit(false.B)
+  val earlyTerminate1Shadow = WireInit(false.B)
+  val earlyTerminate2Shadow = WireInit(false.B)
   val maxMinOutput = WireInit(0.U(1.W))
 
-  switch(state) {
 
-    is(sIdle) {
+  when(io.start === true.B) {
 
-      earlyTerminate1 := false.B
-      earlyTerminate2 := false.B
+    switch(state) {
 
-      if (debug) {
-        printf("dbg, comparator debug: in idle state | start : %d\n", io.start)
-      }
+      is(sInit) {
 
-      when(io.start === true.B) {
+        when(io.earlyTerminate === true.B) {
 
-        if (debug) {
-          printf("dbg, comparator debug: module will go to init state\n")
-        }
-
-        state := sInit
-      }
-    }
-    is(sInit) {
-
-      when(io.earlyTerminate === true.B) {
-
-        if (debug) {
-          printf("dbg, comparator debug: global earlyTerminate raised\n")
-        }
-
-        earlyTerminate1 := true.B
-        earlyTerminate2 := true.B
-
-        state := sFinished
-
-      }.elsewhen(io.in1 === 1.U && io.in2 === 0.U) {
-
-        if (isMax == true) {
+          if (debug) {
+            printf("dbg, comparator debug: global earlyTerminate raised\n")
+          }
 
           earlyTerminate1 := true.B
-          earlyTerminate2 := false.B
-          maxMinOutput := io.in1
-
-          if (debug) {
-            printf("dbg, comparator debug: earlyTerminate1 => true\n")
-          }
-
-        } else {
-
-          earlyTerminate1 := false.B
+          earlyTerminate1Shadow := true.B
           earlyTerminate2 := true.B
-          maxMinOutput := io.in2
+          earlyTerminate2Shadow := true.B
 
-          if (debug) {
-            printf("dbg, comparator debug: earlyTerminate2 => true\n")
+          state := sFinished
+
+        }.elsewhen(io.in1 === 1.U && io.in2 === 0.U) {
+
+          if (isMax == true) {
+
+            earlyTerminate1 := false.B
+            earlyTerminate1Shadow := false.B
+            earlyTerminate2 := true.B
+            earlyTerminate2Shadow := true.B
+
+            maxMinOutput := io.in1
+
+            if (debug) {
+              printf("dbg, comparator debug: earlyTerminate1 => true\n")
+            }
+
+          } else {
+            earlyTerminate1Shadow := true.B
+            earlyTerminate1 := true.B
+            earlyTerminate2 := false.B
+            earlyTerminate2Shadow := false.B
+
+
+            maxMinOutput := io.in2
+
+            if (debug) {
+              printf("dbg, comparator debug: earlyTerminate2 => true\n")
+            }
+
           }
 
-        }
+          state := sFinished
 
-        state := sFinished
+        }.elsewhen(io.in1 === 0.U && io.in2 === 1.U) {
 
-      }.elsewhen(io.in1 === 0.U && io.in2 === 1.U) {
+          if (isMax == true) {
 
-        if (isMax == true) {
+            earlyTerminate1Shadow := true.B
+            earlyTerminate1 := true.B
+            earlyTerminate2Shadow := false.B
+            earlyTerminate2 := false.B
+            maxMinOutput := io.in2
+
+            if (debug) {
+              printf("dbg, comparator debug: earlyTerminate2 => true\n")
+            }
+          } else {
+            earlyTerminate1Shadow := false.B
+            earlyTerminate1 := false.B
+            earlyTerminate2Shadow := true.B
+            earlyTerminate2 := true.B
+            maxMinOutput := io.in1
+
+            if (debug) {
+              printf("dbg, comparator debug: earlyTerminate1 => true\n")
+            }
+          }
+
+          state := sFinished
+
+        }.otherwise {
+
+          //
+          // the greater value is not found yet as
+          // the values are equal (1 == 1) or (0 == 0)
+          //
+          maxMinOutput := io.in1 // the i.oin1 and io.in2 are the same
+
+          earlyTerminate1Shadow := false.B
           earlyTerminate1 := false.B
-          earlyTerminate2 := true.B
-          maxMinOutput := io.in2
-
-          if (debug) {
-            printf("dbg, comparator debug: earlyTerminate2 => true\n")
-          }
-        } else {
-
-          earlyTerminate1 := true.B
+          earlyTerminate2Shadow := false.B
           earlyTerminate2 := false.B
-          maxMinOutput := io.in1
+
+          state := sInit // not needed
 
           if (debug) {
-            printf("dbg, comparator debug: earlyTerminate1 => true\n")
+            printf("dbg, comparator debug: both bits are equal\n")
           }
-        }
-
-        state := sFinished
-
-      }.otherwise {
-
-        //
-        // the greater value is not found yet as
-        // the values are equal (1 == 1) or (0 == 0)
-        //
-        maxMinOutput := io.in1 // the io.in1 and io.in2 are the same
-
-        earlyTerminate1 := false.B
-        earlyTerminate2 := false.B
-
-        state := sInit // not needed
-
-        if (debug) {
-          printf("dbg, comparator debug: both bits are equal\n")
         }
       }
-    }
-    is(sFinished){
+      is(sFinished){
 
-      when (earlyTerminate1 === true.B) {
-        maxMinOutput := io.in1
-      }.otherwise {
-        maxMinOutput := io.in2
+        when (earlyTerminate1 === true.B) {
+          maxMinOutput := io.in2
+        }.otherwise {
+          maxMinOutput := io.in1
+        }
       }
     }
   }
@@ -145,8 +147,8 @@ class OnlineComparator2(isMax: Boolean = true, debug: Boolean = false) extends M
   //
   // Connect the outputs
   //
-  io.earlyTerminate1 := earlyTerminate1
-  io.earlyTerminate2 := earlyTerminate2
+  io.earlyTerminate1 := earlyTerminate1 | earlyTerminate1Shadow
+  io.earlyTerminate2 := earlyTerminate2 | earlyTerminate2Shadow
 
   io.maxMin := maxMinOutput
 }
@@ -158,7 +160,7 @@ object OnlineComparator2 {
       input1: UInt,
       input2: UInt,
       earlyTerminatation: Bool
-  ): (Bool, Bool, UInt) = {
+  ): (Bool, Bool, Bool, UInt) = {
 
     val comparatorModule = Module(new OnlineComparator2(isMax, debug))
 
@@ -195,16 +197,16 @@ object OnlineComparator2 {
 
     maxMinOutput := comparatorModule.io.maxMin
 
-    val earlyTerminated = earlyTerminate1 | earlyTerminate2
 
     //
     // Select the input based on one of the received signals
     //
     val selectedInput = Mux(earlyTerminate1, false.B, true.B)
+    val selectedInputFinal = ~selectedInput
 
     //
     // Return the maximum/minimum input
     //
-    (selectedInput, earlyTerminated, maxMinOutput)
+    (selectedInputFinal, earlyTerminate1, earlyTerminate2, maxMinOutput)
   }
 }
