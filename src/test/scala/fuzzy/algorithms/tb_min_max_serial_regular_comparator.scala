@@ -6,133 +6,36 @@ import org.scalatest.flatspec.AnyFlatSpec
 import fuzzy.algorithms._
 import fuzzy.utils._
 
-class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
+class MinMaxSerialRegularComparatorTest extends AnyFlatSpec with
 	ChiselScalatestTester {
 		"DUT" should "pass" in {
 			
-			test(new MinMaxSerialOnlineComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
+			test(new MinMaxSerialRegularComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
 
 				//
 				// First, start with module in an inactive state
 				//
 				dut.io.start.poke(0.U)
 				dut.clock.step(1)
-
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, X, X, X, X, X, X, X]
-				//
-				dut.io.in1.poke(0x12.U)
-				dut.io.in2.poke(0x17.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
 				dut.io.start.poke(1.U)
 
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
+				for (i <- 0 until DesignConsts.VECTOR_COUNT) {
 
-				println("\n-----------------------------------------------------------------------\n")
+					println("\n-----------------------------------------------------------------------\n")
 
-				//
-				// First test, the state at first should be [0x12, 0x2, X, X, X, X, X, X]
-				//
-				dut.io.in1.poke(0x65.U)
-				dut.io.in2.poke(0x2.U)
+					//
+					// First test, the state at first should be [0x12, X, X, X, X, X, X, X]
+					//
+					dut.io.in1.poke(TestingSample.input1_bytes(i))
+					dut.io.in2.poke(TestingSample.input2_bytes(i))
 
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
+					println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
 
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
+					do {
+						dut.clock.step(1)
+					} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
 
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, 0x2, 0x55, X, X, X, X, X]
-				//
-				dut.io.in1.poke(0x55.U)
-				dut.io.in2.poke(0x7a.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
-
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, X, X, X, X]
-				//
-				dut.io.in1.poke(0x78.U)
-				dut.io.in2.poke(0x27.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
-
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, X, X, X]
-				//
-				dut.io.in1.poke(0x18.U)
-				dut.io.in2.poke(0x0.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
-
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, X, X]
-				//
-				dut.io.in1.poke(0x0.U)
-				dut.io.in2.poke(0x0.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
-
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, 0x1, X]
-				//
-				dut.io.in1.poke(0x1.U)
-				dut.io.in2.poke(0x29.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
-
-				println("\n-----------------------------------------------------------------------\n")
-
-				//
-				// First test, the state at first should be [0x12, 0x2, 0x55, 0x27, 0x0, 0x0, 0x1, 0x17]
-				//
-				dut.io.in1.poke(0x45.U)
-				dut.io.in2.poke(0x17.U)
-
-				println(s"input 1 : 0x${dut.io.in1.peek().litValue.toInt.toHexString} (${dut.io.in1.peek().litValue.toInt.toBinaryString}), input 2 : 0x${dut.io.in2.peek().litValue.toInt.toHexString} (${dut.io.in2.peek().litValue.toInt.toBinaryString})\n")
-
-				do {
-					dut.clock.step(1)
-				} while (dut.io.askForNewNumber.peek().litValue.toInt == 0)
-
-				println("\n-----------------------------------------------------------------------\n")
+				}
 
 				//
 				// Stepping clock for further tests

@@ -66,7 +66,7 @@ object Comparator {
       input2: UInt
   ): UInt = {
 
-    val comparatorModule = Module(new Comparator(isMax, debug))
+    val comparatorModule = Module(new Comparator(debug, isMax, numberLength))
     val Result = Wire(UInt(numberLength.W))
     val maxMinOutput = Wire(UInt(1.W))
 
