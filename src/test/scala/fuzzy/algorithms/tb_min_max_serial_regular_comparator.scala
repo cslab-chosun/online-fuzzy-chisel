@@ -4,12 +4,13 @@ import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
 
 import fuzzy.algorithms._
+import fuzzy.utils._
 
 class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 	ChiselScalatestTester {
 		"DUT" should "pass" in {
 			
-			test(new MinMaxSerialOnlineComparator(8, false)) { dut =>
+			test(new MinMaxSerialOnlineComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
 
 				//
 				// First, start with module in an inactive state

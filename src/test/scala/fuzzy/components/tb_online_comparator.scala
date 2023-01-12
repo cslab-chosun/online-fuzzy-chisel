@@ -5,11 +5,12 @@ import org.scalatest.flatspec.AnyFlatSpec
 import scala.util.control.Breaks._
 
 import fuzzy.components._
-
+import fuzzy.utils._
+ 
 class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
   "DUT" should "pass" in {
 
-    test(new OnlineComparator(true, false)) { dut =>
+    test(new OnlineComparator(DesignConsts.ENABLE_DEBUG, true)) { dut =>
 
       //
       // First, start with module in an inactive state
@@ -100,7 +101,7 @@ class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       dut.io.start.poke(0.U)
     }
 
-    test(new OnlineComparator(false, false)) { dut =>
+    test(new OnlineComparator(DesignConsts.ENABLE_DEBUG, false)) { dut =>
 
       //
       // First, start with module in an inactive state

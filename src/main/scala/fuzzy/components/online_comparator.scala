@@ -3,7 +3,11 @@ package fuzzy.components
 import chisel3._
 import chisel3.util._
 
-class OnlineComparator(isMax: Boolean = true, debug: Boolean = false) extends Module {
+import fuzzy.utils._
+
+class OnlineComparator(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+                       isMax: Boolean = true // by default MAX Comparator
+                       ) extends Module {
 
   val io = IO(new Bundle {
 
@@ -145,14 +149,16 @@ class OnlineComparator(isMax: Boolean = true, debug: Boolean = false) extends Mo
 
 object OnlineComparator {
 
-  def apply(isMax: Boolean = true, debug: Boolean = false)(
+  def apply(           debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+                       isMax: Boolean = true // by default MAX Comparator
+                       )(
       start: Bool,
       input1: UInt,
       input2: UInt,
       earlyTerminatation: Bool
   ): (Bool, Bool, UInt) = {
 
-    val comparatorModule = Module(new OnlineComparator(isMax, debug))
+    val comparatorModule = Module(new OnlineComparator(debug, isMax))
 
     val earlyTerminate1 = Wire(Bool())
     val earlyTerminate2 = Wire(Bool())

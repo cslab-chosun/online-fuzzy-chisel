@@ -6,7 +6,11 @@ import chisel3.util._
 import fuzzy.components._
 import fuzzy.utils._
 
-class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
+class MinMaxSerialRegularComparator(        
+        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+        vectorCount : Int = DesignConsts.VECTOR_COUNT,
+        numberLength : Int = DesignConsts.NUMBER_LENGTH
+)
     extends Module {
 
   val io = IO(new Bundle {
@@ -17,10 +21,10 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
     val start = Input(Bool())
 
     val in1 = Input(
-      UInt(7.W)
+      UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
     val in2 = Input(
-      UInt(7.W)
+      UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
 
     //
@@ -30,35 +34,35 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
     val askForNewNumber = Output(Bool())
     val outResultValid = Output(Bool())
     val outResult = Output(
-      UInt(7.W)
+      UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
   })
 
-  val regStorageVec = Reg(Vec(VECTOR_LEN, UInt(7.W)))
-  val minMaxListCounter = RegInit(0.U((log2Ceil(VECTOR_LEN)).W))
+  val regStorageVec = Reg(Vec(vectorCount, UInt(numberLength.W)))
+  val minMaxListCounter = RegInit(0.U((log2Ceil(vectorCount)).W))
 
-  val input1Min = WireInit(0.U(7.W))
-  val input2Min = WireInit(0.U(7.W))
+  val input1Min = WireInit(0.U(numberLength.W))
+  val input2Min = WireInit(0.U(numberLength.W))
 
   val sIdle :: sMin :: sMax :: sFinished :: Nil = Enum(4)
   val state = RegInit(sIdle)
 
   val askForNewNumber = RegInit(false.B)
   val outResultValid = RegInit(false.B)
-  val outResult = RegInit(0.U(7.W))
+  val outResult = RegInit(0.U(numberLength.W))
 
   val minStart = RegInit(false.B)
   val maxStart = RegInit(false.B)
 
   val minOutput =
-    Comparator(false, false)(
+    Comparator(debug, false, numberLength)(
       minStart,
       input1Min,
       input2Min,
     )
 
   val maxOutput =
-    Comparator(true, false)(
+    Comparator(debug, true, numberLength)(
       maxStart,
       input1Min,
       input2Min,
@@ -81,7 +85,7 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
       regStorageVec(minMaxListCounter) := minOutput
       askForNewNumber := true.B
 
-      when (minMaxListCounter === VECTOR_LEN.U - 1.U){
+      when (minMaxListCounter === vectorCount.U - 1.U){
         state := sMax
 
         minStart := false.B
@@ -100,7 +104,7 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
 
       regStorageVec(0) := maxOutput
 
-      when (minMaxListCounter === VECTOR_LEN.U - 1.U){
+      when (minMaxListCounter === vectorCount.U - 1.U){
         state := sFinished
         maxStart := false.B
 
@@ -126,12 +130,13 @@ class MinMaxSerialRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
 object MinMaxSerialRegularComparator {
 
   def apply(
-      VECTOR_LEN: Int = 8,
-      debug: Boolean = false
+        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+        vectorCount : Int = DesignConsts.VECTOR_COUNT,
+        numberLength : Int = DesignConsts.NUMBER_LENGTH
   )(in1: UInt, in2: UInt, start: Bool): (UInt, Bool, Bool) = {
 
-    val minMaxTree = Module(new MinMaxSerialRegularComparator(VECTOR_LEN, debug))
-    val outResult = Wire(UInt(8.W))
+    val minMaxTree = Module(new MinMaxSerialRegularComparator(debug, vectorCount, numberLength))
+    val outResult = Wire(UInt(numberLength.W))
     val askForNewNumber = Wire(Bool())
     val outResultValid = Wire(Bool())
 

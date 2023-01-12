@@ -6,7 +6,11 @@ import chisel3.util._
 import fuzzy.components._
 import fuzzy.utils._
 
-class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
+class MinMaxSerialOnlineComparator(
+        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+        vectorCount : Int = DesignConsts.VECTOR_COUNT,
+        numberLength : Int = DesignConsts.NUMBER_LENGTH
+)
     extends Module {
 
   val io = IO(new Bundle {
@@ -17,10 +21,10 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
     val start = Input(Bool())
 
     val in1 = Input(
-      UInt(7.W)
+      UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
     val in2 = Input(
-      UInt(7.W)
+      UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
 
     //
@@ -30,24 +34,24 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
     val askForNewNumber = Output(Bool())
     val outResultValid = Output(Bool())
     val outResult = Output(
-      UInt(7.W)
+      UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
   })
 
   val askForNewNumber = RegInit(false.B)
   val outResultValid = RegInit(false.B)
-  val outResult = RegInit(0.U(7.W))
+  val outResult = RegInit(0.U(numberLength.W))
 
-  val regStorageVec = Reg(Vec(VECTOR_LEN, UInt(7.W)))
+  val regStorageVec = Reg(Vec(vectorCount, UInt(numberLength.W)))
 
   val regBitIndx = RegInit(
-    (VECTOR_LEN - 1).U(3.W)
+    (vectorCount - 1).U(3.W)
   ) // maximum input index is 8 => 3-bits
   val regVecIndx = RegInit(
-    0.U(log2Ceil(VECTOR_LEN).W)
-  ) // maximum vector index is VECTOR_LEN => n-bits
+    0.U(log2Ceil(vectorCount).W)
+  ) // maximum vector index is vectorCount => n-bits
   val regMaxVecIndx = RegInit(
-    1.U((log2Ceil(VECTOR_LEN)).W)
+    1.U((log2Ceil(vectorCount)).W)
   ) // because the first index is temporary max, we'll start by comparing the second element
 
   val compStartBit = io.start & ~askForNewNumber
@@ -57,7 +61,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
   val state = RegInit(sIdle)
 
   val (selectedInput, earlyTerminated, minOutput) =
-    OnlineComparator(false, false)(
+    OnlineComparator(debug, false)(
       compStartBit,
       io.in1(regBitIndx),
       io.in2(regBitIndx),
@@ -70,7 +74,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
   val input2Max = RegInit(false.B)
 
   val (selectedInputMax, earlyTerminatedMax, minOutputMax) =
-    OnlineComparator(true, false)(
+    OnlineComparator(debug, true)(
       compStartBitMax,
       input1Max,
       input2Max,
@@ -123,7 +127,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
         //
         // Reset the index register for bits abd also the equality check
         //
-        regBitIndx := (VECTOR_LEN - 1).U
+        regBitIndx := (vectorCount - 1).U
         regToEqualNums := false.B
 
         when(selectedInput === 0.U) {
@@ -144,7 +148,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
         //
         // Check whether the minimum section is finished or not
         //
-        when(regVecIndx === (VECTOR_LEN - 1).U) {
+        when(regVecIndx === (vectorCount - 1).U) {
           state := sMax
 
         //
@@ -155,7 +159,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
         //
         // Reset the index register for bits and also the equality check
         //
-        regBitIndx := (VECTOR_LEN - 1).U
+        regBitIndx := (vectorCount - 1).U
         regToEqualNums := false.B
 
       if (debug) {
@@ -221,7 +225,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
         //
         // Reset the index register for bits and also the equality check
         //
-        regBitIndx := (VECTOR_LEN - 1).U
+        regBitIndx := (vectorCount - 1).U
 
         regToEqualNums := false.B
 
@@ -246,7 +250,7 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
         //
         // Check whether the maximum section is finished or not
         //
-        when(regMaxVecIndx === (VECTOR_LEN - 1).U) {
+        when(regMaxVecIndx === (vectorCount - 1).U) {
           state := sFinished
         }
 
@@ -281,12 +285,13 @@ class MinMaxSerialOnlineComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
 object MinMaxSerialOnlineComparator {
 
   def apply(
-      VECTOR_LEN: Int = 8,
-      debug: Boolean = false
+        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+        vectorCount : Int = DesignConsts.VECTOR_COUNT,
+        numberLength : Int = DesignConsts.NUMBER_LENGTH
   )(in1: UInt, in2: UInt, start: Bool): (UInt, Bool, Bool) = {
 
-    val minMaxTree = Module(new MinMaxSerialOnlineComparator(VECTOR_LEN, debug))
-    val outResult = Wire(UInt(8.W))
+    val minMaxTree = Module(new MinMaxSerialOnlineComparator(debug, vectorCount, numberLength))
+    val outResult = Wire(UInt(numberLength.W))
     val askForNewNumber = Wire(Bool())
     val outResultValid = Wire(Bool())
 

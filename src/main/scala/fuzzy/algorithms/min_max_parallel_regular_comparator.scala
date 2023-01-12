@@ -6,7 +6,10 @@ import chisel3.util._
 import fuzzy.components._
 import fuzzy.utils._
 
-class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = false)
+class MinMaxParallelRegularComparator(
+                      debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+                      vectorCount : Int = DesignConsts.VECTOR_COUNT,
+                      numberLength : Int = DesignConsts.NUMBER_LENGTH)
     extends Module {
 
   val io = IO(new Bundle {
@@ -17,33 +20,32 @@ class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = fals
     val start = Input(Bool())
 
     val in1 = Input(
-      Vec(VECTOR_LEN, UInt(7.W))
-    ) // we used 7 because the maximum input is between 0-100 (127)
+      Vec(vectorCount, UInt(numberLength.W))
+    ) // Most of the times we used 7 because the maximum input is between 0-100 (127)
     val in2 = Input(
-      Vec(VECTOR_LEN, UInt(7.W))
-    ) // we used 7 because the maximum input is between 0-100 (127)
+      Vec(vectorCount, UInt(numberLength.W))
+    ) // Most of the times we used 7 because the maximum input is between 0-100 (127)
 
     //
     // Output signals
     //
     val outResultValid = Output(Bool())
     val outResult = Output(
-      UInt(7.W)
-    ) // we used 7 because the maximum input is between 0-100 (127)
+      UInt(numberLength.W)
+    ) // Most of the times we used 7 because the maximum input is between 0-100 (127)
   })
 
-  val regStorageVec = Reg(Vec(VECTOR_LEN, UInt(7.W)))
+  val regStorageVec = Reg(Vec(vectorCount, UInt(numberLength.W)))
   val minStart = RegInit(false.B)
   val maxStart = RegInit(false.B)
 
-  val regMaxStage = RegInit(0.U(log2Up(log2Ceil(VECTOR_LEN)).W)) // actually it should be: log2Up(log2Ceil(VECTOR_LEN))
+  val regMaxStage = RegInit(0.U(log2Up(log2Ceil(vectorCount)).W)) // actually it should be: log2Up(log2Ceil(vectorCount))
 
   val sIdle :: sMin :: sMax :: sFinished :: Nil = Enum(4)
   val state = RegInit(sIdle)
 
   val outResultValid = RegInit(false.B)
-  val outResult = RegInit(0.U(7.W))
-
+  val outResult = RegInit(0.U(numberLength.W))
 
   switch(state) {
 
@@ -55,8 +57,8 @@ class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = fals
     }
     is(sMin){
 
-        for (i <- 0 until VECTOR_LEN) {
-          regStorageVec(i) := Comparator(false, false)(minStart, io.in1(i), io.in2(i))
+        for (i <- 0 until vectorCount) {
+          regStorageVec(i) := Comparator(debug, false, numberLength)(minStart, io.in1(i), io.in2(i))
         }
 
         state := sMax
@@ -65,9 +67,9 @@ class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = fals
     }
     is(sMax){
 
-        when (log2Ceil(VECTOR_LEN).U > regMaxStage){
-          for (i <- 0 until VECTOR_LEN / 2) {
-            regStorageVec(i) := Comparator(true, false)(maxStart, regStorageVec(i.U * 2.U), regStorageVec((i.U * 2.U) + 1.U))
+        when (log2Ceil(vectorCount).U > regMaxStage){
+          for (i <- 0 until vectorCount / 2) {
+            regStorageVec(i) := Comparator(debug, true, numberLength)(maxStart, regStorageVec(i.U * 2.U), regStorageVec((i.U * 2.U) + 1.U))
           }
           regMaxStage := regMaxStage + 1.U
         } .otherwise {
@@ -92,12 +94,14 @@ class MinMaxParallelRegularComparator(VECTOR_LEN: Int = 8, debug: Boolean = fals
 object MinMaxParallelRegularComparator {
 
   def apply(
-      VECTOR_LEN: Int = 8,
-      debug: Boolean = false
+        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+        vectorCount : Int = DesignConsts.VECTOR_COUNT,
+        numberLength : Int = DesignConsts.NUMBER_LENGTH
   )(in1: Vec[UInt], in2: Vec[UInt], start: Bool): (UInt, Bool) = {
 
-    val minMaxTree = Module(new MinMaxParallelRegularComparator(VECTOR_LEN, debug))
-    val outResult = Wire(UInt(8.W))
+    val minMaxTree = Module(new MinMaxParallelRegularComparator(debug, vectorCount, numberLength))
+
+    val outResult = Wire(UInt(numberLength.W))
     val outResultValid = Wire(Bool())
 
     minMaxTree.io.start := start

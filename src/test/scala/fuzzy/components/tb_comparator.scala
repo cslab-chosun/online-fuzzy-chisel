@@ -5,11 +5,12 @@ import org.scalatest.flatspec.AnyFlatSpec
 import scala.util.control.Breaks._
 
 import fuzzy.components._
+import fuzzy.utils._
 
 class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
   "DUT" should "pass" in {
 
-    test(new Comparator(true, false)) { dut =>
+    test(new Comparator(DesignConsts.ENABLE_DEBUG, true)) { dut =>
 
       //
       // First, start with module in an inactive state

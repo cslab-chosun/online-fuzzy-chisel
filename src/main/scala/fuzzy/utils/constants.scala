@@ -6,7 +6,7 @@ import chisel3.util._
 /** @brief
   *   The constants for min-max tree (USED ONLY IN TESTS)
   */
-object TestConsts {
+object DesignConsts {
 
   val ENABLE_DEBUG: Boolean = false // whether to enable debug or not
   val VECTOR_COUNT: Int = 8 // Size of the input vector

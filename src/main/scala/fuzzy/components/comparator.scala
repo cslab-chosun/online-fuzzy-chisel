@@ -3,7 +3,11 @@ package fuzzy.components
 import chisel3._
 import chisel3.util._
 
-class Comparator(isMax: Boolean = true, debug: Boolean = false) extends Module {
+import fuzzy.utils._
+
+class Comparator(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+                 isMax: Boolean = true, // by default MAX Comparator
+                 numberLength : Int = DesignConsts.NUMBER_LENGTH) extends Module {
 
   val io = IO(new Bundle {
 
@@ -12,8 +16,8 @@ class Comparator(isMax: Boolean = true, debug: Boolean = false) extends Module {
     //
     val start = Input(Bool())
 
-    val in1 = Input(UInt(7.W))
-    val in2 = Input(UInt(7.W))
+    val in1 = Input(UInt(numberLength.W))
+    val in2 = Input(UInt(numberLength.W))
 
     //
     // Output signals
@@ -52,14 +56,18 @@ class Comparator(isMax: Boolean = true, debug: Boolean = false) extends Module {
 
 object Comparator {
 
-  def apply(isMax: Boolean = true, debug: Boolean = false)(
+  def apply(
+        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
+        isMax: Boolean = true, // by default max Comparator
+        numberLength : Int = DesignConsts.NUMBER_LENGTH
+          )(
       start: Bool,
       input1: UInt,
       input2: UInt,
   ): UInt = {
 
     val comparatorModule = Module(new Comparator(isMax, debug))
-    val Result = Wire(UInt(7.W))
+    val Result = Wire(UInt(numberLength.W))
     val maxMinOutput = Wire(UInt(1.W))
 
     //

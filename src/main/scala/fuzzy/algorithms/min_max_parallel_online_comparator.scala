@@ -15,7 +15,7 @@ class MinVectorStruct () extends Bundle {
     val earlyTerminated2 = Bool()
 }
 
-class MinMaxParallelOnlineComparator(debug : Boolean = false, vectorCount : Int = 8)
+class MinMaxParallelOnlineComparator(debug : Boolean = DesignConsts.ENABLE_DEBUG, vectorCount : Int = DesignConsts.VECTOR_COUNT)
     extends Module {
 
   val io = IO(new Bundle {
@@ -72,7 +72,7 @@ class MinMaxParallelOnlineComparator(debug : Boolean = false, vectorCount : Int 
                   if (i >= 0 && i <= (math.pow(2, (vectorCount/2) - 1).toInt - 2)) {
                     // max
                       val (selectedInput, earlyTerminate1, earlyTerminate2, maxOutput) = 
-                           OnlineComparator2(true, false) (
+                           OnlineComparator2(debug, true) (
                                 io.start, // start bit
                                 regStorageVec(2 * i + 1).minMaxOutput,
                                 regStorageVec(2 * i + 2).minMaxOutput,
@@ -97,7 +97,7 @@ class MinMaxParallelOnlineComparator(debug : Boolean = false, vectorCount : Int 
                   else {
                     // min
                       val (selectedInput, earlyTerminate1, earlyTerminate2, minOutput) = 
-                           OnlineComparator2(false, false) (
+                           OnlineComparator2(debug, false) (
                                 io.start, // start bit
                                 io.in1(i - vectorCount + 1),
                                 io.in2(i - vectorCount + 1),
@@ -146,12 +146,12 @@ class MinMaxParallelOnlineComparator(debug : Boolean = false, vectorCount : Int 
 object MinMaxParallelOnlineComparator {
 
   def apply(
-      debug: Boolean = false,
-      vectorCount: Int = 8
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      vectorCount: Int = DesignConsts.VECTOR_COUNT
   )(in1: Vec[UInt], in2: Vec[UInt], start: Bool): (UInt, Bool) = {
 
     val minMaxTree = Module(new MinMaxParallelOnlineComparator(debug, vectorCount))
-    val outResult = Wire(UInt(8.W))
+    val outResult = Wire(UInt(1.W))
     val outResultValid = Wire(Bool())
 
     minMaxTree.io.start := start
