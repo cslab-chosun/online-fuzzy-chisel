@@ -30,12 +30,19 @@ class MinMaxParallelOnlineComparatorTest
       dut.io.start.poke(1.U)
 
       //
+      // Disable the exported early termination
+      //
+      dut.io.exportedEarlyTermination.poke(0.U)
+      
+      //
       // Feed the online comparator
       //
       for (i <- 0 until DesignConsts.NUMBER_LENGTH) {
 
-        println(s"\n\n=================================================== \n")
-        println(s"\ninput 1 : \n")
+        if (DesignConsts.ENABLE_DEBUG) {
+          println(s"\n\n=================================================== \n")
+          println(s"\ninput 1 : \n")
+        }
 
         for (j <- 0 until DesignConsts.VECTOR_COUNT) {
 
@@ -44,10 +51,15 @@ class MinMaxParallelOnlineComparatorTest
             .poke(
               TestingSample.input1_bytes(j)(DesignConsts.NUMBER_LENGTH - i - 1)
             )
-          print(s"0b${dut.io.in1(j).peek().litValue.toInt.toHexString} - ")
+
+          if (DesignConsts.ENABLE_DEBUG) {
+            print(s"0b${dut.io.in1(j).peek().litValue.toInt.toHexString} - ")
+          }
         }
 
-        println(s"\ninput 2 : \n")
+        if (DesignConsts.ENABLE_DEBUG) {
+          println(s"\ninput 2 : \n")
+        }
 
         for (j <- 0 until DesignConsts.VECTOR_COUNT) {
 
@@ -56,10 +68,15 @@ class MinMaxParallelOnlineComparatorTest
             .poke(
               TestingSample.input2_bytes(j)(DesignConsts.NUMBER_LENGTH - i - 1)
             )
-          print(s"0b${dut.io.in2(j).peek().litValue.toInt.toHexString} - ")
+
+          if (DesignConsts.ENABLE_DEBUG) {
+            print(s"0b${dut.io.in2(j).peek().litValue.toInt.toHexString} - ")
+          }
         }
 
-        print(s"\n\n")
+        if (DesignConsts.ENABLE_DEBUG) {
+          print(s"\n\n")
+        }
 
         //
         // One clock step to handle the results

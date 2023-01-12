@@ -22,6 +22,8 @@ object DesignConsts {
   */
 object TestingSample {
 
+  val input_result = 0x52
+
   val input1_bytes =
     Array(0x12.U, 0x65.U, 0x52.U, 0x78.U, 0x18.U, 0x0.U, 0x1.U, 0x45.U)
   val input2_bytes =

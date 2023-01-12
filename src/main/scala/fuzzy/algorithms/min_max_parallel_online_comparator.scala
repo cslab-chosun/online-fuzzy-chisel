@@ -35,6 +35,7 @@ class MinMaxParallelOnlineComparator(
     // Input signals
     //
     val start = Input(Bool())
+    val exportedEarlyTermination = Input(Bool())
 
     val in1 = Input(
       Vec(vectorCount, UInt(1.W))
@@ -64,6 +65,11 @@ class MinMaxParallelOnlineComparator(
   val currentIteration = RegInit(
     0.U(log2Ceil(vectorCount + log2Ceil(vectorCount) + 1).W)
   )
+
+  //
+  // Export the early termination bit of the 0th comparatior
+  //
+  regStorageVec(0).earlyTerminated := io.exportedEarlyTermination
 
   when(io.start === true.B) {
 
@@ -197,7 +203,7 @@ object MinMaxParallelOnlineComparator {
   def apply(
       debug: Boolean = DesignConsts.ENABLE_DEBUG,
       vectorCount: Int = DesignConsts.VECTOR_COUNT
-  )(in1: Vec[UInt], in2: Vec[UInt], start: Bool): (UInt, Bool) = {
+  )(in1: Vec[UInt], in2: Vec[UInt], exportedEarlyTermination: Bool, start: Bool): (UInt, Bool) = {
 
     val minMaxTree = Module(
       new MinMaxParallelOnlineComparator(debug, vectorCount)
@@ -206,6 +212,7 @@ object MinMaxParallelOnlineComparator {
     val outResultValid = Wire(Bool())
 
     minMaxTree.io.start := start
+    minMaxTree.io.exportedEarlyTermination := exportedEarlyTermination
 
     minMaxTree.io.in1 := in1
     minMaxTree.io.in2 := in2

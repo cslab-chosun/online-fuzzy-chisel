@@ -41,14 +41,15 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
         test1.litValue.toInt > test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 0
       ) {
-        println("First test is passed!")
+        print("\n[*] Test result for regular comparator (max) was successful.\n");
       } else if (
         test1.litValue.toInt < test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 1
       ) {
-        println("First test is passed!")
+        print("\n[*] Test result for regular comparator (max) was successful.\n");
       } else {
-        println("First test is NOT passed!")
+        print("\n[x] Test result for regular comparator (max) was NOT successful!\n");
+        assert(false, "Err, test failed")
       }
 
       //
@@ -57,7 +58,7 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       dut.io.start.poke(0.U)
     }
 
-    test(new Comparator(false, false)) { dut =>
+    test(new Comparator(DesignConsts.ENABLE_DEBUG, false, DesignConsts.NUMBER_LENGTH)) { dut =>
 
       //
       // First, start with module in an inactive state
@@ -88,14 +89,16 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
         test1.litValue.toInt < test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 0
       ) {
-        println("Second test is passed!")
+        print("\n[*] Test result for regular comparator (min) was successful.\n");
+
       } else if (
         test1.litValue.toInt > test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 1
       ) {
-        println("Second test is passed!")
+        print("\n[*] Test result for regular comparator (min) was successful.\n");
       } else {
-        println("Second test is NOT passed!")
+        print("\n[x] Test result for regular comparator (min) was NOT successful!\n");
+        assert(false, "Err, test failed")
       }
 
       //

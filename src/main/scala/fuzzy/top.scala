@@ -36,7 +36,7 @@ class FuzzyController(
   })
 
   val (outResult, outResultValid) =
-    MinMaxParallelOnlineComparator(debug, vectorCount)(io.in1, io.in2, io.start)
+    MinMaxParallelOnlineComparator(debug, vectorCount)(io.in1, io.in2, false.B, io.start)
 
   io.outResult := outResult
   io.outResultValid := outResultValid

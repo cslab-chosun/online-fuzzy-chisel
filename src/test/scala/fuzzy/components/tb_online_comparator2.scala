@@ -32,38 +32,42 @@ class OnlineComparator2Test extends AnyFlatSpec with ChiselScalatestTester {
 
         for (i <- 0 until test1.getWidth) {
 
-          println(
-            "================================================================\n"
-          )
+          if (DesignConsts.ENABLE_DEBUG) {
+            println(
+              "================================================================\n"
+            )
+          }
 
           dut.io.in1.poke(test1(log2Ceil(test1.litValue.toInt) - i - 1))
           dut.io.in2.poke(test2(log2Ceil(test2.litValue.toInt) - i - 1))
 
-          println(s"round (greater) : ${i}")
+          if (DesignConsts.ENABLE_DEBUG) {
+            println(s"round (greater) : ${i}")
 
-          println("")
+            println("")
 
-          println(
-            s"input 1 : ${dut.io.in1.peek().litValue.toInt.toBinaryString}"
-          )
-          println(
-            s"input 2 : ${dut.io.in2.peek().litValue.toInt.toBinaryString}"
-          )
+            println(
+              s"input 1 : ${dut.io.in1.peek().litValue.toInt.toBinaryString}"
+            )
+            println(
+              s"input 2 : ${dut.io.in2.peek().litValue.toInt.toBinaryString}"
+            )
 
-          println("")
+            println("")
 
-          println(
-            s"early termination 1 : ${dut.io.earlyTerminate1.peek().litValue.toInt.toBinaryString}"
-          )
-          println(
-            s"early termination 2 : ${dut.io.earlyTerminate2.peek().litValue.toInt.toBinaryString}"
-          )
+            println(
+              s"early termination 1 : ${dut.io.earlyTerminate1.peek().litValue.toInt.toBinaryString}"
+            )
+            println(
+              s"early termination 2 : ${dut.io.earlyTerminate2.peek().litValue.toInt.toBinaryString}"
+            )
 
-          println("")
+            println("")
 
-          println(
-            s"max : ${dut.io.maxMin.peek().litValue.toInt.toBinaryString}\n"
-          )
+            println(
+              s"max : ${dut.io.maxMin.peek().litValue.toInt.toBinaryString}\n"
+            )
+          }
 
           if (
             dut.io.earlyTerminate1.peek().litValue.toInt == 1 ||
@@ -83,18 +87,19 @@ class OnlineComparator2Test extends AnyFlatSpec with ChiselScalatestTester {
 
       if (
         test1.litValue.toInt > test2.litValue.toInt &&
-        dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
-        dut.io.earlyTerminate2.peek().litValue.toInt == 0
-      ) {
-        println("First test is passed!")
-      } else if (
-        test1.litValue.toInt < test2.litValue.toInt &&
         dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
         dut.io.earlyTerminate2.peek().litValue.toInt == 1
       ) {
-        println("First test is passed!")
+        print("\n[*] Test result for online comparator 2 (max) was successful.\n");
+      } else if (
+        test1.litValue.toInt < test2.litValue.toInt &&
+        dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
+        dut.io.earlyTerminate2.peek().litValue.toInt == 0
+      ) {
+        print("\n[*] Test result for online comparator 2 (max) was successful.\n");
       } else {
-        println("First test is NOT passed!")
+        print("\n[x] Test result for online comparator 2 (max) was NOT successful!\n");
+        assert(false, "Err, test failed")
       }
 
       //
