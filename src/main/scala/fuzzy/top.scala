@@ -15,10 +15,10 @@ class FuzzyController() extends Module {
     val start = Input(Bool())
 
     val in1 = Input(
-      Vec(MinMaxTreeConsts.VECTOR_LEN, UInt(1.W))
+      Vec(MinMaxTreeConsts.VECTOR_COUNT, UInt(1.W))
     ) // This is a vector for the first bit of each element
     val in2 = Input(
-      Vec(MinMaxTreeConsts.VECTOR_LEN, UInt(1.W))
+      Vec(MinMaxTreeConsts.VECTOR_COUNT, UInt(1.W))
     ) // This is a vector for the first bit of each element
 
     //
@@ -32,7 +32,7 @@ class FuzzyController() extends Module {
   })
 
   val (outResult, outResultValid) =
-    MinMaxParallelOnlineComparator(MinMaxTreeConsts.VECTOR_LEN, false)(io.in1, io.in2, io.start)
+    MinMaxParallelOnlineComparator(MinMaxTreeConsts.VECTOR_COUNT, false)(io.in1, io.in2, io.start)
 
   io.outResult := outResult
   io.outResultValid := outResultValid

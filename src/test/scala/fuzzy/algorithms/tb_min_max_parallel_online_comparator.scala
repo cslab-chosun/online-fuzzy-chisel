@@ -23,7 +23,6 @@ class MinMaxParallelOnlineComparatorTest extends AnyFlatSpec with
 				// Activate the start bit
 				//
 				dut.io.start.poke(1.U)
-				dut.clock.step(2)
 
 				println("\n-----------------------------------------------------------------------\n")
 
