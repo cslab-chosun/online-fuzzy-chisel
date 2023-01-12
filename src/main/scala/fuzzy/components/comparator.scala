@@ -5,9 +5,11 @@ import chisel3.util._
 
 import fuzzy.utils._
 
-class Comparator(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-                 isMax: Boolean = true, // by default MAX Comparator
-                 numberLength : Int = DesignConsts.NUMBER_LENGTH) extends Module {
+class Comparator(
+    debug: Boolean = DesignConsts.ENABLE_DEBUG,
+    isMax: Boolean = true, // by default MAX Comparator
+    numberLength: Int = DesignConsts.NUMBER_LENGTH
+) extends Module {
 
   val io = IO(new Bundle {
 
@@ -29,23 +31,21 @@ class Comparator(debug : Boolean = DesignConsts.ENABLE_DEBUG,
 
   val maxMinOutput = WireInit(0.U(1.W))
 
-  when (io.in1 >= io.in2) {
+  when(io.in1 >= io.in2) {
 
     if (isMax) {
-        maxMinOutput := 0.U
+      maxMinOutput := 0.U
+    } else {
+      maxMinOutput := 1.U
     }
-    else {
-        maxMinOutput := 1.U
-    }
-    
-  }. otherwise {
+
+  }.otherwise {
 
     if (isMax) {
-        maxMinOutput := 1.U
+      maxMinOutput := 1.U
+    } else {
+      maxMinOutput := 0.U
     }
-    else {
-        maxMinOutput := 0.U
-    }  
   }
 
   //
@@ -57,13 +57,13 @@ class Comparator(debug : Boolean = DesignConsts.ENABLE_DEBUG,
 object Comparator {
 
   def apply(
-        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-        isMax: Boolean = true, // by default max Comparator
-        numberLength : Int = DesignConsts.NUMBER_LENGTH
-          )(
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      isMax: Boolean = true, // by default max Comparator
+      numberLength: Int = DesignConsts.NUMBER_LENGTH
+  )(
       start: Bool,
       input1: UInt,
-      input2: UInt,
+      input2: UInt
   ): UInt = {
 
     val comparatorModule = Module(new Comparator(isMax, debug))
@@ -89,7 +89,6 @@ object Comparator {
 
     maxMinOutput := comparatorModule.io.maxMin
 
-
     //
     // Select the input based on one of the received signals
     //
@@ -98,9 +97,9 @@ object Comparator {
     //
     // Return the maximum/minimum input
     //
-    when (selectedInput(0) === false.B) {
+    when(selectedInput(0) === false.B) {
       Result := input1 // return the first input
-    } .otherwise {
+    }.otherwise {
       Result := input2 // return the second input
     }
 

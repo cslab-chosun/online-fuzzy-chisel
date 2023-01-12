@@ -7,17 +7,19 @@ import fuzzy.components._
 import fuzzy.utils._
 
 class MinMaxSerialOnlineComparator(
-        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-        vectorCount : Int = DesignConsts.VECTOR_COUNT,
-        numberLength : Int = DesignConsts.NUMBER_LENGTH
-)
-    extends Module {
-  
+    debug: Boolean = DesignConsts.ENABLE_DEBUG,
+    vectorCount: Int = DesignConsts.VECTOR_COUNT,
+    numberLength: Int = DesignConsts.NUMBER_LENGTH
+) extends Module {
+
   //
   // Design constraints
   //
   require(isPow2(vectorCount) == true)
-  assert(isPow2(vectorCount) == true, "err, the input length should be to the power of 2.")
+  assert(
+    isPow2(vectorCount) == true,
+    "err, the input length should be to the power of 2."
+  )
 
   val io = IO(new Bundle {
 
@@ -25,7 +27,6 @@ class MinMaxSerialOnlineComparator(
     // Input signals
     //
     val start = Input(Bool())
-
     val in1 = Input(
       UInt(numberLength.W)
     ) // we used 7 because the maximum input is between 0-100 (127)
@@ -157,20 +158,22 @@ class MinMaxSerialOnlineComparator(
         when(regVecIndx === (vectorCount - 1).U) {
           state := sMax
 
-        //
-        // Let the out result (or the temp maximum result be the first element of the storage)
-        //
-        outResult := regStorageVec(0)
+          //
+          // Let the out result (or the temp maximum result be the first element of the storage)
+          //
+          outResult := regStorageVec(0)
 
-        //
-        // Reset the index register for bits and also the equality check
-        //
-        regBitIndx := (vectorCount - 1).U
-        regToEqualNums := false.B
+          //
+          // Reset the index register for bits and also the equality check
+          //
+          regBitIndx := (vectorCount - 1).U
+          regToEqualNums := false.B
 
-      if (debug) {
-        printf("/////////////////// Minimum Vector Is Found   ///////////////////\n")
-      }
+          if (debug) {
+            printf(
+              "/////////////////// Minimum Vector Is Found   ///////////////////\n"
+            )
+          }
 
         }
 
@@ -202,8 +205,7 @@ class MinMaxSerialOnlineComparator(
       //
       // ------------------------------------------------------------------------
       //
-      when(earlyTerminatedMax =/= true.B  && regToEqualNums =/= true.B)
-       {
+      when(earlyTerminatedMax =/= true.B && regToEqualNums =/= true.B) {
 
         regBitIndx := regBitIndx - 1.U
 
@@ -246,12 +248,14 @@ class MinMaxSerialOnlineComparator(
           outResult := regStorageVec(regMaxVecIndx)
 
           if (debug) {
-            printf("dbg, max regStorageVec(%d) - swap : %x |\n", regMaxVecIndx, io.in1)
+            printf(
+              "dbg, max regStorageVec(%d) - swap : %x |\n",
+              regMaxVecIndx,
+              io.in1
+            )
           }
 
-        }.otherwise {
-
-        }
+        }.otherwise {}
 
         //
         // Check whether the maximum section is finished or not
@@ -261,7 +265,7 @@ class MinMaxSerialOnlineComparator(
         }
 
         //
-        // increment the index 
+        // increment the index
         //
         regMaxVecIndx := regMaxVecIndx + 1.U
       }
@@ -291,12 +295,14 @@ class MinMaxSerialOnlineComparator(
 object MinMaxSerialOnlineComparator {
 
   def apply(
-        debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-        vectorCount : Int = DesignConsts.VECTOR_COUNT,
-        numberLength : Int = DesignConsts.NUMBER_LENGTH
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      vectorCount: Int = DesignConsts.VECTOR_COUNT,
+      numberLength: Int = DesignConsts.NUMBER_LENGTH
   )(in1: UInt, in2: UInt, start: Bool): (UInt, Bool, Bool) = {
 
-    val minMaxTree = Module(new MinMaxSerialOnlineComparator(debug, vectorCount, numberLength))
+    val minMaxTree = Module(
+      new MinMaxSerialOnlineComparator(debug, vectorCount, numberLength)
+    )
     val outResult = Wire(UInt(numberLength.W))
     val askForNewNumber = Wire(Bool())
     val outResultValid = Wire(Bool())

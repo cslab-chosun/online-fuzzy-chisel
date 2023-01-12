@@ -5,9 +5,10 @@ import chisel3.util._
 
 import fuzzy.utils._
 
-class OnlineComparator(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-                       isMax: Boolean = true // by default MAX Comparator
-                       ) extends Module {
+class OnlineComparator(
+    debug: Boolean = DesignConsts.ENABLE_DEBUG,
+    isMax: Boolean = true // by default MAX Comparator
+) extends Module {
 
   val io = IO(new Bundle {
 
@@ -149,9 +150,10 @@ class OnlineComparator(debug : Boolean = DesignConsts.ENABLE_DEBUG,
 
 object OnlineComparator {
 
-  def apply(           debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-                       isMax: Boolean = true // by default MAX Comparator
-                       )(
+  def apply(
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      isMax: Boolean = true // by default MAX Comparator
+  )(
       start: Bool,
       input1: UInt,
       input2: UInt,

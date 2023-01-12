@@ -6,7 +6,7 @@ import scala.util.control.Breaks._
 
 import fuzzy.components._
 import fuzzy.utils._
- 
+
 class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
   "DUT" should "pass" in {
 

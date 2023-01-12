@@ -6,9 +6,11 @@ import chisel3.util._
 import fuzzy.algorithms._
 import fuzzy.utils._
 
-class FuzzyController(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-                      vectorCount : Int = DesignConsts.VECTOR_COUNT,
-                      numberLength : Int = DesignConsts.NUMBER_LENGTH) extends Module {
+class FuzzyController(
+    debug: Boolean = DesignConsts.ENABLE_DEBUG,
+    vectorCount: Int = DesignConsts.VECTOR_COUNT,
+    numberLength: Int = DesignConsts.NUMBER_LENGTH
+) extends Module {
   val io = IO(new Bundle {
 
     //

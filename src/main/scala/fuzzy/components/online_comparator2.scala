@@ -5,9 +5,10 @@ import chisel3.util._
 
 import fuzzy.utils._
 
-class OnlineComparator2(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-                        isMax: Boolean = true // by default MAX Comparator
-                        ) extends Module {
+class OnlineComparator2(
+    debug: Boolean = DesignConsts.ENABLE_DEBUG,
+    isMax: Boolean = true // by default MAX Comparator
+) extends Module {
 
   val io = IO(new Bundle {
 
@@ -37,7 +38,6 @@ class OnlineComparator2(debug : Boolean = DesignConsts.ENABLE_DEBUG,
   val earlyTerminate1Shadow = WireInit(false.B)
   val earlyTerminate2Shadow = WireInit(false.B)
   val maxMinOutput = WireInit(0.U(1.W))
-
 
   when(io.start === true.B) {
 
@@ -78,7 +78,6 @@ class OnlineComparator2(debug : Boolean = DesignConsts.ENABLE_DEBUG,
             earlyTerminate1 := true.B
             earlyTerminate2 := false.B
             earlyTerminate2Shadow := false.B
-
 
             maxMinOutput := io.in2
 
@@ -137,9 +136,9 @@ class OnlineComparator2(debug : Boolean = DesignConsts.ENABLE_DEBUG,
           }
         }
       }
-      is(sFinished){
+      is(sFinished) {
 
-        when (earlyTerminate1 === true.B) {
+        when(earlyTerminate1 === true.B) {
           maxMinOutput := io.in2
         }.otherwise {
           maxMinOutput := io.in1
@@ -159,9 +158,10 @@ class OnlineComparator2(debug : Boolean = DesignConsts.ENABLE_DEBUG,
 
 object OnlineComparator2 {
 
-  def apply(debug : Boolean = DesignConsts.ENABLE_DEBUG, 
-            isMax: Boolean = true // by default MAX Comparator
-            )(
+  def apply(
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      isMax: Boolean = true // by default MAX Comparator
+  )(
       start: Bool,
       input1: UInt,
       input2: UInt,
@@ -202,7 +202,6 @@ object OnlineComparator2 {
     }
 
     maxMinOutput := comparatorModule.io.maxMin
-
 
     //
     // Select the input based on one of the received signals
