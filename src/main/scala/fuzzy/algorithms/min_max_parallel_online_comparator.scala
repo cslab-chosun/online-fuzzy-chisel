@@ -15,7 +15,7 @@ class MinVectorStruct () extends Bundle {
     val earlyTerminated2 = Bool()
 }
 
-class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
+class MinMaxParallelOnlineComparator(debug : Boolean = false, vectorCount : Int = 8)
     extends Module {
 
   val io = IO(new Bundle {
@@ -26,10 +26,10 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
     val start = Input(Bool())
 
     val in1 = Input(
-      Vec(N, UInt(1.W))
+      Vec(vectorCount, UInt(1.W))
     ) // This is a vector for the first bit of each element
     val in2 = Input(
-      Vec(N, UInt(1.W))
+      Vec(vectorCount, UInt(1.W))
     ) // This is a vector for the first bit of each element
 
     //
@@ -41,7 +41,7 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
     ) 
   })
 
-  val iMaxIndex = math.pow(2, N/2).toInt - 1
+  val iMaxIndex = math.pow(2, vectorCount/2).toInt - 1
 
   val outResultValid = RegInit(false.B)
 
@@ -50,7 +50,7 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
   val sStarted :: sFinished :: Nil = Enum(2)
   val state = RegInit(sStarted)
 
-  val currentIteration = RegInit(0.U(log2Ceil(N + log2Ceil(N) + 1).W))
+  val currentIteration = RegInit(0.U(log2Ceil(vectorCount + log2Ceil(vectorCount) + 1).W))
 
 
   when (io.start === true.B) {
@@ -61,15 +61,15 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
         
         currentIteration := currentIteration + 1.U
 
-          when (currentIteration =/= N.U - 1.U + /* initiation delay */ log2Ceil(N).U) {
+          when (currentIteration =/= vectorCount.U - 1.U + /* initiation delay */ log2Ceil(vectorCount).U) {
 
-              when (currentIteration === log2Ceil(N).U) {
+              when (currentIteration === log2Ceil(vectorCount).U) {
                 outResultValid := true.B
               }
           
               for (i <- 0 until iMaxIndex) {
 
-                  if (i >= 0 && i <= (math.pow(2, (N/2) - 1).toInt - 2)) {
+                  if (i >= 0 && i <= (math.pow(2, (vectorCount/2) - 1).toInt - 2)) {
                     // max
                       val (selectedInput, earlyTerminate1, earlyTerminate2, maxOutput) = 
                            OnlineComparator2(true, false) (
@@ -99,8 +99,8 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
                       val (selectedInput, earlyTerminate1, earlyTerminate2, minOutput) = 
                            OnlineComparator2(false, false) (
                                 io.start, // start bit
-                                io.in1(i - N + 1),
-                                io.in2(i - N + 1),
+                                io.in1(i - vectorCount + 1),
+                                io.in2(i - vectorCount + 1),
                                 if (i % 2 != 0) regStorageVec(math.ceil((i - 1)/2).toInt).earlyTerminated1 else regStorageVec(math.ceil((i - 1)/2).toInt).earlyTerminated2
                                 )
                       regStorageVec(i).selectedInput := selectedInput
@@ -110,8 +110,8 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
 
                       if (debug) {
                         printf("max comparator : %d\n", i.U);
-                        printf("\tin1 : io.in1(%d) = %d\n", (i - N + 1).U, io.in1(i - N + 1));
-                        printf("\tin2 : io.in2(%d) = %d\n", (i - N + 1).U, io.in2(i - N + 1));
+                        printf("\tin1 : io.in1(%d) = %d\n", (i - vectorCount + 1).U, io.in1(i - vectorCount + 1));
+                        printf("\tin2 : io.in2(%d) = %d\n", (i - vectorCount + 1).U, io.in2(i - vectorCount + 1));
                         if (i % 2 != 0) {
                           printf("\tET : regStorageVec(%d).earlyTerminated1\n", (math.ceil((i - 1)/2).toInt).U);
                         } else{
@@ -146,11 +146,11 @@ class MinMaxParallelOnlineComparator(N : Int = 8, debug : Boolean = false)
 object MinMaxParallelOnlineComparator {
 
   def apply(
-      VECTOR_LEN: Int = 8,
-      debug: Boolean = false
+      debug: Boolean = false,
+      vectorCount: Int = 8
   )(in1: Vec[UInt], in2: Vec[UInt], start: Bool): (UInt, Bool) = {
 
-    val minMaxTree = Module(new MinMaxParallelOnlineComparator(VECTOR_LEN, debug))
+    val minMaxTree = Module(new MinMaxParallelOnlineComparator(debug, vectorCount))
     val outResult = Wire(UInt(8.W))
     val outResultValid = Wire(Bool())
 

@@ -4,9 +4,8 @@ import chisel3._
 import chisel3.util._
 
 import fuzzy.algorithms._
-import fuzzy.utils._
 
-class FuzzyController() extends Module {
+class FuzzyController(debug : Boolean = false, vectorCount : Int = 8, numberLength : Int = 7) extends Module {
   val io = IO(new Bundle {
 
     //
@@ -15,10 +14,10 @@ class FuzzyController() extends Module {
     val start = Input(Bool())
 
     val in1 = Input(
-      Vec(MinMaxTreeConsts.VECTOR_COUNT, UInt(1.W))
+      Vec(vectorCount, UInt(1.W))
     ) // This is a vector for the first bit of each element
     val in2 = Input(
-      Vec(MinMaxTreeConsts.VECTOR_COUNT, UInt(1.W))
+      Vec(vectorCount, UInt(1.W))
     ) // This is a vector for the first bit of each element
 
     //
@@ -32,10 +31,11 @@ class FuzzyController() extends Module {
   })
 
   val (outResult, outResultValid) =
-    MinMaxParallelOnlineComparator(MinMaxTreeConsts.VECTOR_COUNT, false)(io.in1, io.in2, io.start)
+    MinMaxParallelOnlineComparator(debug, vectorCount)(io.in1, io.in2, io.start)
 
   io.outResult := outResult
   io.outResultValid := outResultValid
+
 }
 
 //-----------------------------------------------
