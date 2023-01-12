@@ -171,7 +171,7 @@ class MinMaxSerialOnlineComparator(
 
           if (debug) {
             printf(
-              "/////////////////// Minimum Vector Is Found   ///////////////////\n"
+              "============== Minimum Vector Is Found   ==============\n"
             )
           }
 

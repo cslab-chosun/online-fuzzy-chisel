@@ -67,7 +67,7 @@ object Comparator {
   ): UInt = {
 
     val comparatorModule = Module(new Comparator(debug, isMax, numberLength))
-    val Result = Wire(UInt(numberLength.W))
+    val result = Wire(UInt(numberLength.W))
     val maxMinOutput = Wire(UInt(1.W))
 
     //
@@ -98,11 +98,11 @@ object Comparator {
     // Return the maximum/minimum input
     //
     when(selectedInput(0) === false.B) {
-      Result := input1 // return the first input
+      result := input1 // return the first input
     }.otherwise {
-      Result := input2 // return the second input
+      result := input2 // return the second input
     }
 
-    Result
+    result
   }
 }
