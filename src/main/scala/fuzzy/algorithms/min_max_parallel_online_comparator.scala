@@ -17,6 +17,13 @@ class MinVectorStruct () extends Bundle {
 
 class MinMaxParallelOnlineComparator(debug : Boolean = DesignConsts.ENABLE_DEBUG, vectorCount : Int = DesignConsts.VECTOR_COUNT)
     extends Module {
+      
+  //
+  // Design constraints
+  //
+  require(isPow2(vectorCount) == true)
+  assert(isPow2(vectorCount) == true, "err, the input length should be to the power of 2.")
+
 
   val io = IO(new Bundle {
 

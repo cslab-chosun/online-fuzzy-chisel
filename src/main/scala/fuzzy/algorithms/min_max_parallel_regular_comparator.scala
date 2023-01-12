@@ -11,6 +11,12 @@ class MinMaxParallelRegularComparator(
                       vectorCount : Int = DesignConsts.VECTOR_COUNT,
                       numberLength : Int = DesignConsts.NUMBER_LENGTH)
     extends Module {
+      
+  //
+  // Design constraints
+  //
+  require(isPow2(vectorCount) == true)
+  assert(isPow2(vectorCount) == true, "err, the input length should be to the power of 2.")
 
   val io = IO(new Bundle {
 
