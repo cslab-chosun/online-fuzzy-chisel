@@ -74,8 +74,8 @@ class OnlineComparator(
 
         if (isMax == true) {
 
-          earlyTerminate1 := true.B
-          earlyTerminate2 := false.B
+          earlyTerminate1 := false.B
+          earlyTerminate2 := true.B
           maxMinOutput := io.in1
 
           if (debug) {
@@ -84,8 +84,8 @@ class OnlineComparator(
 
         } else {
 
-          earlyTerminate1 := false.B
-          earlyTerminate2 := true.B
+          earlyTerminate1 := true.B
+          earlyTerminate2 := false.B
           maxMinOutput := io.in2
 
           if (debug) {
@@ -99,8 +99,8 @@ class OnlineComparator(
       }.elsewhen(io.in1 === 0.U && io.in2 === 1.U) {
 
         if (isMax == true) {
-          earlyTerminate1 := false.B
-          earlyTerminate2 := true.B
+          earlyTerminate1 := true.B
+          earlyTerminate2 := false.B
           maxMinOutput := io.in2
 
           if (debug) {
@@ -108,8 +108,8 @@ class OnlineComparator(
           }
         } else {
 
-          earlyTerminate1 := true.B
-          earlyTerminate2 := false.B
+          earlyTerminate1 := false.B
+          earlyTerminate2 := true.B
           maxMinOutput := io.in1
 
           if (debug) {
@@ -200,7 +200,7 @@ object OnlineComparator {
     //
     // Select the input based on one of the received signals
     //
-    val selectedInput = Mux(earlyTerminate1, false.B, true.B)
+    val selectedInput = Mux(earlyTerminate1, true.B, false.B)
 
     //
     // Return the maximum/minimum input

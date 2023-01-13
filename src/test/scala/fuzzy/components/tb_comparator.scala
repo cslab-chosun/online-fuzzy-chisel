@@ -10,7 +10,7 @@ import fuzzy.utils._
 class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
   "DUT" should "pass" in {
 
-    test(new Comparator(DesignConsts.ENABLE_DEBUG, true, DesignConsts.NUMBER_LENGTH)) { dut =>
+    test(new Comparator(DesignConsts.ENABLE_DEBUG, true, TestingSample.comparator_test_len)) { dut =>
 
       //
       // First, start with module in an inactive state
@@ -21,8 +21,8 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt("010 0111".replace(" ", ""), 2).U
-      val test2 = Integer.parseInt("000 0111".replace(" ", ""), 2).U
+      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator
@@ -58,7 +58,7 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       dut.io.start.poke(0.U)
     }
 
-    test(new Comparator(DesignConsts.ENABLE_DEBUG, false, DesignConsts.NUMBER_LENGTH)) { dut =>
+    test(new Comparator(DesignConsts.ENABLE_DEBUG, false, TestingSample.comparator_test_len)) { dut =>
 
       //
       // First, start with module in an inactive state
@@ -69,8 +69,8 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt("010 0111".replace(" ", ""), 2).U
-      val test2 = Integer.parseInt("000 0111".replace(" ", ""), 2).U
+      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator

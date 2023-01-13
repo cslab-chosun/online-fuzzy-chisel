@@ -21,8 +21,8 @@ class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt("1000 0000 0010 0111".replace(" ", ""), 2).U
-      val test2 = Integer.parseInt("1000 0000 0000 0111".replace(" ", ""), 2).U
+      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator
@@ -86,14 +86,14 @@ class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       if (
         test1.litValue.toInt > test2.litValue.toInt &&
-        dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
-        dut.io.earlyTerminate2.peek().litValue.toInt == 0
+        dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
+        dut.io.earlyTerminate2.peek().litValue.toInt == 1
       ) {
         print("\n[*] Test result for online comparator 1 (max) was successful.\n");
       } else if (
         test1.litValue.toInt < test2.litValue.toInt &&
-        dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
-        dut.io.earlyTerminate2.peek().litValue.toInt == 1
+        dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
+        dut.io.earlyTerminate2.peek().litValue.toInt == 0
       ) {
         print("\n[*] Test result for online comparator 1 (max) was successful.\n");
       } else {
@@ -118,8 +118,8 @@ class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt("1000 0000 0010 0111".replace(" ", ""), 2).U
-      val test2 = Integer.parseInt("1000 0000 0000 0111".replace(" ", ""), 2).U
+      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator
@@ -179,14 +179,14 @@ class OnlineComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
     //
     if (
       test1.litValue.toInt < test2.litValue.toInt &&
-      dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
-      dut.io.earlyTerminate2.peek().litValue.toInt == 0
+      dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
+      dut.io.earlyTerminate2.peek().litValue.toInt == 1
     ) {
       print("\n[*] Test result for online comparator 1 (min) was successful.\n");
     } else if (
       test1.litValue.toInt > test2.litValue.toInt &&
-      dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
-      dut.io.earlyTerminate2.peek().litValue.toInt == 1
+      dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
+      dut.io.earlyTerminate2.peek().litValue.toInt == 0
     ) {
         print("\n[*] Test result for online comparator 1 (min) was successful.\n");
       } else {

@@ -21,8 +21,8 @@ class OnlineComparator2Test extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt("1000 1010 0010 0111".replace(" ", ""), 2).U
-      val test2 = Integer.parseInt("1000 1010 0000 0111".replace(" ", ""), 2).U
+      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator

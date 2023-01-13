@@ -22,10 +22,21 @@ object DesignConsts {
   */
 object TestingSample {
 
+  //
+  // Min-max search
+  //
   val input_result = 0x52
 
   val input1_bytes =
     Array(0x12.U, 0x65.U, 0x52.U, 0x78.U, 0x18.U, 0x0.U, 0x1.U, 0x45.U)
   val input2_bytes =
     Array(0x17.U, 0x2.U, 0x7a.U, 0x27.U, 0x0.U, 0x0.U, 0x29.U, 0x17.U)
+
+  //
+  // Comparator tests
+  //
+  val comparator_test1 = "1000 0000 0010 0111"
+  val comparator_test2 = "1000 1010 0000 0111"  
+
+  val comparator_test_len = comparator_test1.replace(" ", "").length
 }
