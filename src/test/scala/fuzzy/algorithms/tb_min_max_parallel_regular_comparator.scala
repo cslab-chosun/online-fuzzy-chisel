@@ -7,11 +7,13 @@ import fuzzy.algorithms._
 import fuzzy.utils._
 
 class MinMaxParallelRegularComparatorTest extends AnyFlatSpec with
-	ChiselScalatestTester {
-		"DUT" should "pass" in {
+ChiselScalatestTester {
+	"DUT" should "pass" in {
 			
-			test(new MinMaxParallelRegularComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
+		test(new MinMaxParallelRegularComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
 
+			for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
+				
 				//
 				// First, start with module in an inactive state
 				//
@@ -67,7 +69,8 @@ class MinMaxParallelRegularComparatorTest extends AnyFlatSpec with
 				//
 				// Stepping clock for further tests
 				//
-				dut.clock.step(100)
+				dut.clock.step(10)
+			}
 		}
 	}
 }

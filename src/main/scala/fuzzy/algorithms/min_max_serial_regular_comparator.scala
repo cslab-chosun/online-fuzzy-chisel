@@ -76,6 +76,23 @@ class MinMaxSerialRegularComparator(
       input2Min
     )
 
+  when (!io.start) {
+    minMaxListCounter := 0.U
+
+    input1Min := 0.U
+    input2Min := 0.U
+
+    state := sIdle
+
+    askForNewNumber := false.B
+    outResultValid := false.B
+
+    outResult := 0.U
+
+    minStart := false.B
+    maxStart := false.B
+  }
+
   switch(state) {
 
     is(sIdle) {

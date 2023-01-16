@@ -88,10 +88,26 @@ class MinMaxSerialOnlineComparator(
       false.B /* no external early termination */
     )
 
+  //
+  // Check for resetting everything
+  //
+  when (!io.start) {
+    askForNewNumber := false.B
+    outResultValid := false.B
+    outResult := 0.U
+    regBitIndx := (vectorCount - 1).U
+    regVecIndx := 0.U
+    regMaxVecIndx := 1.U
+    regToEqualNums := false.B
+    state := sIdle
+  }
+
   switch(state) {
 
     is(sIdle) {
-      state := sMin
+      when (io.start === true.B) {
+        state := sMin
+      }
     }
     is(sMin) {
 

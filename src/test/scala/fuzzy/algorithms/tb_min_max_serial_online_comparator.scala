@@ -7,11 +7,12 @@ import fuzzy.algorithms._
 import fuzzy.utils._
 
 class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
-	ChiselScalatestTester {
-		"DUT" should "pass" in {
+ChiselScalatestTester {
+	"DUT" should "pass" in {
 			
-			test(new MinMaxSerialOnlineComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
-
+		test(new MinMaxSerialOnlineComparator(DesignConsts.ENABLE_DEBUG, DesignConsts.VECTOR_COUNT, DesignConsts.NUMBER_LENGTH)) { dut =>
+			for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
+				
 				//
 				// First, start with module in an inactive state
 				//
@@ -52,6 +53,7 @@ class MinMaxSerialOnlineComparatorTest extends AnyFlatSpec with
 					print("\n[x] Test result for min-max serial online comparator was NOT successful!\n");
 					assert(false, "Err, test failed")
 				}
+			}
 		}
 	}
 }

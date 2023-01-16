@@ -188,6 +188,14 @@ class MinMaxParallelOnlineComparator(
         outResultValid := false.B
       }
     }
+  } .otherwise {
+
+    //
+    // Reset the states
+    //
+    outResultValid := false.B
+    state := sStarted
+    currentIteration := 0.U
   }
 
   //

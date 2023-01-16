@@ -9,11 +9,15 @@ import chisel3.util._
 object DesignConsts {
 
   val ENABLE_DEBUG: Boolean = false // whether to enable debug or not
+  
   val MAXIMUM_SUPPORTED_NUMBER: Int =
     100 // The numbers are between 0 to 99 so 7 bit (128) is enough
 
+  val MULTIPLE_TEST: Int = 5 // Number of multiple tests
+  
   val VECTOR_COUNT: Int =
     TestingSample.input1_bytes.length // Size of the input vector (by default 8)
+  
   val NUMBER_LENGTH: Int = log2Ceil(MAXIMUM_SUPPORTED_NUMBER)
 }
 

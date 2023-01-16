@@ -145,6 +145,16 @@ class OnlineComparator2(
         }
       }
     }
+  } .otherwise {
+    
+    state := sInit
+    earlyTerminate1 := false.B
+    earlyTerminate2 := false.B
+
+    earlyTerminate1Shadow := false.B
+    earlyTerminate2Shadow := false.B
+
+    maxMinOutput := 0.U
   }
 
   //

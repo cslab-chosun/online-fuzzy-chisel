@@ -302,6 +302,12 @@ module MinMaxParallelOnlineComparator(
   wire  minOutput_5 = comparatorModule_12_io_maxMin; // @[online_comparator2.scala 176:28 204:18]
   wire  minOutput_6 = comparatorModule_13_io_maxMin; // @[online_comparator2.scala 176:28 204:18]
   wire  minOutput_7 = comparatorModule_14_io_maxMin; // @[online_comparator2.scala 176:28 204:18]
+  wire  _GEN_62 = _T_6 ? state : 1'h1; // @[min_max_parallel_online_comparator.scala 86:11 179:17 63:22]
+  wire  _GEN_63 = state ? 1'h0 : outResultValid; // @[min_max_parallel_online_comparator.scala 76:19 188:24 58:31]
+  wire  _GEN_65 = ~state ? _GEN_1 : _GEN_63; // @[min_max_parallel_online_comparator.scala 76:19]
+  wire  _GEN_126 = ~state ? _GEN_62 : state; // @[min_max_parallel_online_comparator.scala 76:19 63:22]
+  wire  _GEN_128 = io_start & _GEN_65; // @[min_max_parallel_online_comparator.scala 196:20 74:29]
+  wire  _GEN_189 = io_start & _GEN_126; // @[min_max_parallel_online_comparator.scala 197:11 74:29]
   OnlineComparator2 comparatorModule ( // @[online_comparator2.scala 171:34]
     .clock(comparatorModule_clock),
     .reset(comparatorModule_reset),
@@ -451,8 +457,8 @@ module MinMaxParallelOnlineComparator(
     .io_in2(comparatorModule_14_io_in2),
     .io_maxMin(comparatorModule_14_io_maxMin)
   );
-  assign io_outResultValid = outResultValid; // @[min_max_parallel_online_comparator.scala 197:21]
-  assign io_outResult = regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 196:16]
+  assign io_outResultValid = outResultValid; // @[min_max_parallel_online_comparator.scala 205:21]
+  assign io_outResult = regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 204:16]
   assign comparatorModule_clock = clock;
   assign comparatorModule_reset = reset;
   assign comparatorModule_io_start = io_start; // @[online_comparator2.scala 185:31]
@@ -546,12 +552,8 @@ module MinMaxParallelOnlineComparator(
   always @(posedge clock) begin
     if (reset) begin // @[min_max_parallel_online_comparator.scala 58:31]
       outResultValid <= 1'h0; // @[min_max_parallel_online_comparator.scala 58:31]
-    end else if (io_start) begin // @[min_max_parallel_online_comparator.scala 74:29]
-      if (~state) begin // @[min_max_parallel_online_comparator.scala 76:19]
-        outResultValid <= _GEN_1;
-      end else if (state) begin // @[min_max_parallel_online_comparator.scala 76:19]
-        outResultValid <= 1'h0; // @[min_max_parallel_online_comparator.scala 188:24]
-      end
+    end else begin
+      outResultValid <= _GEN_128;
     end
     if (io_start) begin // @[min_max_parallel_online_comparator.scala 74:29]
       if (~state) begin // @[min_max_parallel_online_comparator.scala 76:19]
@@ -758,12 +760,8 @@ module MinMaxParallelOnlineComparator(
     end
     if (reset) begin // @[min_max_parallel_online_comparator.scala 63:22]
       state <= 1'h0; // @[min_max_parallel_online_comparator.scala 63:22]
-    end else if (io_start) begin // @[min_max_parallel_online_comparator.scala 74:29]
-      if (~state) begin // @[min_max_parallel_online_comparator.scala 76:19]
-        if (!(_T_6)) begin // @[min_max_parallel_online_comparator.scala 86:11]
-          state <= 1'h1; // @[min_max_parallel_online_comparator.scala 179:17]
-        end
-      end
+    end else begin
+      state <= _GEN_189;
     end
     if (reset) begin // @[min_max_parallel_online_comparator.scala 65:33]
       currentIteration <= 4'h0; // @[min_max_parallel_online_comparator.scala 65:33]
@@ -771,6 +769,8 @@ module MinMaxParallelOnlineComparator(
       if (~state) begin // @[min_max_parallel_online_comparator.scala 76:19]
         currentIteration <= _currentIteration_T_1; // @[min_max_parallel_online_comparator.scala 80:26]
       end
+    end else begin
+      currentIteration <= 4'h0; // @[min_max_parallel_online_comparator.scala 198:22]
     end
   end
 endmodule
@@ -797,28 +797,28 @@ module FuzzyController(
   output  io_outResultValid,
   output  io_outResult
 );
-  wire  minMaxTree_clock; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_reset; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_start; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_0; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_1; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_2; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_3; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_4; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_5; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_6; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in1_7; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_0; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_1; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_2; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_3; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_4; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_5; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_6; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_in2_7; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_outResultValid; // @[min_max_parallel_online_comparator.scala 208:28]
-  wire  minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 208:28]
-  MinMaxParallelOnlineComparator minMaxTree ( // @[min_max_parallel_online_comparator.scala 208:28]
+  wire  minMaxTree_clock; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_reset; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_start; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_0; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_1; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_2; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_3; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_4; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_5; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_6; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in1_7; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_0; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_1; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_2; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_3; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_4; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_5; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_6; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_in2_7; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_outResultValid; // @[min_max_parallel_online_comparator.scala 216:28]
+  wire  minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 216:28]
+  MinMaxParallelOnlineComparator minMaxTree ( // @[min_max_parallel_online_comparator.scala 216:28]
     .clock(minMaxTree_clock),
     .reset(minMaxTree_reset),
     .io_start(minMaxTree_io_start),
@@ -841,25 +841,25 @@ module FuzzyController(
     .io_outResultValid(minMaxTree_io_outResultValid),
     .io_outResult(minMaxTree_io_outResult)
   );
-  assign io_outResultValid = minMaxTree_io_outResultValid; // @[min_max_parallel_online_comparator.scala 212:30 222:20]
-  assign io_outResult = minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 211:25 220:15]
+  assign io_outResultValid = minMaxTree_io_outResultValid; // @[min_max_parallel_online_comparator.scala 220:30 230:20]
+  assign io_outResult = minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 219:25 228:15]
   assign minMaxTree_clock = clock;
   assign minMaxTree_reset = reset;
-  assign minMaxTree_io_start = io_start; // @[min_max_parallel_online_comparator.scala 214:25]
-  assign minMaxTree_io_in1_0 = io_in1_0; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_1 = io_in1_1; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_2 = io_in1_2; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_3 = io_in1_3; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_4 = io_in1_4; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_5 = io_in1_5; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_6 = io_in1_6; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in1_7 = io_in1_7; // @[min_max_parallel_online_comparator.scala 217:23]
-  assign minMaxTree_io_in2_0 = io_in2_0; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_1 = io_in2_1; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_2 = io_in2_2; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_3 = io_in2_3; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_4 = io_in2_4; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_5 = io_in2_5; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_6 = io_in2_6; // @[min_max_parallel_online_comparator.scala 218:23]
-  assign minMaxTree_io_in2_7 = io_in2_7; // @[min_max_parallel_online_comparator.scala 218:23]
+  assign minMaxTree_io_start = io_start; // @[min_max_parallel_online_comparator.scala 222:25]
+  assign minMaxTree_io_in1_0 = io_in1_0; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_1 = io_in1_1; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_2 = io_in1_2; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_3 = io_in1_3; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_4 = io_in1_4; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_5 = io_in1_5; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_6 = io_in1_6; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in1_7 = io_in1_7; // @[min_max_parallel_online_comparator.scala 225:23]
+  assign minMaxTree_io_in2_0 = io_in2_0; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_1 = io_in2_1; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_2 = io_in2_2; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_3 = io_in2_3; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_4 = io_in2_4; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_5 = io_in2_5; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_6 = io_in2_6; // @[min_max_parallel_online_comparator.scala 226:23]
+  assign minMaxTree_io_in2_7 = io_in2_7; // @[min_max_parallel_online_comparator.scala 226:23]
 endmodule

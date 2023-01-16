@@ -103,6 +103,21 @@ class MinMaxParallelRegularComparator(
   }
 
   //
+  // Check for resetting the state
+  //
+  when (!io.start) {
+
+    //
+    // Reset the state
+    //
+    outResultValid := false.B
+    state := sIdle
+    minStart := false.B
+    maxStart := false.B
+    regMaxStage := 0.U
+  }
+
+  //
   // Set the output wires and regs
   //
   io.outResultValid := outResultValid
