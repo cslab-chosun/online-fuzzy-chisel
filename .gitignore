@@ -340,5 +340,7 @@ project/plugins/project/
 hs_err_pid*
 
 # VS code and Metals
-.vscode/
-.metals/
+/.vscode
+/.metals/*
+/.metals
+
