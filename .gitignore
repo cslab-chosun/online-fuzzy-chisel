@@ -341,6 +341,5 @@ hs_err_pid*
 
 # VS code and Metals
 /.vscode
-/.metals/*
 /.metals
 
