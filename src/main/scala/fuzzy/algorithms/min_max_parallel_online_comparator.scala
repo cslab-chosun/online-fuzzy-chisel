@@ -196,6 +196,21 @@ class MinMaxParallelOnlineComparator(
     outResultValid := false.B
     state := sStarted
     currentIteration := 0.U
+
+    //
+    // Reset the tree structure
+    //
+    val minMaxEmpty = Wire(new MinVectorStruct)
+
+    minMaxEmpty.selectedInput := false.B
+    minMaxEmpty.earlyTerminated := false.B
+    minMaxEmpty.minMaxOutput := 0.U
+    minMaxEmpty.earlyTerminated1 := false.B
+    minMaxEmpty.earlyTerminated2 := false.B
+
+    for (i <- 0 until iMaxIndex) {
+      regStorageVec(i) := minMaxEmpty
+    }
   }
 
   //

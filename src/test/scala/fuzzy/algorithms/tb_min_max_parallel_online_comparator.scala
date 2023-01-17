@@ -20,8 +20,6 @@ class MinMaxParallelOnlineComparatorTest
 
       for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
 
-        print(s"\n loop test : 0x${loop.toHexString}\n")
-
         var validResult : Int = 0
         var currentBitPosition = DesignConsts.NUMBER_LENGTH - 1
         
@@ -125,7 +123,7 @@ class MinMaxParallelOnlineComparatorTest
           print("\n[*] Test result for min-max parallel online comparator was successful.\n");
         } else {
           print("\n[x] Test result for min-max parallel online comparator was NOT successful!\n");
-          //assert(false, "Err, test failed")
+          assert(false, "Err, test failed")
         }
 
         //
