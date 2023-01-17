@@ -17,12 +17,11 @@ class MinMaxParallelOnlineComparatorTest
         DesignConsts.VECTOR_COUNT
       )
     ) { dut =>
-
       for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
 
-        var validResult : Int = 0
+        var validResult: Int = 0
         var currentBitPosition = DesignConsts.NUMBER_LENGTH - 1
-        
+
         //
         // First, start with module in an inactive state
         //
@@ -38,14 +37,16 @@ class MinMaxParallelOnlineComparatorTest
         // Disable the exported early termination
         //
         dut.io.exportedEarlyTermination.poke(0.U)
-        
+
         //
         // Feed the online comparator
         //
         for (i <- 0 until DesignConsts.NUMBER_LENGTH) {
 
           if (DesignConsts.ENABLE_DEBUG) {
-            println(s"\n\n=================================================== \n")
+            println(
+              s"\n\n=================================================== \n"
+            )
             println(s"\ninput 1 : \n")
           }
 
@@ -54,7 +55,9 @@ class MinMaxParallelOnlineComparatorTest
             dut.io
               .in1(j)
               .poke(
-                TestingSample.input1_bytes(j)(DesignConsts.NUMBER_LENGTH - i - 1)
+                TestingSample.input1_bytes(j)(
+                  DesignConsts.NUMBER_LENGTH - i - 1
+                )
               )
 
             if (DesignConsts.ENABLE_DEBUG) {
@@ -71,7 +74,9 @@ class MinMaxParallelOnlineComparatorTest
             dut.io
               .in2(j)
               .poke(
-                TestingSample.input2_bytes(j)(DesignConsts.NUMBER_LENGTH - i - 1)
+                TestingSample.input2_bytes(j)(
+                  DesignConsts.NUMBER_LENGTH - i - 1
+                )
               )
 
             if (DesignConsts.ENABLE_DEBUG) {
@@ -120,9 +125,13 @@ class MinMaxParallelOnlineComparatorTest
         // Indicate the final message
         //
         if (validResult == TestingSample.input_result) {
-          print("\n[*] Test result for min-max parallel online comparator was successful.\n");
+          print(
+            "\n[*] Test result for min-max parallel online comparator was successful.\n"
+          );
         } else {
-          print("\n[x] Test result for min-max parallel online comparator was NOT successful!\n");
+          print(
+            "\n[x] Test result for min-max parallel online comparator was NOT successful!\n"
+          );
           assert(false, "Err, test failed")
         }
 

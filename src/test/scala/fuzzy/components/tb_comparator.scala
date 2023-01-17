@@ -10,8 +10,13 @@ import fuzzy.utils._
 class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
   "DUT" should "pass" in {
 
-    test(new Comparator(DesignConsts.ENABLE_DEBUG, true, TestingSample.comparator_test_len)) { dut =>
-
+    test(
+      new Comparator(
+        DesignConsts.ENABLE_DEBUG,
+        true,
+        TestingSample.comparator_test_len
+      )
+    ) { dut =>
       //
       // First, start with module in an inactive state
       //
@@ -21,8 +26,10 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
-      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
+      val test1 =
+        Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 =
+        Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator
@@ -41,14 +48,20 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
         test1.litValue.toInt > test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 0
       ) {
-        print("\n[*] Test result for regular comparator (max) was successful.\n");
+        print(
+          "\n[*] Test result for regular comparator (max) was successful.\n"
+        );
       } else if (
         test1.litValue.toInt < test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 1
       ) {
-        print("\n[*] Test result for regular comparator (max) was successful.\n");
+        print(
+          "\n[*] Test result for regular comparator (max) was successful.\n"
+        );
       } else {
-        print("\n[x] Test result for regular comparator (max) was NOT successful!\n");
+        print(
+          "\n[x] Test result for regular comparator (max) was NOT successful!\n"
+        );
         assert(false, "Err, test failed")
       }
 
@@ -58,8 +71,13 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       dut.io.start.poke(0.U)
     }
 
-    test(new Comparator(DesignConsts.ENABLE_DEBUG, false, TestingSample.comparator_test_len)) { dut =>
-
+    test(
+      new Comparator(
+        DesignConsts.ENABLE_DEBUG,
+        false,
+        TestingSample.comparator_test_len
+      )
+    ) { dut =>
       //
       // First, start with module in an inactive state
       //
@@ -69,8 +87,10 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
-      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
+      val test1 =
+        Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 =
+        Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator
@@ -89,15 +109,21 @@ class ComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
         test1.litValue.toInt < test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 0
       ) {
-        print("\n[*] Test result for regular comparator (min) was successful.\n");
+        print(
+          "\n[*] Test result for regular comparator (min) was successful.\n"
+        );
 
       } else if (
         test1.litValue.toInt > test2.litValue.toInt &&
         dut.io.maxMin.peek().litValue.toInt == 1
       ) {
-        print("\n[*] Test result for regular comparator (min) was successful.\n");
+        print(
+          "\n[*] Test result for regular comparator (min) was successful.\n"
+        );
       } else {
-        print("\n[x] Test result for regular comparator (min) was NOT successful!\n");
+        print(
+          "\n[x] Test result for regular comparator (min) was NOT successful!\n"
+        );
         assert(false, "Err, test failed")
       }
 

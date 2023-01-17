@@ -76,7 +76,7 @@ class MinMaxSerialRegularComparator(
       input2Min
     )
 
-  when (!io.start) {
+  when(!io.start) {
     minMaxListCounter := 0.U
 
     input1Min := 0.U

@@ -188,7 +188,7 @@ class MinMaxParallelOnlineComparator(
         outResultValid := false.B
       }
     }
-  } .otherwise {
+  }.otherwise {
 
     //
     // Reset the states
@@ -226,7 +226,12 @@ object MinMaxParallelOnlineComparator {
   def apply(
       debug: Boolean = DesignConsts.ENABLE_DEBUG,
       vectorCount: Int = DesignConsts.VECTOR_COUNT
-  )(in1: Vec[UInt], in2: Vec[UInt], exportedEarlyTermination: Bool, start: Bool): (UInt, Bool) = {
+  )(
+      in1: Vec[UInt],
+      in2: Vec[UInt],
+      exportedEarlyTermination: Bool,
+      start: Bool
+  ): (UInt, Bool) = {
 
     val minMaxTree = Module(
       new MinMaxParallelOnlineComparator(debug, vectorCount)

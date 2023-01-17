@@ -11,7 +11,6 @@ class OnlineComparator2Test extends AnyFlatSpec with ChiselScalatestTester {
   "DUT" should "pass" in {
 
     test(new OnlineComparator2(DesignConsts.ENABLE_DEBUG, true)) { dut =>
-
       //
       // First, start with module in an inactive state
       //
@@ -21,8 +20,10 @@ class OnlineComparator2Test extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Perform the first test
       //
-      val test1 = Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
-      val test2 = Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
+      val test1 =
+        Integer.parseInt(TestingSample.comparator_test1.replace(" ", ""), 2).U
+      val test2 =
+        Integer.parseInt(TestingSample.comparator_test2.replace(" ", ""), 2).U
 
       //
       // Start the comparator
@@ -90,15 +91,21 @@ class OnlineComparator2Test extends AnyFlatSpec with ChiselScalatestTester {
         dut.io.earlyTerminate1.peek().litValue.toInt == 0 &&
         dut.io.earlyTerminate2.peek().litValue.toInt == 1
       ) {
-        print("\n[*] Test result for online comparator 2 (max) was successful.\n");
+        print(
+          "\n[*] Test result for online comparator 2 (max) was successful.\n"
+        );
       } else if (
         test1.litValue.toInt < test2.litValue.toInt &&
         dut.io.earlyTerminate1.peek().litValue.toInt == 1 &&
         dut.io.earlyTerminate2.peek().litValue.toInt == 0
       ) {
-        print("\n[*] Test result for online comparator 2 (max) was successful.\n");
+        print(
+          "\n[*] Test result for online comparator 2 (max) was successful.\n"
+        );
       } else {
-        print("\n[x] Test result for online comparator 2 (max) was NOT successful!\n");
+        print(
+          "\n[x] Test result for online comparator 2 (max) was NOT successful!\n"
+        );
         assert(false, "Err, test failed")
       }
 

@@ -91,7 +91,7 @@ class MinMaxSerialOnlineComparator(
   //
   // Check for resetting everything
   //
-  when (!io.start) {
+  when(!io.start) {
     askForNewNumber := false.B
     outResultValid := false.B
     outResult := 0.U
@@ -105,7 +105,7 @@ class MinMaxSerialOnlineComparator(
   switch(state) {
 
     is(sIdle) {
-      when (io.start === true.B) {
+      when(io.start === true.B) {
         state := sMin
       }
     }

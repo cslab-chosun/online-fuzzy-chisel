@@ -145,8 +145,8 @@ class OnlineComparator2(
         }
       }
     }
-  } .otherwise {
-    
+  }.otherwise {
+
     state := sInit
     earlyTerminate1 := false.B
     earlyTerminate2 := false.B

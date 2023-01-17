@@ -105,7 +105,7 @@ class MinMaxParallelRegularComparator(
   //
   // Check for resetting the state
   //
-  when (!io.start) {
+  when(!io.start) {
 
     //
     // Reset the state
