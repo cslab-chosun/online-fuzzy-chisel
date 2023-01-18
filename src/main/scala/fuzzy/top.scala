@@ -56,7 +56,11 @@ object Main extends App {
     new (chisel3.stage.ChiselStage).emitVerilog(
       new FuzzyController(),
       Array(
-        "--emission-options=disableMemRandomization,disableRegisterRandomization"
+        "--emission-options=disableMemRandomization,disableRegisterRandomization",
+        "-e", // The intention for this argument (and next argument) is to separate generated files.
+        "verilog", // We could also use "sverilog" to generate SystemVerilog files.
+        "--target-dir",
+        "generated/"
       )
     )
   )

@@ -5,6 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 import fuzzy.algorithms._
 import fuzzy.utils._
+import fuzzy.utils.file._
 
 class MinMaxSerialOnlineComparatorTest
     extends AnyFlatSpec
@@ -19,6 +20,27 @@ class MinMaxSerialOnlineComparatorTest
       )
     ) { dut =>
       for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
+
+        //
+        // Get the testing vector
+        //
+        val input1_bytes = FileRead(
+          "src/test/resources/min-max-tests.txt",
+          " ",
+          loop * 3 + 0
+        ).map(_.U)
+
+        val input2_bytes = FileRead(
+          "src/test/resources/min-max-tests.txt",
+          " ",
+          loop * 3 + 1
+        ).map(_.U)
+
+        val input_result = FileRead(
+          "src/test/resources/min-max-tests.txt",
+          " ",
+          loop * 3 + 2
+        )(0)
 
         //
         // First, start with module in an inactive state
@@ -38,8 +60,8 @@ class MinMaxSerialOnlineComparatorTest
           //
           // First test, the state at first should be [0x12, X, X, X, X, X, X, X]
           //
-          dut.io.in1.poke(TestingSample.input1_bytes(i))
-          dut.io.in2.poke(TestingSample.input2_bytes(i))
+          dut.io.in1.poke(input1_bytes(i))
+          dut.io.in2.poke(input2_bytes(i))
 
           if (DesignConsts.ENABLE_DEBUG) {
             println(
@@ -61,7 +83,7 @@ class MinMaxSerialOnlineComparatorTest
         ) // varies based on input length but let it be 100 because it's too enough for this test L)
         if (
           dut.io.outResultValid.peek().litValue.toInt == 1 &&
-          dut.io.outResult.peek().litValue.toInt == TestingSample.input_result
+          dut.io.outResult.peek().litValue.toInt == input_result
         ) {
           print(
             "\n[*] Test result for min-max serial online comparator was successful.\n"

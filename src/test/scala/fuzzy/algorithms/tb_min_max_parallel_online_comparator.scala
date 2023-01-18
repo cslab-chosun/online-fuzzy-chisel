@@ -5,6 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 import fuzzy.algorithms._
 import fuzzy.utils._
+import fuzzy.utils.file._
 
 class MinMaxParallelOnlineComparatorTest
     extends AnyFlatSpec
@@ -21,6 +22,27 @@ class MinMaxParallelOnlineComparatorTest
 
         var validResult: Int = 0
         var currentBitPosition = DesignConsts.NUMBER_LENGTH - 1
+
+        //
+        // Get the testing vector
+        //
+        val input1_bytes = FileRead(
+          "src/test/resources/min-max-tests.txt",
+          " ",
+          loop * 3 + 0
+        ).map(_.U)
+
+        val input2_bytes = FileRead(
+          "src/test/resources/min-max-tests.txt",
+          " ",
+          loop * 3 + 1
+        ).map(_.U)
+
+        val input_result = FileRead(
+          "src/test/resources/min-max-tests.txt",
+          " ",
+          loop * 3 + 2
+        )(0)
 
         //
         // First, start with module in an inactive state
@@ -55,7 +77,7 @@ class MinMaxParallelOnlineComparatorTest
             dut.io
               .in1(j)
               .poke(
-                TestingSample.input1_bytes(j)(
+                input1_bytes(j)(
                   DesignConsts.NUMBER_LENGTH - i - 1
                 )
               )
@@ -74,7 +96,7 @@ class MinMaxParallelOnlineComparatorTest
             dut.io
               .in2(j)
               .poke(
-                TestingSample.input2_bytes(j)(
+                input2_bytes(j)(
                   DesignConsts.NUMBER_LENGTH - i - 1
                 )
               )
@@ -124,7 +146,7 @@ class MinMaxParallelOnlineComparatorTest
         //
         // Indicate the final message
         //
-        if (validResult == TestingSample.input_result) {
+        if (validResult == input_result) {
           print(
             "\n[*] Test result for min-max parallel online comparator was successful.\n"
           );
