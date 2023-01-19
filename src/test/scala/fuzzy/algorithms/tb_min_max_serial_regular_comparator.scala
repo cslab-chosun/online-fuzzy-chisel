@@ -3,7 +3,7 @@ import chisel3.util._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
 
-import fuzzy.algorithms._
+import fuzzy.algorithms.min_max._
 import fuzzy.utils._
 import fuzzy.utils.file._
 

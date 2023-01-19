@@ -3,7 +3,7 @@ package fuzzy
 import chisel3._
 import chisel3.util._
 
-import fuzzy.algorithms._
+import fuzzy.algorithms.min_max._
 import fuzzy.utils._
 
 class FuzzyController(

@@ -1,4 +1,4 @@
-package fuzzy.algorithms
+package fuzzy.algorithms.min_max
 
 import chisel3._
 import chisel3.util._
