@@ -27,19 +27,19 @@ class MinMaxParallelOnlineComparatorTest
         // Get the testing vector
         //
         val input1_bytes = FileRead(
-          "src/test/resources/min-max-tests.txt",
+          DesignConsts.TEST_FILE_PATH,
           " ",
           loop * 3 + 0
         ).map(_.U)
 
         val input2_bytes = FileRead(
-          "src/test/resources/min-max-tests.txt",
+          DesignConsts.TEST_FILE_PATH,
           " ",
           loop * 3 + 1
         ).map(_.U)
 
         val input_result = FileRead(
-          "src/test/resources/min-max-tests.txt",
+          DesignConsts.TEST_FILE_PATH,
           " ",
           loop * 3 + 2
         )(0)

@@ -7,13 +7,13 @@ import fuzzy.algorithms.min_max._
 import fuzzy.utils._
 import fuzzy.utils.file._
 
-class MinMaxSerialOnlineComparatorTest
+class MinMaxSerialRegularComparatorTest
     extends AnyFlatSpec
     with ChiselScalatestTester {
   "DUT" should "pass" in {
 
     test(
-      new MinMaxSerialOnlineComparator(
+      new MinMaxSerialRegularComparator(
         DesignConsts.ENABLE_DEBUG,
         DesignConsts.VECTOR_COUNT,
         DesignConsts.NUMBER_LENGTH
@@ -25,19 +25,19 @@ class MinMaxSerialOnlineComparatorTest
         // Get the testing vector
         //
         val input1_bytes = FileRead(
-          "src/test/resources/min-max-tests.txt",
+          DesignConsts.TEST_FILE_PATH,
           " ",
           loop * 3 + 0
         ).map(_.U)
 
         val input2_bytes = FileRead(
-          "src/test/resources/min-max-tests.txt",
+          DesignConsts.TEST_FILE_PATH,
           " ",
           loop * 3 + 1
         ).map(_.U)
 
         val input_result = FileRead(
-          "src/test/resources/min-max-tests.txt",
+          DesignConsts.TEST_FILE_PATH,
           " ",
           loop * 3 + 2
         )(0)
@@ -86,11 +86,11 @@ class MinMaxSerialOnlineComparatorTest
           dut.io.outResult.peek().litValue.toInt == input_result
         ) {
           print(
-            "\n[*] Test result for min-max serial online comparator was successful.\n"
+            "\n[*] Test result for min-max serial regular comparator was successful.\n"
           );
         } else {
           print(
-            "\n[x] Test result for min-max serial online comparator was NOT successful!\n"
+            "\n[x] Test result for min-max serial regular comparator was NOT successful!\n"
           );
           assert(false, "Err, test failed")
         }

@@ -30,6 +30,12 @@ object DesignConsts {
     ).length // Size of the input vector (by default 8)
 
   val NUMBER_LENGTH: Int = log2Ceil(MAXIMUM_SUPPORTED_NUMBER)
+
+  //
+  // Used for LUT-based membership function
+  //
+  val LUT_MEM_FUNCTION_BIT_COUNT: Int = 4
+  val LUT_MEM_FUNCTION_DELTA: Int = 5
 }
 
 /** @brief

@@ -6,8 +6,6 @@ import chisel3.util._
 import fuzzy.components._
 import fuzzy.utils._
 
-import fuzzy.utils.file
-
 class MinVectorStruct() extends Bundle {
 
   val selectedInput = Bool()

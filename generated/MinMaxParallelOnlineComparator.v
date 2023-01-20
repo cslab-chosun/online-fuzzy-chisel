@@ -269,8 +269,8 @@ module MinMaxParallelOnlineComparator(
   wire  _GEN_121 = ~state ? _GEN_57 : regStorageVec_13_minMaxOutput; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_125 = ~state ? _GEN_61 : regStorageVec_14_minMaxOutput; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_126 = ~state ? _GEN_62 : state; // @[min_max_parallel_online_comparator.scala 76:19 63:22]
-  wire  _GEN_128 = io_start & _GEN_65; // @[min_max_parallel_online_comparator.scala 196:20 74:29]
-  wire  _GEN_189 = io_start & _GEN_126; // @[min_max_parallel_online_comparator.scala 197:11 74:29]
+  wire  _GEN_128 = io_start & _GEN_65; // @[min_max_parallel_online_comparator.scala 197:20 74:29]
+  wire  _GEN_189 = io_start & _GEN_126; // @[min_max_parallel_online_comparator.scala 198:11 74:29]
   OnlineComparator2 comparatorModule ( // @[online_comparator2.scala 181:34]
     .clock(comparatorModule_clock),
     .reset(comparatorModule_reset),
@@ -420,8 +420,8 @@ module MinMaxParallelOnlineComparator(
     .io_in2(comparatorModule_14_io_in2),
     .io_maxMin(comparatorModule_14_io_maxMin)
   );
-  assign io_outResultValid = outResultValid; // @[min_max_parallel_online_comparator.scala 220:21]
-  assign io_outResult = regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 219:16]
+  assign io_outResultValid = outResultValid; // @[min_max_parallel_online_comparator.scala 221:21]
+  assign io_outResult = regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 220:16]
   assign comparatorModule_clock = clock;
   assign comparatorModule_reset = reset;
   assign comparatorModule_io_start = io_start; // @[online_comparator2.scala 195:31]
@@ -518,35 +518,35 @@ module MinMaxParallelOnlineComparator(
     end else begin
       outResultValid <= _GEN_128;
     end
-    regStorageVec_0_minMaxOutput <= io_start & _GEN_69; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_0_earlyTerminated1 <= io_start & _GEN_67; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_0_earlyTerminated2 <= io_start & _GEN_68; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_1_minMaxOutput <= io_start & _GEN_73; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_1_earlyTerminated1 <= io_start & _GEN_71; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_1_earlyTerminated2 <= io_start & _GEN_72; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_2_minMaxOutput <= io_start & _GEN_77; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_2_earlyTerminated1 <= io_start & _GEN_75; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_2_earlyTerminated2 <= io_start & _GEN_76; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_3_minMaxOutput <= io_start & _GEN_81; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_3_earlyTerminated1 <= io_start & _GEN_79; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_3_earlyTerminated2 <= io_start & _GEN_80; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_4_minMaxOutput <= io_start & _GEN_85; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_4_earlyTerminated1 <= io_start & _GEN_83; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_4_earlyTerminated2 <= io_start & _GEN_84; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_5_minMaxOutput <= io_start & _GEN_89; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_5_earlyTerminated1 <= io_start & _GEN_87; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_5_earlyTerminated2 <= io_start & _GEN_88; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_6_minMaxOutput <= io_start & _GEN_93; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_6_earlyTerminated1 <= io_start & _GEN_91; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_6_earlyTerminated2 <= io_start & _GEN_92; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_7_minMaxOutput <= io_start & _GEN_97; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_8_minMaxOutput <= io_start & _GEN_101; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_9_minMaxOutput <= io_start & _GEN_105; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_10_minMaxOutput <= io_start & _GEN_109; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_11_minMaxOutput <= io_start & _GEN_113; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_12_minMaxOutput <= io_start & _GEN_117; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_13_minMaxOutput <= io_start & _GEN_121; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
-    regStorageVec_14_minMaxOutput <= io_start & _GEN_125; // @[min_max_parallel_online_comparator.scala 212:24 74:29]
+    regStorageVec_0_minMaxOutput <= io_start & _GEN_69; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_0_earlyTerminated1 <= io_start & _GEN_67; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_0_earlyTerminated2 <= io_start & _GEN_68; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_1_minMaxOutput <= io_start & _GEN_73; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_1_earlyTerminated1 <= io_start & _GEN_71; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_1_earlyTerminated2 <= io_start & _GEN_72; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_2_minMaxOutput <= io_start & _GEN_77; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_2_earlyTerminated1 <= io_start & _GEN_75; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_2_earlyTerminated2 <= io_start & _GEN_76; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_3_minMaxOutput <= io_start & _GEN_81; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_3_earlyTerminated1 <= io_start & _GEN_79; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_3_earlyTerminated2 <= io_start & _GEN_80; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_4_minMaxOutput <= io_start & _GEN_85; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_4_earlyTerminated1 <= io_start & _GEN_83; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_4_earlyTerminated2 <= io_start & _GEN_84; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_5_minMaxOutput <= io_start & _GEN_89; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_5_earlyTerminated1 <= io_start & _GEN_87; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_5_earlyTerminated2 <= io_start & _GEN_88; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_6_minMaxOutput <= io_start & _GEN_93; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_6_earlyTerminated1 <= io_start & _GEN_91; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_6_earlyTerminated2 <= io_start & _GEN_92; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_7_minMaxOutput <= io_start & _GEN_97; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_8_minMaxOutput <= io_start & _GEN_101; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_9_minMaxOutput <= io_start & _GEN_105; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_10_minMaxOutput <= io_start & _GEN_109; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_11_minMaxOutput <= io_start & _GEN_113; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_12_minMaxOutput <= io_start & _GEN_117; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_13_minMaxOutput <= io_start & _GEN_121; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
+    regStorageVec_14_minMaxOutput <= io_start & _GEN_125; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
     if (reset) begin // @[min_max_parallel_online_comparator.scala 63:22]
       state <= 1'h0; // @[min_max_parallel_online_comparator.scala 63:22]
     end else begin
@@ -559,7 +559,7 @@ module MinMaxParallelOnlineComparator(
         currentIteration <= _currentIteration_T_1; // @[min_max_parallel_online_comparator.scala 80:26]
       end
     end else begin
-      currentIteration <= 4'h0; // @[min_max_parallel_online_comparator.scala 198:22]
+      currentIteration <= 4'h0; // @[min_max_parallel_online_comparator.scala 199:22]
     end
   end
 endmodule
