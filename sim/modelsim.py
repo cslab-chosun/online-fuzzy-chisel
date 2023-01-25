@@ -11,7 +11,7 @@ if not os.path.exists(MODELSIM):
     print("[x] Error: The path mdoes not exist")
     exit()
 else:
-    print("[*] the modelsim path found")
+    print("[*] Oh, the modelsim path found :)")
 
 MODELSIM_VCD2WLF = MODELSIM + "/vcd2wlf"
 MODELSIM_VSIM = MODELSIM + "/vsim"
@@ -21,6 +21,7 @@ MODELSIM_VSIM = MODELSIM + "/vsim"
 #
 CONFIG_TEST_MODULE_CLASS = ""
 CONFIG_SHOW_ALL_WAVES = True
+CONFIG_WAVES_LIST = []
 
 #
 # Check if user is root or not
@@ -38,7 +39,8 @@ current_script_path = os.path.dirname(os.path.abspath(__file__))
 
 WAVE_OUTPUT_FILES_PATH = current_script_path + \
     "/../test_run_dir/DUT_should_pass/"
-CONFIG_FILE_PATH = WAVE_OUTPUT_FILES_PATH + "/modelsim.config"
+CONFIG_FILE_PATH = current_script_path + "/modelsim.config"
+print("[*] current script path:", WAVE_OUTPUT_FILES_PATH)
 
 #
 # Check config file
@@ -46,8 +48,6 @@ CONFIG_FILE_PATH = WAVE_OUTPUT_FILES_PATH + "/modelsim.config"
 if os.path.exists(CONFIG_FILE_PATH) == False:
     print("[x] config file not found")
     exit()
-
-print("[*] current script path:", WAVE_OUTPUT_FILES_PATH)
 
 #
 # Interpreting config file
@@ -57,10 +57,27 @@ with open(CONFIG_FILE_PATH, 'r') as file:
 
         if line.lower().startswith("module:") or line.lower().startswith("module :"):
             # it's the test module name
-            CONFIG_TEST_MODULE_CLASS = x = line.split(":")[1]
+            CONFIG_TEST_MODULE_CLASS = line.split(":")[1]
+            print("[*] found module name:", CONFIG_TEST_MODULE_CLASS)
         else:
             # it's a wave, so no longer need to show all waves
-            CONFIG_SHOW_ALL_WAVES = False
+            if line.isspace() == False:
+                CONFIG_SHOW_ALL_WAVES = False
+                CONFIG_WAVES_LIST.append(line)
+                print("[*] signal filter for:", line)
+
+#
+# Show message if all signals need to be shown
+#
+if CONFIG_SHOW_ALL_WAVES == True:
+    print("[*] no signal filter found, assuming all signals to be shown!")
+
+#
+# Check if test module is empty or not
+#
+if CONFIG_TEST_MODULE_CLASS.isspace() == True:
+    print("[x] main test module not found, please add 'module:' to the config file")
+    exit()
 
 #
 # Set the current working directory
@@ -68,9 +85,26 @@ with open(CONFIG_FILE_PATH, 'r') as file:
 os.chdir(current_script_path + "/..")
 print("[*] current working directory: " + format(os.getcwd()))
 
+#
+# Create TCL config file
+#
+print("[*] writing to TCL config file: " +
+      current_script_path + '/modelsim.tcl')
+if CONFIG_SHOW_ALL_WAVES:
+    with open(current_script_path + '/modelsim.tcl', 'w') as f:
+        f.write("add wave -position insertpoint *\n")
+else:
+    with open(current_script_path + '/modelsim.tcl', 'w') as f:
+        for item in CONFIG_WAVES_LIST:
+            f.write("add wave -position insertpoint " + item + '\n')
 
+#
+# Run the VCD wave generator
+#
+print("[*] running chisel VCD file generator for module: " +
+      CONFIG_TEST_MODULE_CLASS)
 result = subprocess.run(
-    ["sbt", "testOnly MinMaxParallelOnlineComparatorTest -- -DwriteVcd=1"], stdout=subprocess.PIPE)
+    ["sbt", "testOnly " + CONFIG_TEST_MODULE_CLASS + " -- -DwriteVcd=1"], stdout=subprocess.PIPE)
 print(result.stdout.decode())
 
 #
@@ -94,9 +128,12 @@ files.sort(key=lambda x: os.path.getmtime(x))
 # Get the latest modified file
 #
 latest_vcd_file = files[-1]
+print("[*] latest generated VCD file: " + latest_vcd_file)
 
-print("[*] latest file: " + latest_vcd_file)
-
+#
+# Converting VCD to WLF
+#
+print("[*] converting VCD file to WLF file")
 result = subprocess.run(
     [MODELSIM_VCD2WLF, latest_vcd_file, latest_vcd_file + ".wlf"], stdout=subprocess.PIPE)
 print(result.stdout.decode())
@@ -105,4 +142,5 @@ print(result.stdout.decode())
 # Run the generated WLF file
 #
 print("[*] openning file in vsim: " + latest_vcd_file + ".wlf")
-subprocess.run([MODELSIM_VSIM, latest_vcd_file + ".wlf"])
+subprocess.run([MODELSIM_VSIM, latest_vcd_file + ".wlf",
+               "-do", current_script_path + '/modelsim.tcl'])
