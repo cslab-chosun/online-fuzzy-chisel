@@ -60,7 +60,8 @@ object Main extends App {
         "-e", // The intention for this argument (and next argument) is to separate generated files.
         "verilog", // We could also use "sverilog" to generate SystemVerilog files.
         "--target-dir",
-        "generated/"
+        "generated/",
+        "--target:fpga"
       )
     )
   )

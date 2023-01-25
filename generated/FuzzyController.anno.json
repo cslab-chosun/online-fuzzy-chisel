@@ -90,6 +90,18 @@
     "index":0.875
   },
   {
+    "class":"firrtl.annotations.MemorySynthInit$"
+  },
+  {
+    "class":"firrtl.passes.memlib.PassthroughSimpleSyncReadMemsAnnotation$"
+  },
+  {
+    "class":"firrtl.passes.memlib.DefaultReadFirstAnnotation$"
+  },
+  {
+    "class":"firrtl.passes.memlib.InferReadWriteAnnotation$"
+  },
+  {
     "class":"firrtl.EmitAllModulesAnnotation",
     "emitter":"firrtl.VerilogEmitter"
   },
