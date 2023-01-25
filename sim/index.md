@@ -1,3 +1,5 @@
+# Automated ModelSim Viewer
+
 First of all, make sure to edit the address of the "ModelSim" directory in **modelsim.py**.
 
 After that, only modify the "modelsim.config" file.
@@ -22,3 +24,9 @@ At last, run it with the following command:
 ```
 python3 modelsim.py
 ```
+
+or,
+```
+python3 sim/modelsim.py
+```
+
