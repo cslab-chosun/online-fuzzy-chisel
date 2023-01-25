@@ -92,6 +92,8 @@ print("[*] writing to TCL config file: " +
       current_script_path + '/modelsim.tcl')
 if CONFIG_SHOW_ALL_WAVES:
     with open(current_script_path + '/modelsim.tcl', 'w') as f:
+    	# add the clock at top of the signals by default
+        f.write("add wave -position insertpoint clock\n")
         f.write("add wave -position insertpoint *\n")
 else:
     with open(current_script_path + '/modelsim.tcl', 'w') as f:
