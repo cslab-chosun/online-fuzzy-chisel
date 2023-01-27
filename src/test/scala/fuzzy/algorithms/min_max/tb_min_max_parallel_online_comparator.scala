@@ -23,7 +23,7 @@ class MinMaxParallelOnlineComparatorTest
 
         var validResult: Int = 0
         var currentBitPosition = DesignConsts.NUMBER_LENGTH - 1
-        l
+
         //
         // Get the testing vector
         //
