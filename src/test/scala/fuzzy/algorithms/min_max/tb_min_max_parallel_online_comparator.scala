@@ -6,6 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import fuzzy.algorithms.min_max._
 import fuzzy.utils._
 import fuzzy.utils.file._
+import scala.reflect._
 
 class MinMaxParallelOnlineComparatorTest
     extends AnyFlatSpec
@@ -22,7 +23,7 @@ class MinMaxParallelOnlineComparatorTest
 
         var validResult: Int = 0
         var currentBitPosition = DesignConsts.NUMBER_LENGTH - 1
-
+        l
         //
         // Get the testing vector
         //

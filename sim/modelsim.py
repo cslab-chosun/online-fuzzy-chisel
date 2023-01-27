@@ -101,6 +101,14 @@ else:
             f.write("add wave -position insertpoint " + item + '\n')
 
 #
+# Remove all the previous *.wlf, *.vcd, *.fir files
+#
+print("[*] removing previously generated files")
+for file_name in os.listdir(WAVE_OUTPUT_FILES_PATH):
+    if file_name.endswith('.wlf') or file_name.endswith('.vcd') or file_name.endswith('.fir'):
+        os.remove(os.path.join(WAVE_OUTPUT_FILES_PATH, file_name))
+
+#
 # Run the VCD wave generator
 #
 print("[*] running chisel VCD file generator for module: " +
@@ -108,13 +116,6 @@ print("[*] running chisel VCD file generator for module: " +
 result = subprocess.run(
     ["sbt", "testOnly " + CONFIG_TEST_MODULE_CLASS + " -- -DwriteVcd=1"], stdout=subprocess.PIPE)
 print(result.stdout.decode())
-
-#
-# Remove all the previous *.wlf files
-#
-for file_name in os.listdir(WAVE_OUTPUT_FILES_PATH):
-    if file_name.endswith('.wlf'):
-        os.remove(os.path.join(WAVE_OUTPUT_FILES_PATH, file_name))
 
 #
 # Get all files in directory
@@ -125,6 +126,13 @@ files = glob.glob(WAVE_OUTPUT_FILES_PATH + "/*")
 # Sort files by last modified time
 #
 files.sort(key=lambda x: os.path.getmtime(x))
+
+#
+# Check if the list is empty or not
+#
+if not files or not files[-1].endswith('.vcd') :
+    print("[x] there was an error in generating VCD files")
+    exit()
 
 #
 # Get the latest modified file
