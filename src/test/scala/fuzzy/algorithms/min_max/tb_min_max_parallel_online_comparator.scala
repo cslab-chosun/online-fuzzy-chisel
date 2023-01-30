@@ -6,7 +6,6 @@ import org.scalatest.flatspec.AnyFlatSpec
 import fuzzy.algorithms.min_max._
 import fuzzy.utils._
 import fuzzy.utils.file._
-import scala.reflect._
 
 class MinMaxParallelOnlineComparatorTest
     extends AnyFlatSpec
