@@ -42,7 +42,7 @@ object HashMapGenerator {
 
             val f = (j / b) % 2
             val s = pow(2, i - 1).toInt + j / b / 2 - 1
-            HashMap.append((Tuple3(y, f, y), if (table(j)(y)) 1 else 0))
+            HashMap.append((Tuple3(s, f, y), if (table(j)(y)) 1 else 0))
             if (i - y > Delta) Delta = i - y
           }
         }
@@ -59,7 +59,9 @@ object HashMapGenerator {
     }
   }
 
-  def generate(debug: Boolean): Unit = {
+  def generate(
+      debug: Boolean
+  ): scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)] = {
 
     val m = 4
     val n = 5
@@ -114,9 +116,6 @@ object HashMapGenerator {
     for (i <- 0 until inputTrim.length / m) {
       for (j <- 0 until m) {
         array(i)(j) = if (inputTrim(i * m + j) == '1') true else false
-        if (debug) {
-          println(s"array($i)($j) ==> ")
-        }
       }
     }
     if (debug) {
@@ -136,11 +135,13 @@ object HashMapGenerator {
       }
     }
 
+    return HashMap
   }
 }
 
 class StateGenerator(
-    debug: Boolean = DesignConsts.ENABLE_DEBUG
+    debug: Boolean = DesignConsts.ENABLE_DEBUG,
+    numberOfBits: Int = StateGenSamples.numberOfBits
 ) extends Module {
 
   val io = IO(new Bundle {
@@ -162,7 +163,27 @@ class StateGenerator(
   val outResultValid = RegInit(false.B)
   val outResult = RegInit(false.B)
 
-  io.outResult := io.in
+  val counter =
+    RegInit(0.U((log2Ceil(numberOfBits) + 1).W))
+
+  val state =
+    RegInit(0.U((log2Ceil(math.pow(2, numberOfBits).toInt) + 1).W))
+
+  val buffer = Reg(Vec(20, UInt(1.W))) // TODO : change 20 to Delta + n
+
+  when(counter < numberOfBits.U) {
+    counter := counter + 1.U
+
+    HashMapGenerator.generate(debug).foreach { case (key, value) =>
+      when(state === key._1.U) {
+
+        when(io.in === key._2.U) {
+
+          buffer(key._3) := (value.U(1.W))
+        }
+      }
+    }
+  }
 
   //
   // Set the output wires and regs
@@ -175,11 +196,12 @@ class StateGenerator(
 object StateGenerator {
 
   def apply(
-      debug: Boolean = DesignConsts.ENABLE_DEBUG
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      numberOfBits: Int = StateGenSamples.numberOfBits
   )(in: Bool, start: Bool): (Bool, Bool) = {
 
     val stateGen = Module(
-      new StateGenerator(debug)
+      new StateGenerator(debug, numberOfBits)
     )
 
     val outResult = Wire(Bool())

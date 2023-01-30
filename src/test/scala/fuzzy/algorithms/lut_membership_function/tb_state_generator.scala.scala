@@ -13,7 +13,8 @@ class StateGeneratorTest extends AnyFlatSpec with ChiselScalatestTester {
 
     test(
       new StateGenerator(
-        true // DesignConsts.ENABLE_DEBUG
+        true, // DesignConsts.ENABLE_DEBUG
+        StateGenSamples.numberOfBits
       )
     ) { dut =>
       //
@@ -47,6 +48,7 @@ class StateGeneratorTest extends AnyFlatSpec with ChiselScalatestTester {
 
       dut.io.in.poke(1.U)
       dut.clock.step(1)
+      dut.clock.step(10)
     }
   }
 }

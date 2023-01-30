@@ -51,3 +51,14 @@ object TestingSample {
 
   val comparator_test_len = comparator_test1.replace(" ", "").length
 }
+
+/** @brief
+  *   The testing samples for state generator
+  */
+object StateGenSamples {
+
+  //
+  // State samples
+  //
+  val numberOfBits = 4
+}
