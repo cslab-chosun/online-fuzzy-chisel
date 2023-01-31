@@ -14,9 +14,9 @@ class LutMembershipFunctionOnlineTest
   "DUT" should "pass" in {
 
     val generatedResults =
-      HashMapGenerator.generate(true)
+      HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
 
-    if (true) {
+    if (DesignConsts.ENABLE_DEBUG) {
       println(
         s"bitCount: ${generatedResults._1}, delta: ${generatedResults._2}"
       )
@@ -24,7 +24,7 @@ class LutMembershipFunctionOnlineTest
 
     test(
       new LutMembershipFunctionOnline(
-        true,
+        DesignConsts.ENABLE_DEBUG,
         generatedResults._1,
         generatedResults._2,
         generatedResults._3,
@@ -35,7 +35,8 @@ class LutMembershipFunctionOnlineTest
       // First, start with module in an inactive state, and reactive it
       //
 
-      val testNumbers = Array(18, 6, 30, 0, 31, 22).map(_.U)
+      val testNumbers =
+        Array.tabulate(math.pow(2, generatedResults._1).toInt)(i => i).map(_.U)
 
       for (loop <- 0 until testNumbers.length) {
 
@@ -45,6 +46,15 @@ class LutMembershipFunctionOnlineTest
         dut.io.start.poke(0.U)
         dut.clock.step(1)
         dut.io.start.poke(1.U)
+
+        //
+        // Show the number
+        //
+        if (true) {
+          println(
+            s"[*] testing number: 0x${testNumbers(loop).litValue.toInt.toHexString}"
+          )
+        }
 
         //
         // Set the test bits
@@ -61,7 +71,7 @@ class LutMembershipFunctionOnlineTest
         //
         // Delta bits
         //
-        dut.clock.step(generatedResults._3)
+        dut.clock.step(generatedResults._3 - 1)
 
       }
 
