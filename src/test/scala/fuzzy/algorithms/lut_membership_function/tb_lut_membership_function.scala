@@ -13,11 +13,15 @@ class LutMembershipFunctionOnlineTest
     with ChiselScalatestTester {
   "DUT" should "pass" in {
 
+    val generatedResults =
+      HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
+
     test(
       new LutMembershipFunctionOnline(
         DesignConsts.ENABLE_DEBUG,
-        DesignConsts.LUT_MEM_FUNCTION_BIT_COUNT,
-        DesignConsts.LUT_MEM_FUNCTION_DELTA
+        generatedResults._1,
+        generatedResults._2,
+        generatedResults._3
       )
     ) { dut =>
       for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
@@ -34,19 +38,26 @@ class LutMembershipFunctionOnlineTest
         dut.io.start.poke(1.U)
 
         //
-        // Disable the exported early termination
+        // Set the test bits
         //
         dut.io.inputBit.poke(1.U)
-        dut.io.inputBit.poke(0.U)
-        dut.io.inputBit.poke(1.U)
-        dut.io.inputBit.poke(0.U)
-        dut.io.inputBit.poke(1.U)
-        dut.io.inputBit.poke(0.U)
-        dut.io.inputBit.poke(1.U)
+        dut.clock.step(1)
 
-        //
-        // Stepping clock for further tests
-        //
+        dut.io.inputBit.poke(0.U)
+        dut.clock.step(1)
+
+        dut.io.inputBit.poke(0.U)
+        dut.clock.step(1)
+
+        dut.io.inputBit.poke(0.U)
+        dut.clock.step(1)
+
+        dut.io.inputBit.poke(1.U)
+        dut.clock.step(1)
+
+        dut.io.inputBit.poke(1.U)
+        dut.clock.step(1)
+
         dut.clock.step(10)
       }
     }
