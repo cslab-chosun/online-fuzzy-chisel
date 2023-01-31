@@ -191,7 +191,7 @@ class LutMembershipFunctionOnline(
   //
   // Transition rules
   //
-  when(io.start) {
+  when(io.start === true.B) {
 
     //
     // Status transition
@@ -287,6 +287,16 @@ class LutMembershipFunctionOnline(
 
       }
     }
+  }.otherwise {
+
+    //
+    // Reset the state
+    //
+    state := sStarted
+    i := 0.U
+    counter := 0.U
+    outResult := 0.U
+    outResultValid := false.B
   }
 
   //
