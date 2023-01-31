@@ -70,6 +70,7 @@ object HashMapGenerator {
 
     val m = 4
     val n = 5
+
     val nToPow2 = Math.pow(2, n).toInt
 
     val array = Array.ofDim[Boolean](nToPow2, m)
@@ -140,7 +141,7 @@ object HashMapGenerator {
       }
     }
 
-    return (n, Delta, HashMap)
+    return (m, Delta, HashMap)
   }
 }
 
@@ -174,7 +175,9 @@ class LutMembershipFunctionOnline(
   val sStarted :: sFinished :: Nil = Enum(2)
   val state = RegInit(sStarted)
 
-  val i = RegInit(0.U(log2Ceil(math.pow(2, bitCount).toInt).W))
+  val i = RegInit(
+    0.U(log2Ceil(math.pow(2, bitCount).toInt).W)
+  ) // at first, we're in the 0th state
 
   val buffer = Reg(Vec(bitCount, UInt(1.W)))
 
@@ -189,20 +192,6 @@ class LutMembershipFunctionOnline(
   when(io.start) {
 
     //
-    // Output result
-    //
-    when(counter < (bitCount + delta).U) {
-      when(counter < delta.U) {
-        outResultValid := false.B
-        outResult := 0.U
-      }.elsewhen(counter >= delta.U) {
-        outResultValid := true.B
-        outResult := buffer(counter - delta.U)
-      }
-      counter := counter + 1.U
-    }
-
-    //
     // State transition
     //
     switch(state) {
@@ -215,22 +204,46 @@ class LutMembershipFunctionOnline(
         when(counter < bitCount.U) {
 
           hashMap.foreach { case (key, value) =>
-            when(state === key._1.U) {
+            when(i === key._1.U) {
 
               when(io.inputBit === key._2.U) {
 
                 buffer(key._3) := (value.U(1.W))
+
+                if (debug) {
+                  println(s"debug, save into buffer(${key._3}) := ${value}")
+                }
               }
             }
           }
         }
 
-        //
-        // State transition
-        //
         when(counter < (bitCount + delta).U) {
 
+          counter := counter + 1.U
+
+          //
+          // Output result
+          //
+          when(counter < delta.U) {
+            outResultValid := false.B
+            outResult := 0.U
+          }.elsewhen(counter >= delta.U) {
+            outResultValid := true.B
+            outResult := buffer(counter - delta.U)
+          }
+
+          //
+          // State transition
+          //
           when(i < (math.pow(2, bitCount - 1).toInt - 1).U) {
+
+            if (debug) {
+              printf(
+                "debugggggggggggggggggggggggggggggggggggggggggggggggggggggg, state transition: 0x%x\n",
+                i
+              )
+            }
 
             when(io.inputBit === 0.U) {
               i := 2.U * i + 1.U

@@ -14,52 +14,53 @@ class LutMembershipFunctionOnlineTest
   "DUT" should "pass" in {
 
     val generatedResults =
-      HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
+      HashMapGenerator.generate(true)
+
+    if (true) {
+      println(
+        s"bitCount: ${generatedResults._1}, delta: ${generatedResults._2}"
+      )
+    }
 
     test(
       new LutMembershipFunctionOnline(
-        DesignConsts.ENABLE_DEBUG,
+        true,
         generatedResults._1,
         generatedResults._2,
         generatedResults._3
       )
     ) { dut =>
-      for (loop <- 0 until DesignConsts.MULTIPLE_TEST) {
+      //
+      // First, start with module in an inactive state
+      //
+      dut.io.start.poke(0.U)
+      dut.clock.step(10)
 
-        //
-        // First, start with module in an inactive state
-        //
-        dut.io.start.poke(0.U)
-        dut.clock.step(10)
+      //
+      // Activate the start bit
+      //
+      dut.io.start.poke(1.U)
 
-        //
-        // Activate the start bit
-        //
-        dut.io.start.poke(1.U)
+      //
+      // Set the test bits
+      //
+      dut.io.inputBit.poke(1.U) // 0
+      dut.clock.step(1)
 
-        //
-        // Set the test bits
-        //
-        dut.io.inputBit.poke(1.U)
-        dut.clock.step(1)
+      dut.io.inputBit.poke(0.U) // 2
+      dut.clock.step(1)
 
-        dut.io.inputBit.poke(0.U)
-        dut.clock.step(1)
+      dut.io.inputBit.poke(0.U) // 5
+      dut.clock.step(1)
 
-        dut.io.inputBit.poke(0.U)
-        dut.clock.step(1)
+      dut.io.inputBit.poke(0.U) // 11
+      dut.clock.step(1)
 
-        dut.io.inputBit.poke(0.U)
-        dut.clock.step(1)
+      dut.io.inputBit.poke(0.U) // 23
+      dut.clock.step(1)
 
-        dut.io.inputBit.poke(1.U)
-        dut.clock.step(1)
+      dut.clock.step(10)
 
-        dut.io.inputBit.poke(1.U)
-        dut.clock.step(1)
-
-        dut.clock.step(10)
-      }
     }
   }
 }
