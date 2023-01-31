@@ -65,6 +65,7 @@ object HashMapGenerator {
   ): (
       Int,
       Int,
+      Int,
       scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
   ) = {
 
@@ -141,13 +142,14 @@ object HashMapGenerator {
       }
     }
 
-    return (m, Delta, HashMap)
+    return (n, m, Delta, HashMap)
   }
 }
 
 class LutMembershipFunctionOnline(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
     bitCount: Int,
+    outputBitCount: Int,
     delta: Int,
     hashMap: scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
 ) extends Module {
@@ -192,7 +194,7 @@ class LutMembershipFunctionOnline(
   when(io.start) {
 
     //
-    // State transition
+    // Status transition
     //
     switch(state) {
 
@@ -218,9 +220,7 @@ class LutMembershipFunctionOnline(
           }
         }
 
-        when(counter < (bitCount + delta).U) {
-
-          counter := counter + 1.U
+        when(counter < (outputBitCount + delta).U) {
 
           //
           // Output result
@@ -231,6 +231,13 @@ class LutMembershipFunctionOnline(
           }.elsewhen(counter >= delta.U) {
             outResultValid := true.B
             outResult := buffer(counter - delta.U)
+            if (debug) {
+              printf(
+                "debug, set buffer to output buffer(%d), counter = %d\n",
+                counter - delta.U,
+                counter
+              )
+            }
           }
 
           //
@@ -240,7 +247,7 @@ class LutMembershipFunctionOnline(
 
             if (debug) {
               printf(
-                "debugggggggggggggggggggggggggggggggggggggggggggggggggggggg, state transition: 0x%x\n",
+                "debug, state transition 1: %d\n",
                 i
               )
             }
@@ -252,12 +259,21 @@ class LutMembershipFunctionOnline(
             }
 
           }.elsewhen(i < (math.pow(2, bitCount).toInt - 1).U) {
+
+            if (debug) {
+              printf(
+                "debug, state transition 2: %d\n",
+                i
+              )
+            }
             i := (math.pow(2, bitCount).toInt - 1).U
           }
 
-        }.otherwise {
+          counter := counter + 1.U
 
-          state := sFinished
+        }.otherwise {
+          outResult := 0.U
+          outResultValid := false.B
         }
 
       }
@@ -297,7 +313,8 @@ object LutMembershipFunctionOnline {
         debug,
         generatedResults._1,
         generatedResults._2,
-        generatedResults._3
+        generatedResults._3,
+        generatedResults._4
       )
     )
 

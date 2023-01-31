@@ -27,7 +27,8 @@ class LutMembershipFunctionOnlineTest
         true,
         generatedResults._1,
         generatedResults._2,
-        generatedResults._3
+        generatedResults._3,
+        generatedResults._4
       )
     ) { dut =>
       //
@@ -53,7 +54,7 @@ class LutMembershipFunctionOnlineTest
       dut.io.inputBit.poke(0.U) // 5
       dut.clock.step(1)
 
-      dut.io.inputBit.poke(0.U) // 11
+      dut.io.inputBit.poke(1.U) // 11
       dut.clock.step(1)
 
       dut.io.inputBit.poke(0.U) // 23
