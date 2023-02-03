@@ -353,3 +353,31 @@ object LutMembershipFunctionOnline {
     (outResult, outResultValid)
   }
 }
+
+object LutMemOnlineMain extends App {
+  //
+  // These lines generate the Verilog output
+  //
+  val generatedResults =
+    HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
+
+  println(
+    new (chisel3.stage.ChiselStage).emitVerilog(
+      new LutMembershipFunctionOnline(
+        DesignConsts.ENABLE_DEBUG,
+        generatedResults._1,
+        generatedResults._2,
+        generatedResults._3,
+        generatedResults._4
+      ),
+      Array(
+        "--emission-options=disableMemRandomization,disableRegisterRandomization",
+        "-e", // The intention for this argument (and next argument) is to separate generated files.
+        "verilog", // We could also use "sverilog" to generate SystemVerilog files.
+        "--target-dir",
+        "generated/",
+        "--target:fpga"
+      )
+    )
+  )
+}
