@@ -10,6 +10,15 @@ import scala.collection.immutable.ListMap
 import scala.math._
 import firrtl.FileUtils
 
+class Teeeeeeeeeeeeeeeeeeeeeessssssssssssttttttttt() extends Bundle {
+
+  val selectedInput = Bool()
+  val earlyTerminated = Bool()
+  val minMaxOutput = UInt(1.W)
+  val earlyTerminated1 = Bool()
+  val earlyTerminated2 = Bool()
+}
+
 class RegularFuzzification(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
     countOfLuts: Int = 10, // count of LUTs
@@ -20,6 +29,7 @@ class RegularFuzzification(
     lutAndInputMap: scala.collection.mutable.ListBuffer[
       (Int, Int)
     ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
+
 ) extends Module {
 
   val io = IO(new Bundle {
@@ -42,14 +52,17 @@ class RegularFuzzification(
     )
   })
 
-  def buildLookupTable(fileIndex: Int): Vec[UInt] = {
-    VecInit(FileUtils.getLines("file" + fileIndex + ".dat").map { s =>
-      BigInt(s, 16).U
-    })
-  }
+  def buildLookupTable(inputIndex: Int, lutIndex: Int): Vec[UInt] = {
 
-  val sStarted :: sFinished :: Nil = Enum(2)
-  val state = RegInit(sStarted)
+    VecInit(
+      FileUtils
+        .getLines("lut_" + inputIndex + "_" + lutIndex + ".txt")
+        .filterNot(_ == 0)
+        .map { s =>
+          BigInt(s.replace("\t", ""), 2).U // 2 is the radix
+        }
+    )
+  }
 
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(lutOutputBitCount.W)))
 
@@ -57,6 +70,20 @@ class RegularFuzzification(
   val outResult = RegInit(false.B)
 
   Int lutIndex = 0
+  Int numberOfMins = 0
+
+  //
+  // Compute the length of mins
+  //
+  lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
+    if (numberOfMins == 0) {
+      numberOfMins = numberOfLuts
+    } else {
+      numberOfMins = numberOfMins * numberOfLuts
+    }
+  }
+
+  val regMinVec = Reg(Vec(numberOfMins, UInt(lutOutputBitCount.W)))
 
   //
   // Transition rules
@@ -66,51 +93,61 @@ class RegularFuzzification(
     //
     // Status transition
     //
-    switch(state) {
+    lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
+      //
+      // Create multiple LUTs
+      //
+      for (i <- 0 until numberOfLuts) {
 
-      is(sStarted) {
+        val lut = buildLookupTable(lutIndex)
 
-        lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
-          //
-          // Create multiple LUTs
-          //
-          for (i <- 0 until numberOfLuts) {
+        regLutResultsVec(lutIndex) := lut(
+          io.input(inputNumber.U)
+        ) // Value read from the LUT
 
-            val lut = buildLookupTable(lutIndex)
+        lutIndex = lutIndex + 1
 
-            regLutResultsVec(lutIndex) := lut(
-              io.input(inputNumber.U)
-            ) // Value read from the LUT
-
-            lutIndex = lutIndex + 1
-
-            if (debug) {
-              println(
-                s"input number: ${inputNumber} - mapped to LUT: ${lutIndex}"
-              )
-            }
-
-          }
-
+        if (debug) {
+          println(
+            s"input number: ${inputNumber} - mapped to LUT: ${lutIndex}"
+          )
         }
-
       }
 
-      is(sFinished) {
+    }
 
-        //
-        // Wait here
-        //
-        state := sFinished
+    //
+    // TODO : Generalize the selection of values
+    // -------------------------------------------------------------------------------
+    //
 
+    //
+    // Getting the minimum of vectors (first round)
+    //
+    for (i <- 0 until 5) {
+
+      for (j <- 0 until 5) {
+
+        regMinVec(j) := Comparator(debug, false, lutOutputBitCount)(
+          io.start,
+          regLutResultsVec(j),
+          regLutResultsVec(i)
+        )
       }
     }
+
+    //
+    // -------------------------------------------------------------------------------
+    //
+
+    //
+    // Getting the maximum of numbers
+    //
   }.otherwise {
 
     //
     // Reset the state
     //
-    state := sStarted
     outResult := 0.U
     outResultValid := false.B
   }
