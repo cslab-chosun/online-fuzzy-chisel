@@ -19,6 +19,36 @@ class Teeeeeeeeeeeeeeeeeeeeeessssssssssssttttttttt() extends Bundle {
   val earlyTerminated2 = Bool()
 }
 
+object ReadInputAndLutDescription {
+
+  def apply(filePath: String): (
+      Boolean,
+      Int,
+      Int,
+      Int,
+      Int,
+      Int,
+      scala.collection.mutable.ListBuffer[(Int, Int)]
+  ) = {
+    val source = scala.io.Source.fromFile(filePath)
+    val lines = source.getLines()
+    val debug = lines.next().toBoolean
+    val a = lines.next().toInt
+    val b = lines.next().toInt
+    val c = lines.next().toInt
+    val d = lines.next().toInt
+    val e = lines.next().toInt
+    val lut = scala.collection.mutable.ListBuffer[(Int, Int)]()
+    for (line <- lines) {
+      val pair = line.split(",")
+      lut += ((pair(0).toInt, pair(1).toInt))
+    }
+    source.close()
+
+    (debug, a, b, c, d, e, lut)
+  }
+}
+
 class RegularFuzzification(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
     countOfLuts: Int = 10, // count of LUTs
@@ -53,14 +83,24 @@ class RegularFuzzification(
   })
 
   def buildLookupTable(inputIndex: Int, lutIndex: Int): Vec[UInt] = {
+    val fileName =
+      "src/main/resources/lut/lut_" + inputIndex + "_" + lutIndex + ".txt"
+
+    FileUtils
+      .getLines(fileName)
+      .drop(1)
+      .foreach { s =>
+        println(s"Line from file $fileName: ${s.trim}")
+      }
 
     VecInit(
       FileUtils
-        .getLines("lut_" + inputIndex + "_" + lutIndex + ".txt")
-        .filterNot(_ == 0)
+        .getLines(fileName)
+        .drop(1)
         .map { s =>
-          BigInt(s.replace("\t", ""), 2).U // 2 is the radix
+          BigInt(s.trim.replace("\t", ""), 2).U // 2 is the radix
         }
+        .toSeq
     )
   }
 
@@ -69,8 +109,8 @@ class RegularFuzzification(
   val outResultValid = RegInit(false.B)
   val outResult = RegInit(false.B)
 
-  Int lutIndex = 0
-  Int numberOfMins = 0
+  var lutIndex: Int = 0
+  var numberOfMins: Int = 0
 
   //
   // Compute the length of mins
@@ -99,7 +139,7 @@ class RegularFuzzification(
       //
       for (i <- 0 until numberOfLuts) {
 
-        val lut = buildLookupTable(lutIndex)
+        val lut = buildLookupTable(inputNumber, i)
 
         regLutResultsVec(lutIndex) := lut(
           io.input(inputNumber.U)
@@ -109,7 +149,7 @@ class RegularFuzzification(
 
         if (debug) {
           println(
-            s"input number: ${inputNumber} - mapped to LUT: ${lutIndex}"
+            s"input number: ${inputNumber} - mapped to LUT: lut_${inputNumber}_${i}.txt - LUT Index: ${lutIndex}"
           )
         }
       }
@@ -117,7 +157,7 @@ class RegularFuzzification(
     }
 
     //
-    // TODO : Generalize the selection of values
+    // TODO: Generalize the selection of values
     // -------------------------------------------------------------------------------
     //
 
@@ -140,9 +180,6 @@ class RegularFuzzification(
     // -------------------------------------------------------------------------------
     //
 
-    //
-    // Getting the maximum of numbers
-    //
   }.otherwise {
 
     //
@@ -165,13 +202,21 @@ object RegularFuzzification {
   def apply(
       debug: Boolean = DesignConsts.ENABLE_DEBUG
   )(
-      inputBit: UInt,
+      input: UInt,
       start: Bool
   ): (UInt, Bool) = {
 
+    val config = ReadInputAndLutDescription("src/main/resources/lut/config.txt")
+
     val fuzzification = Module(
       new RegularFuzzification(
-        debug
+        config._1,
+        config._2,
+        config._3,
+        config._4,
+        config._5,
+        config._6,
+        config._7
       )
     )
 
@@ -186,7 +231,7 @@ object RegularFuzzification {
     //
     // Input
     //
-    fuzzification.io.inputBit := inputBit
+    fuzzification.io.input := input
 
     //
     // Output
@@ -199,4 +244,33 @@ object RegularFuzzification {
     //
     (outResult, outResultValid)
   }
+}
+
+object RegularFuzzificationMain extends App {
+  //
+  // These lines generate the Verilog output
+  //
+  val config = ReadInputAndLutDescription("src/main/resources/lut/config.txt")
+
+  println(
+    new (chisel3.stage.ChiselStage).emitVerilog(
+      new RegularFuzzification(
+        config._1,
+        config._2,
+        config._3,
+        config._4,
+        config._5,
+        config._6,
+        config._7
+      ),
+      Array(
+        "--emission-options=disableMemRandomization,disableRegisterRandomization",
+        "-e", // The intention for this argument (and next argument) is to separate generated files.
+        "verilog", // We could also use "sverilog" to generate SystemVerilog files.
+        "--target-dir",
+        "generated/",
+        "--target:fpga"
+      )
+    )
+  )
 }
