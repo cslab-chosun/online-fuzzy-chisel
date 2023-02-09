@@ -10,6 +10,8 @@ import scala.collection.immutable.ListMap
 import scala.math._
 import firrtl.FileUtils
 
+import scala.collection.mutable.ListBuffer
+
 class Teeeeeeeeeeeeeeeeeeeeeessssssssssssttttttttt() extends Bundle {
 
   val selectedInput = Bool()
@@ -86,12 +88,14 @@ class RegularFuzzification(
     val fileName =
       "src/main/resources/lut/lut_" + inputIndex + "_" + lutIndex + ".txt"
 
-    FileUtils
-      .getLines(fileName)
-      .drop(1)
-      .foreach { s =>
-        println(s"Line from file $fileName: ${s.trim}")
-      }
+    if (debug) {
+      FileUtils
+        .getLines(fileName)
+        .drop(1)
+        .foreach { s =>
+          println(s"Line from file $fileName: ${s.trim}")
+        }
+    }
 
     VecInit(
       FileUtils
@@ -157,23 +161,56 @@ class RegularFuzzification(
     }
 
     //
-    // TODO: Generalize the selection of values
+    // TODO: Generalize the selection, currently generalized into two inputs
     // -------------------------------------------------------------------------------
     //
+
+    val listOfConnections = ListBuffer[(Int, Int)]()
+
+    //
+    // Create connections for the first LUT
+    //
+    for (i <- 0 until lutAndInputMap(0)._2) {
+
+      for (j <- 0 until numberOfMins / lutAndInputMap(0)._2) {
+
+        listOfConnections += ((i, (i * lutAndInputMap(0)._2) + j))
+      }
+    }
+
+    //
+    // Create connections for the second LUT
+    //
+    for (i <- 0 until lutAndInputMap(1)._2) {
+
+      for (j <- 0 until numberOfMins / lutAndInputMap(1)._2) {
+
+        listOfConnections += ((
+          i + lutAndInputMap(0)._2,
+          j * lutAndInputMap(1)._2 + i
+        ))
+      }
+
+    }
+
+    // iterate over the elements
+
+    if (debug) {
+      listOfConnections.foreach { case (x, y) =>
+        println(s"Connection: ($x, $y)")
+      }
+    }
 
     //
     // Getting the minimum of vectors (first round)
     //
-    for (i <- 0 until 5) {
+    for (i <- 0 until numberOfMins) {
 
-      for (j <- 0 until 5) {
-
-        regMinVec(j) := Comparator(debug, false, lutOutputBitCount)(
-          io.start,
-          regLutResultsVec(j),
-          regLutResultsVec(i)
-        )
-      }
+      regMinVec(i) := Comparator(debug, false, lutOutputBitCount)(
+        io.start,
+        listOfConnections(i)._1.U,
+        listOfConnections(i)._2.U
+      )
     }
 
     //
