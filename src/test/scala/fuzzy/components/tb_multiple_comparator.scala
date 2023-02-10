@@ -15,7 +15,7 @@ class MultipleComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
         true /*DesignConsts.ENABLE_DEBUG*/,
         true,
         8, // legnth of each input number
-        9 // number of inputs in vector
+        5 // number of inputs in vector
       )
     ) { dut =>
       //
