@@ -23,16 +23,19 @@ class Teeeeeeeeeeeeeeeeeeeeeessssssssssssttttttttt() extends Bundle {
 
 object ReadInputAndLutDescription {
 
-  def apply(filePath: String): (
+  def apply(configFilePath: String, maxConnFilePath: String): (
       Boolean,
       Int,
       Int,
       Int,
       Int,
       Int,
+      scala.collection.mutable.ListBuffer[(Int, Int)],
       scala.collection.mutable.ListBuffer[(Int, Int)]
   ) = {
-    val source = scala.io.Source.fromFile(filePath)
+    val source = scala.io.Source.fromFile(configFilePath)
+    val source2 = scala.io.Source.fromFile(maxConnFilePath)
+
     val lines = source.getLines()
     val debug = lines.next().toBoolean
     val a = lines.next().toInt
@@ -40,6 +43,10 @@ object ReadInputAndLutDescription {
     val c = lines.next().toInt
     val d = lines.next().toInt
     val e = lines.next().toInt
+
+    //
+    // Create input and lut coumt list
+    //
     val lut = scala.collection.mutable.ListBuffer[(Int, Int)]()
     for (line <- lines) {
       val pair = line.split(",")
@@ -47,7 +54,17 @@ object ReadInputAndLutDescription {
     }
     source.close()
 
-    (debug, a, b, c, d, e, lut)
+    //
+    // Create max connection count
+    //
+    val max = scala.collection.mutable.ListBuffer[(Int, Int)]()
+    for (line <- lines) {
+      val pair = line.split(",")
+      max += ((pair(0).toInt, pair(1).toInt))
+    }
+    source2.close()
+
+    (debug, a, b, c, d, e, lut, max)
   }
 }
 
@@ -60,8 +77,10 @@ class RegularFuzzification(
     lutOutputBitCount: Int = 4, // equal to m
     lutAndInputMap: scala.collection.mutable.ListBuffer[
       (Int, Int)
+    ], // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
+    maxConnectionMap: scala.collection.mutable.ListBuffer[
+      (Int, Int)
     ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
-
 ) extends Module {
 
   val io = IO(new Bundle {
@@ -163,8 +182,10 @@ class RegularFuzzification(
     //
     // TODO: Generalize the selection, currently generalized into two inputs
     // -------------------------------------------------------------------------------
-    //
 
+    //
+    // *** Connecting LUTs to Mins
+    //
     val listOfConnections = ListBuffer[(Int, Int)]()
 
     //
@@ -192,9 +213,12 @@ class RegularFuzzification(
       }
 
     }
+    // -------------------------------------------------------------------------------
+    //
 
+    //
     // iterate over the elements
-
+    //
     if (debug) {
       listOfConnections.foreach { case (x, y) =>
         println(s"Connection: ($x, $y)")
@@ -202,7 +226,7 @@ class RegularFuzzification(
     }
 
     //
-    // Getting the minimum of vectors (first round)
+    // Connecting Minimums
     //
     for (i <- 0 until numberOfMins) {
 
@@ -214,8 +238,39 @@ class RegularFuzzification(
     }
 
     //
-    // -------------------------------------------------------------------------------
+    // *** Creating connections for Maximums ***
     //
+
+    var maximumCountOfMaximums: Int = 0 // used for computing the delay cycles
+
+    maxConnectionMap.foreach { case (minimumVectorIndex, maximumVectorIndex) =>
+      var tempMaximumCountOfMaximums: Int = 0
+
+      //
+      // Compute count of maximums for a special index
+      //
+      maxConnectionMap.foreach {
+        case (minimumVectorIndex2, maximumVectorIndex2) =>
+          if (maximumVectorIndex == maximumVectorIndex2) {
+
+            tempMaximumCountOfMaximums = tempMaximumCountOfMaximums + 1
+          }
+      }
+
+      //
+      // Check to find the maximum connection to the MAX inputs
+      // This is because we will need to now the time we need to
+      // wait in the coming cycles
+      //
+      if (tempMaximumCountOfMaximums > maximumCountOfMaximums) {
+
+        //
+        // Change the maximum path
+        //
+        maximumCountOfMaximums = tempMaximumCountOfMaximums
+      }
+
+    }
 
   }.otherwise {
 
@@ -243,7 +298,10 @@ object RegularFuzzification {
       start: Bool
   ): (UInt, Bool) = {
 
-    val config = ReadInputAndLutDescription("src/main/resources/lut/config.txt")
+    val config = ReadInputAndLutDescription(
+      "src/main/resources/lut/config.txt",
+      "src/main/resources/lut/max.txt"
+    )
 
     val fuzzification = Module(
       new RegularFuzzification(
@@ -253,7 +311,8 @@ object RegularFuzzification {
         config._4,
         config._5,
         config._6,
-        config._7
+        config._7,
+        config._8
       )
     )
 
@@ -287,7 +346,10 @@ object RegularFuzzificationMain extends App {
   //
   // These lines generate the Verilog output
   //
-  val config = ReadInputAndLutDescription("src/main/resources/lut/config.txt")
+  val config = ReadInputAndLutDescription(
+    "src/main/resources/lut/config.txt",
+    "src/main/resources/lut/max.txt"
+  )
 
   println(
     new (chisel3.stage.ChiselStage).emitVerilog(
@@ -298,7 +360,8 @@ object RegularFuzzificationMain extends App {
         config._4,
         config._5,
         config._6,
-        config._7
+        config._7,
+        config._8
       ),
       Array(
         "--emission-options=disableMemRandomization,disableRegisterRandomization",
