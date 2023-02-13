@@ -15,8 +15,8 @@ class MultipleComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
         true /*DesignConsts.ENABLE_DEBUG*/, true, // it's max
         true, // not index based
         8, // legnth of each input number
-        5, // number of inputs in vector
-        10
+        9, // number of inputs in vector
+        50
       )
     ) { dut =>
       //
@@ -33,15 +33,15 @@ class MultipleComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Add the input vector
       //
-      dut.io.inputs(0).poke(0x55.U)
+      dut.io.inputs(0).poke(0xb8.U)
       dut.io.inputs(1).poke(0x85.U)
-      dut.io.inputs(2).poke(0xfd.U)
+      dut.io.inputs(2).poke(0x77.U)
       dut.io.inputs(3).poke(0x55.U)
       dut.io.inputs(4).poke(0x1.U)
-      /*dut.io.inputs(5).poke(0x0.U)
-      dut.io.inputs(6).poke(0x5.U)
-      dut.io.inputs(7).poke(0x56.U)
-      dut.io.inputs(8).poke(0x56.U)*/
+      dut.io.inputs(5).poke(0xa9.U)
+      dut.io.inputs(6).poke(0xb7.U)
+      dut.io.inputs(7).poke(0xc1.U)
+      dut.io.inputs(8).poke(0xb9.U)
 
       //
       // Step the inputs
