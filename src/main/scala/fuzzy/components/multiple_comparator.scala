@@ -5,6 +5,18 @@ import chisel3.util._
 
 import fuzzy.utils._
 
+class ResultOfMinOrMax(
+    isIndexBased: Boolean =
+      false, // by should we return index of maximum value element or the value
+    numberLength: Int = DesignConsts.NUMBER_LENGTH,
+    maximumNumberOfIndex: Int = DesignConsts.NUMBER_LENGTH
+) extends Bundle {
+
+  val minMaxResult = UInt(numberLength.W)
+  val minMaxIndex = UInt(log2Ceil(maximumNumberOfIndex).W)
+
+}
+
 object LayerCompute {
 
   def Compute(debug: Boolean = DesignConsts.ENABLE_DEBUG)(
@@ -63,8 +75,11 @@ object LayerCompute {
 class MultipleComparator(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
     isMax: Boolean = true, // by default MAX Comparator
+    isIndexBased: Boolean =
+      false, // by should we return index of maximum value element or the value
     numberLength: Int = DesignConsts.NUMBER_LENGTH,
-    countOfInputs: Int = 0
+    countOfInputs: Int = 0,
+    maximumNumberOfIndex: Int = 10 // in case if isIndexBased == TRUE
 ) extends Module {
 
   //
@@ -96,10 +111,17 @@ class MultipleComparator(
   var layerCompute = LayerCompute.Compute(debug)(countOfInputs)
 
   val regMinMaxResultVec = Reg(
-    Vec(layerCompute._1, UInt(numberLength.W))
+    Vec(
+      layerCompute._1,
+      new ResultOfMinOrMax(isIndexBased, numberLength, maximumNumberOfIndex)
+    )
   )
 
-  maxMinOutput := regMinMaxResultVec(layerCompute._1 - 2)
+  if (!isIndexBased) {
+    maxMinOutput := regMinMaxResultVec(layerCompute._1 - 2).minMaxResult
+  } else {
+    maxMinOutput := regMinMaxResultVec(layerCompute._1 - 2).minMaxIndex
+  }
 
   LogInfo(debug)(
     "final max layer (result vector index): " + (layerCompute._1 - 2)
@@ -121,15 +143,32 @@ class MultipleComparator(
         //
         // Connect inputs
         //
-        regMinMaxResultVec(i) := Comparator(
-          false /*debug*/,
-          isMax,
-          numberLength
-        )(
-          io.start,
-          io.inputs(i * 2),
-          io.inputs(i * 2 + 1)
-        )
+        if (!isIndexBased) {
+          regMinMaxResultVec(i).minMaxResult := Comparator(
+            false /*debug*/,
+            isMax,
+            numberLength
+          )(
+            io.start,
+            io.inputs(i * 2),
+            io.inputs(i * 2 + 1)
+          )
+        } else {
+
+          val comparatorOutput = Comparator.apply2(
+            false /*debug*/,
+            isMax,
+            numberLength
+          )(
+            io.start,
+            io.inputs(i * 2),
+            io.inputs(i * 2 + 1),
+            (i * 2).U,
+            (i * 2 + 1).U
+          )
+          regMinMaxResultVec(i).minMaxResult := comparatorOutput._1
+          regMinMaxResultVec(i).minMaxIndex := comparatorOutput._2
+        }
 
         LogInfo(debug)(
           "connecting inputs(" + (i * 2) + ") and input(" + (i * 2 + 1) + ") to regMinMaxResultVec(" + i + ")"
@@ -146,30 +185,70 @@ class MultipleComparator(
           //
           // This is the last comparator with odd inputs
           //
-          regMinMaxResultVec(i - 1) := Comparator(
-            false /*debug*/,
-            isMax,
-            numberLength
-          )(
-            io.start,
-            regMinMaxResultVec(temp - 2),
-            io.inputs(countOfInputs - 1)
-          )
+          if (!isIndexBased) {
+
+            regMinMaxResultVec(i - 1).minMaxResult := Comparator(
+              false /*debug*/,
+              isMax,
+              numberLength
+            )(
+              io.start,
+              regMinMaxResultVec(temp - 2).minMaxResult,
+              io.inputs(countOfInputs - 1)
+            )
+          } else {
+
+            val comparatorOutput = Comparator.apply2(
+              false /*debug*/,
+              isMax,
+              numberLength
+            )(
+              io.start,
+              regMinMaxResultVec(temp - 2).minMaxResult,
+              io.inputs(countOfInputs - 1),
+              regMinMaxResultVec(temp - 2).minMaxIndex,
+              (countOfInputs - 1).U
+            )
+
+            regMinMaxResultVec(i - 1).minMaxResult := comparatorOutput._1
+            regMinMaxResultVec(i - 1).minMaxIndex := comparatorOutput._2
+
+          }
 
           LogInfo(debug)(
             "connecting odd (exceptional) regMinMaxResultVec(" + (temp - 2) + ") and inputs(" + (countOfInputs - 1) + ") to regMinMaxResultVec(" + (i - 1) + ")"
           )
 
         } else if (i != temp + 1) {
-          regMinMaxResultVec(i) := Comparator(
-            false /*debug*/,
-            isMax,
-            numberLength
-          )(
-            io.start,
-            regMinMaxResultVec(temp),
-            regMinMaxResultVec(temp + 1)
-          )
+
+          if (!isIndexBased) {
+            regMinMaxResultVec(i).minMaxResult := Comparator(
+              false /*debug*/,
+              isMax,
+              numberLength
+            )(
+              io.start,
+              regMinMaxResultVec(temp).minMaxResult,
+              regMinMaxResultVec(temp + 1).minMaxResult
+            )
+          } else {
+
+            val comparatorOutput = Comparator.apply2(
+              false /*debug*/,
+              isMax,
+              numberLength
+            )(
+              io.start,
+              regMinMaxResultVec(temp).minMaxResult,
+              regMinMaxResultVec(temp + 1).minMaxResult,
+              regMinMaxResultVec(temp).minMaxIndex,
+              regMinMaxResultVec(temp + 1).minMaxIndex
+            )
+
+            regMinMaxResultVec(i).minMaxResult := comparatorOutput._1
+            regMinMaxResultVec(i).minMaxIndex := comparatorOutput._2
+
+          }
 
           LogInfo(debug)(
             "connecting regMinMaxResultVec(" + temp + ") and regMinMaxResultVec(" + (temp + 1) + ") to regMinMaxResultVec(" + i + ")"
@@ -201,15 +280,25 @@ object MultipleComparator {
   def apply(
       debug: Boolean = DesignConsts.ENABLE_DEBUG,
       isMax: Boolean = true, // by default MAX Comparator
+      isIndexBased: Boolean =
+        false, // by should we return index of maximum value element or the value
       numberLength: Int = DesignConsts.NUMBER_LENGTH,
-      countOfInputs: Int = 5
+      countOfInputs: Int = 5,
+      maximumNumberOfIndex: Int = 10 // in case if isIndexBased == TRUE
   )(
       start: Bool,
       inputs: Vec[UInt]
   ): UInt = {
 
     val comparatorModule = Module(
-      new MultipleComparator(debug, isMax, numberLength, countOfInputs)
+      new MultipleComparator(
+        debug,
+        isMax,
+        isIndexBased,
+        numberLength,
+        countOfInputs,
+        maximumNumberOfIndex
+      )
     )
 
     val result = Wire(UInt(numberLength.W))

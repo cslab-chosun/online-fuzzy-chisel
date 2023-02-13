@@ -12,15 +12,6 @@ import firrtl.FileUtils
 
 import scala.collection.mutable.ListBuffer
 
-class Teeeeeeeeeeeeeeeeeeeeeessssssssssssttttttttt() extends Bundle {
-
-  val selectedInput = Bool()
-  val earlyTerminated = Bool()
-  val minMaxOutput = UInt(1.W)
-  val earlyTerminated1 = Bool()
-  val earlyTerminated2 = Bool()
-}
-
 object ReadInputAndLutDescription {
 
   def apply(configFilePath: String, maxConnFilePath: String): (
@@ -306,16 +297,18 @@ class RegularFuzzification(
         regMaxVec(maximumVectorIndex) := MultipleComparator(
           debug,
           true,
+          false, // not index-based
           lutOutputBitCount,
-          tempMaximumCountOfMaximums
+          tempMaximumCountOfMaximums,
+          1 // not used, we set it to one to allocate one bit for the datatype of callee
         )(
           io.start,
           finalConnVector
         )
+
         //
         // Log
-        // println()
-
+        //
         LogInfo(debug)(
           s"regMaxVec(${maximumVectorIndex}) <= Max(" + minConnectionsElements
             .mkString("minConnectionsElements(", ", ", ")") + ")"
