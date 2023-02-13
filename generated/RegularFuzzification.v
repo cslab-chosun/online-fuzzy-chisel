@@ -7,8 +7,8 @@ module RegularFuzzification(
   output       io_outResultValid,
   output       io_outResult
 );
-  assign io_outResultValid = 1'h0; // @[regular_fuzzification.scala 231:21]
-  assign io_outResult = 1'h0; // @[regular_fuzzification.scala 230:16]
+  assign io_outResultValid = 1'h0; // @[regular_fuzzification.scala 358:21]
+  assign io_outResult = 1'h0; // @[regular_fuzzification.scala 357:16]
   always @(posedge clock) begin
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND

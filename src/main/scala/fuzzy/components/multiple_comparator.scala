@@ -47,9 +47,11 @@ object LayerCompute {
       tempComparatorCount = tempComparatorCount + 1
       delayCycles = delayCycles + 1
     }
-
-    LogInfo(debug)("number of needed comparators: " + tempComparatorCount)
-    LogInfo(debug)("dbg, delay cycles: " + delayCycles)
+    LogInfo(debug)("multiple comparator | count of inputs: " + countOfInputs)
+    LogInfo(debug)(
+      "multiple comparator | number of needed comparators: " + tempComparatorCount
+    )
+    LogInfo(debug)("multiple comparator | delay cycles: " + delayCycles)
 
     //
     // Return the number of needed comparators and delays
@@ -100,7 +102,7 @@ class MultipleComparator(
   maxMinOutput := regMinMaxResultVec(layerCompute._1 - 2)
 
   LogInfo(debug)(
-    "final max layer: " + (layerCompute._1 - 2)
+    "final max layer (result vector index): " + (layerCompute._1 - 2)
   )
 
   when(io.start) {

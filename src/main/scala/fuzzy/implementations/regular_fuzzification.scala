@@ -58,7 +58,8 @@ object ReadInputAndLutDescription {
     // Create max connection count
     //
     val max = scala.collection.mutable.ListBuffer[(Int, Int)]()
-    for (line <- lines) {
+    val lines2 = source2.getLines()
+    for (line <- lines2) {
       val pair = line.split(",")
       max += ((pair(0).toInt, pair(1).toInt))
     }
@@ -112,7 +113,7 @@ class RegularFuzzification(
         .getLines(fileName)
         .drop(1)
         .foreach { s =>
-          println(s"Line from file $fileName: ${s.trim}")
+          LogInfo(debug)(s"Line from file $fileName: ${s.trim}")
         }
     }
 
@@ -149,6 +150,20 @@ class RegularFuzzification(
   val regMinVec = Reg(Vec(numberOfMins, UInt(lutOutputBitCount.W)))
 
   //
+  // Compute the number of maxs
+  //
+  var numberOfMaxs: Int = 0
+  var alreadyCountedMaxList = new ListBuffer[Int]()
+
+  maxConnectionMap.foreach { case (minimumVectorIndex, maximumVectorIndex) =>
+    if (!alreadyCountedMaxList.contains(maximumVectorIndex)) {
+      numberOfMaxs += 1
+    }
+  }
+
+  val regMaxVec = Reg(Vec(numberOfMaxs, UInt(lutOutputBitCount.W)))
+
+  //
   // Transition rules
   //
   when(io.start === true.B) {
@@ -170,11 +185,9 @@ class RegularFuzzification(
 
         lutIndex = lutIndex + 1
 
-        if (debug) {
-          println(
-            s"input number: ${inputNumber} - mapped to LUT: lut_${inputNumber}_${i}.txt - LUT Index: ${lutIndex}"
-          )
-        }
+        LogInfo(debug)(
+          s"input number: ${inputNumber} - mapped to LUT: lut_${inputNumber}_${i}.txt - LUT Index: ${lutIndex}"
+        )
       }
 
     }
@@ -219,11 +232,11 @@ class RegularFuzzification(
     //
     // iterate over the elements
     //
-    if (debug) {
-      listOfConnections.foreach { case (x, y) =>
-        println(s"Connection: ($x, $y)")
-      }
+    LogInfo(debug)("")
+    listOfConnections.foreach { case (x, y) =>
+      LogInfo(debug)(s"Connection: ($x, $y)")
     }
+    LogInfo(debug)("")
 
     //
     // Connecting Minimums
@@ -235,6 +248,14 @@ class RegularFuzzification(
         listOfConnections(i)._1.U,
         listOfConnections(i)._2.U
       )
+
+      //
+      // Log
+      //
+      LogInfo(debug)(
+        s"regMinVec(${i}) <= Min( listOfConnections(${i})._1.U,   listOfConnections(${i})._2.U)"
+      )
+
     }
 
     //
@@ -242,32 +263,81 @@ class RegularFuzzification(
     //
 
     var maximumCountOfMaximums: Int = 0 // used for computing the delay cycles
+    var alreadyConnectedList = new ListBuffer[Int]()
 
     maxConnectionMap.foreach { case (minimumVectorIndex, maximumVectorIndex) =>
       var tempMaximumCountOfMaximums: Int = 0
 
-      //
-      // Compute count of maximums for a special index
-      //
-      maxConnectionMap.foreach {
-        case (minimumVectorIndex2, maximumVectorIndex2) =>
-          if (maximumVectorIndex == maximumVectorIndex2) {
-
-            tempMaximumCountOfMaximums = tempMaximumCountOfMaximums + 1
-          }
-      }
-
-      //
-      // Check to find the maximum connection to the MAX inputs
-      // This is because we will need to now the time we need to
-      // wait in the coming cycles
-      //
-      if (tempMaximumCountOfMaximums > maximumCountOfMaximums) {
+      if (!alreadyConnectedList.contains(maximumVectorIndex)) {
 
         //
-        // Change the maximum path
+        // Add this element to the list
         //
-        maximumCountOfMaximums = tempMaximumCountOfMaximums
+        alreadyConnectedList += maximumVectorIndex
+        var minConnectionsElements = new ListBuffer[Int]()
+
+        //
+        // Compute count of maximums for a special index
+        //
+        maxConnectionMap.foreach {
+
+          case (minimumVectorIndex2, maximumVectorIndex2) =>
+            if (maximumVectorIndex == maximumVectorIndex2) {
+
+              tempMaximumCountOfMaximums = tempMaximumCountOfMaximums + 1
+              minConnectionsElements += minimumVectorIndex2
+            }
+        }
+
+        LogInfo(debug)(
+          "count connections to max comparator for Max(" + maximumVectorIndex + ") is : " + tempMaximumCountOfMaximums + "\n"
+        )
+
+        //
+        // Create the maximum module circuit
+        //
+        val finalConnVector =
+          Wire(Vec(minConnectionsElements.length, UInt(lutOutputBitCount.W)))
+
+        for (i <- 0 until minConnectionsElements.length) {
+          finalConnVector(i) := regMinVec(minConnectionsElements(i))
+        }
+
+        regMaxVec(maximumVectorIndex) := MultipleComparator(
+          debug,
+          true,
+          lutOutputBitCount,
+          tempMaximumCountOfMaximums
+        )(
+          io.start,
+          finalConnVector
+        )
+        //
+        // Log
+        // println()
+
+        LogInfo(debug)(
+          s"regMaxVec(${maximumVectorIndex}) <= Max(" + minConnectionsElements
+            .mkString("minConnectionsElements(", ", ", ")") + ")"
+        )
+
+        //
+        // Check to find the maximum connection to the MAX inputs
+        // This is because we will need to now the time we need to
+        // wait in the coming cycles
+        //
+        if (tempMaximumCountOfMaximums > maximumCountOfMaximums) {
+
+          //
+          // Change the maximum path
+          //
+          maximumCountOfMaximums = tempMaximumCountOfMaximums
+        }
+
+        LogInfo(debug)(
+          "-----------------------------------------------------------------------------------"
+        )
+
       }
 
     }
