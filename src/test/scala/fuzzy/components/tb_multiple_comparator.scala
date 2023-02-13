@@ -37,10 +37,10 @@ class MultipleComparatorTest extends AnyFlatSpec with ChiselScalatestTester {
       dut.io.inputs(2).poke(0xfd.U)
       dut.io.inputs(3).poke(0x55.U)
       dut.io.inputs(4).poke(0x1.U)
-      dut.io.inputs(5).poke(0x0.U)
+      /*dut.io.inputs(5).poke(0x0.U)
       dut.io.inputs(6).poke(0x5.U)
       dut.io.inputs(7).poke(0x56.U)
-      dut.io.inputs(8).poke(0x56.U)
+      dut.io.inputs(8).poke(0x56.U)*/
 
       //
       // Step the inputs
