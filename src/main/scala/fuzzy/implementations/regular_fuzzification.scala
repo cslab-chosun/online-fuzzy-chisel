@@ -91,7 +91,10 @@ class RegularFuzzification(
     //
     val outResultValid = Output(Bool())
     val outResult = Output(
-      UInt(1.W)
+      UInt(
+        lutOutputBitCount.W
+      ) // it's actually should be log2Ceil(max index number) but as we compute it later, let
+      // it be the actual bit count of LUT
     )
   })
 
@@ -121,8 +124,8 @@ class RegularFuzzification(
 
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(lutOutputBitCount.W)))
 
-  val outResultValid = RegInit(false.B)
-  val outResult = RegInit(false.B)
+  val outResultValid = WireInit(false.B)
+  val outResult = WireInit(0.U(lutOutputBitCount.W))
 
   var lutIndex: Int = 0
   var numberOfMins: Int = 0
@@ -334,6 +337,48 @@ class RegularFuzzification(
       }
 
     }
+
+    //
+    // *** Creating connections for Maximums based on Indexes ***
+    //
+
+    val finalConnVectorForIdxBasedMax =
+      Wire(Vec(alreadyConnectedList.length, UInt(lutOutputBitCount.W)))
+
+    //
+    // Create the maximum module circuit
+    //
+
+    for (i <- 0 until alreadyConnectedList.length) {
+      finalConnVectorForIdxBasedMax(i) := regMaxVec(i)
+    }
+
+    //
+    // Log
+    //
+    LogInfo(debug)(
+      s"number of index-based maxes: ${alreadyConnectedList.length}"
+    )
+
+    outResult := MultipleComparator(
+      debug,
+      true,
+      true, // it's index-based
+      lutOutputBitCount,
+      alreadyConnectedList.length,
+      alreadyConnectedList.length // used to store the index of index
+    )(
+      io.start,
+      finalConnVectorForIdxBasedMax
+    )
+
+    //
+    // Log
+    //
+    LogInfo(debug)(
+      s"result <= Max-index(" + finalConnVectorForIdxBasedMax
+        .mkString("finalConnVectorForIdxBasedMax(", ", ", ")") + ")"
+    )
 
   }.otherwise {
 
