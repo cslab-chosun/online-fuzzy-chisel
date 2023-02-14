@@ -1,4 +1,4 @@
-package fuzzy.algorithms.lut_mem_online
+package fuzzy.algorithms.implementations
 
 import chisel3._
 import chisel3.util._
@@ -82,7 +82,7 @@ class RegularFuzzification(
     //
     val start = Input(Bool())
 
-    val input = Input(
+    val inputs = Input(
       Vec(numberOfInputs, UInt((log2Ceil(inputMax)).W))
     )
 
@@ -174,7 +174,7 @@ class RegularFuzzification(
         val lut = buildLookupTable(inputNumber, i)
 
         regLutResultsVec(lutIndex) := lut(
-          io.input(inputNumber.U)
+          io.inputs(inputNumber.U)
         ) // Value read from the LUT
 
         lutIndex = lutIndex + 1
@@ -402,8 +402,8 @@ object RegularFuzzification {
   def apply(
       debug: Boolean = DesignConsts.ENABLE_DEBUG
   )(
-      input: UInt,
-      start: Bool
+      start: Bool,
+      inputs: Vec[UInt]
   ): (UInt, Bool) = {
 
     val config = ReadInputAndLutDescription(
@@ -418,13 +418,13 @@ object RegularFuzzification {
         config._3,
         config._4,
         config._5,
-        config._6,
+        config._6, // Equals to lutOutputBitCount and SHOULD NOT CHANGE THE LOCATION OF THIS PARAMETER
         config._7,
         config._8
       )
     )
 
-    val outResult = Wire(UInt(1.W))
+    val outResult = Wire(UInt(config._6.W))
     val outResultValid = Wire(Bool())
 
     //
@@ -433,9 +433,9 @@ object RegularFuzzification {
     fuzzification.io.start := start
 
     //
-    // Input
+    // Set the Inputs vectors
     //
-    fuzzification.io.input := input
+    fuzzification.io.inputs := inputs
 
     //
     // Output
@@ -451,14 +451,18 @@ object RegularFuzzification {
 }
 
 object RegularFuzzificationMain extends App {
+
   //
-  // These lines generate the Verilog output
+  // Read the configuration
   //
   val config = ReadInputAndLutDescription(
     "src/main/resources/lut/config.txt",
     "src/main/resources/lut/max.txt"
   )
 
+  //
+  // These lines generate the Verilog output
+  //
   println(
     new (chisel3.stage.ChiselStage).emitVerilog(
       new RegularFuzzification(
@@ -467,7 +471,7 @@ object RegularFuzzificationMain extends App {
         config._3,
         config._4,
         config._5,
-        config._6,
+        config._6, // Equals to lutOutputBitCount and SHOULD NOT CHANGE THE LOCATION OF THIS PARAMETER
         config._7,
         config._8
       ),
