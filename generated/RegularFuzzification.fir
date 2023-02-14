@@ -1178,7 +1178,7 @@ circuit RegularFuzzification :
   module RegularFuzzification :
     input clock : Clock
     input reset : UInt<1>
-    output io : { flip start : UInt<1>, flip input : UInt<10>[2], outResultValid : UInt<1>, outResult : UInt<3>}
+    output io : { flip start : UInt<1>, flip inputs : UInt<10>[2], outResultValid : UInt<1>, outResult : UInt<3>}
 
     reg regLutResultsVec : UInt<3>[10], clock with :
       reset => (UInt<1>("h0"), regLutResultsVec) @[regular_fuzzification.scala 125:29]
@@ -1449,7 +1449,7 @@ circuit RegularFuzzification :
       lut[253] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut[254] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut[255] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      node _regLutResultsVec_0_T = bits(io.input[UInt<1>("h0")], 7, 0)
+      node _regLutResultsVec_0_T = bits(io.inputs[UInt<1>("h0")], 7, 0)
       regLutResultsVec[0] <= lut[_regLutResultsVec_0_T] @[regular_fuzzification.scala 176:36]
       wire lut_1 : UInt<7>[256] @[regular_fuzzification.scala 114:12]
       lut_1[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -1708,7 +1708,7 @@ circuit RegularFuzzification :
       lut_1[253] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_1[254] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_1[255] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      node _regLutResultsVec_1_T = bits(io.input[UInt<1>("h0")], 7, 0)
+      node _regLutResultsVec_1_T = bits(io.inputs[UInt<1>("h0")], 7, 0)
       regLutResultsVec[1] <= lut_1[_regLutResultsVec_1_T] @[regular_fuzzification.scala 176:36]
       wire lut_2 : UInt<7>[256] @[regular_fuzzification.scala 114:12]
       lut_2[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -1967,7 +1967,7 @@ circuit RegularFuzzification :
       lut_2[253] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_2[254] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_2[255] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      node _regLutResultsVec_2_T = bits(io.input[UInt<1>("h0")], 7, 0)
+      node _regLutResultsVec_2_T = bits(io.inputs[UInt<1>("h0")], 7, 0)
       regLutResultsVec[2] <= lut_2[_regLutResultsVec_2_T] @[regular_fuzzification.scala 176:36]
       wire lut_3 : UInt<7>[256] @[regular_fuzzification.scala 114:12]
       lut_3[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -2226,7 +2226,7 @@ circuit RegularFuzzification :
       lut_3[253] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_3[254] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_3[255] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      node _regLutResultsVec_3_T = bits(io.input[UInt<1>("h0")], 7, 0)
+      node _regLutResultsVec_3_T = bits(io.inputs[UInt<1>("h0")], 7, 0)
       regLutResultsVec[3] <= lut_3[_regLutResultsVec_3_T] @[regular_fuzzification.scala 176:36]
       wire lut_4 : UInt<7>[256] @[regular_fuzzification.scala 114:12]
       lut_4[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -2485,7 +2485,7 @@ circuit RegularFuzzification :
       lut_4[253] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
       lut_4[254] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
       lut_4[255] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
-      node _regLutResultsVec_4_T = bits(io.input[UInt<1>("h0")], 7, 0)
+      node _regLutResultsVec_4_T = bits(io.inputs[UInt<1>("h0")], 7, 0)
       regLutResultsVec[4] <= lut_4[_regLutResultsVec_4_T] @[regular_fuzzification.scala 176:36]
       wire lut_5 : UInt<7>[1024] @[regular_fuzzification.scala 114:12]
       lut_5[0] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
@@ -3512,7 +3512,7 @@ circuit RegularFuzzification :
       lut_5[1021] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_5[1022] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_5[1023] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      regLutResultsVec[5] <= lut_5[io.input[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
+      regLutResultsVec[5] <= lut_5[io.inputs[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
       wire lut_6 : UInt<7>[1024] @[regular_fuzzification.scala 114:12]
       lut_6[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_6[1] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -4538,7 +4538,7 @@ circuit RegularFuzzification :
       lut_6[1021] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_6[1022] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_6[1023] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      regLutResultsVec[6] <= lut_6[io.input[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
+      regLutResultsVec[6] <= lut_6[io.inputs[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
       wire lut_7 : UInt<7>[1024] @[regular_fuzzification.scala 114:12]
       lut_7[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_7[1] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -5564,7 +5564,7 @@ circuit RegularFuzzification :
       lut_7[1021] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_7[1022] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_7[1023] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      regLutResultsVec[7] <= lut_7[io.input[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
+      regLutResultsVec[7] <= lut_7[io.inputs[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
       wire lut_8 : UInt<7>[1024] @[regular_fuzzification.scala 114:12]
       lut_8[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_8[1] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -6590,7 +6590,7 @@ circuit RegularFuzzification :
       lut_8[1021] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_8[1022] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_8[1023] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
-      regLutResultsVec[8] <= lut_8[io.input[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
+      regLutResultsVec[8] <= lut_8[io.inputs[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
       wire lut_9 : UInt<7>[1024] @[regular_fuzzification.scala 114:12]
       lut_9[0] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
       lut_9[1] <= UInt<1>("h0") @[regular_fuzzification.scala 114:12]
@@ -7616,7 +7616,7 @@ circuit RegularFuzzification :
       lut_9[1021] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
       lut_9[1022] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
       lut_9[1023] <= UInt<7>("h64") @[regular_fuzzification.scala 114:12]
-      regLutResultsVec[9] <= lut_9[io.input[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
+      regLutResultsVec[9] <= lut_9[io.inputs[UInt<1>("h1")]] @[regular_fuzzification.scala 176:36]
       inst regMinVec_0_comparatorModule of Comparator @[comparator.scala 69:34]
       regMinVec_0_comparatorModule.clock <= clock
       regMinVec_0_comparatorModule.reset <= reset

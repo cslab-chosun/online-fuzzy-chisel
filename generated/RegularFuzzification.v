@@ -2,8 +2,8 @@ module RegularFuzzification(
   input        clock,
   input        reset,
   input        io_start,
-  input  [9:0] io_input_0,
-  input  [9:0] io_input_1,
+  input  [9:0] io_inputs_0,
+  input  [9:0] io_inputs_1,
   output       io_outResultValid,
   output [2:0] io_outResult
 );

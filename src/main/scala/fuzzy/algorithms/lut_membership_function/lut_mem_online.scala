@@ -1,4 +1,4 @@
-package fuzzy.algorithms.lut_mem_online
+package fuzzy.algorithms.implementations
 
 import chisel3._
 import chisel3.util._
@@ -8,6 +8,7 @@ import fuzzy.utils._
 
 import scala.collection.immutable.ListMap
 import scala.math._
+import scala.io.Source
 
 object HashMapGenerator {
   private val HashMap =
@@ -61,7 +62,9 @@ object HashMapGenerator {
   }
 
   def generate(
-      debug: Boolean
+      debug: Boolean,
+      inputIndex: Int = -1,
+      lutIndex: Int = -1
   ): (
       Int,
       Int,
@@ -69,14 +72,10 @@ object HashMapGenerator {
       scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
   ) = {
 
-    val m = 4
-    val n = 5
+    var m_output = 4 // deafault value
+    var n_input = 5 // default value
 
-    val nToPow2 = Math.pow(2, n).toInt
-
-    val array = Array.ofDim[Boolean](nToPow2, m)
-
-    val input =
+    var input = // default value
       """
       0000
       0000
@@ -118,13 +117,39 @@ object HashMapGenerator {
       0000
       """
 
-    val inputTrim = input.trim.replaceAll(" ", "").replaceAll("\n", "")
+    if (inputIndex != -1) {
 
-    for (i <- 0 until inputTrim.length / m) {
-      for (j <- 0 until m) {
-        array(i)(j) = if (inputTrim(i * m + j) == '1') true else false
+      val fileName =
+        "src/main/resources/lut/lut_" + inputIndex + "_" + lutIndex + ".txt"
+
+      val lines = Source.fromFile(fileName).getLines().toArray
+
+      val pattern = "input=\\d+ lut=\\d+ n=(\\d+) m=(\\d+)".r
+      val pattern(n, m) = lines.head
+
+      n_input = n.toInt
+      m_output = m.toInt
+
+      input = lines.tail.mkString("\n")
+
+    }
+
+    LogInfo(debug)(s"the derived n = ${n_input}, m = ${m_output}")
+
+    val nToPow2 = Math.pow(2, n_input).toInt
+
+    val array = Array.ofDim[Boolean](nToPow2, m_output)
+    val inputTrim =
+      input.trim.replaceAll(" ", "").replaceAll("\t", "").replaceAll("\n", "")
+
+    println("LUT stream:" + inputTrim)
+
+    for (i <- 0 until inputTrim.length / m_output) {
+      for (j <- 0 until m_output) {
+        array(i)(j) = if (inputTrim(i * m_output + j) == '1') true else false
       }
     }
+
     if (debug) {
 
       println()
@@ -134,7 +159,7 @@ object HashMapGenerator {
     //
     // Call the fuzzy computer
     //
-    FuzzyCompute(debug, m, n, array)
+    FuzzyCompute(debug, m_output, n_input, array)
 
     HashMap.foreach { case (key, value) =>
       if (debug) {
@@ -142,7 +167,7 @@ object HashMapGenerator {
       }
     }
 
-    return (n, m, Delta, HashMap)
+    return (n_input, m_output, Delta, HashMap)
   }
 }
 
