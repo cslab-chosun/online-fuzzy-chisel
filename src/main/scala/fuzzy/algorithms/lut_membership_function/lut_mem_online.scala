@@ -335,21 +335,23 @@ class LutMembershipFunctionOnline(
 object LutMembershipFunctionOnline {
 
   def apply(
-      debug: Boolean = DesignConsts.ENABLE_DEBUG
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      bitCount: Int,
+      outputBitCount: Int,
+      delta: Int,
+      hashMap: scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
   )(
       inputBit: UInt,
       start: Bool
   ): (UInt, Bool) = {
 
-    val generatedResults = HashMapGenerator.generate(debug)
-
     val lutMemFunction = Module(
       new LutMembershipFunctionOnline(
         debug,
-        generatedResults._1,
-        generatedResults._2,
-        generatedResults._3,
-        generatedResults._4
+        bitCount,
+        outputBitCount,
+        delta,
+        hashMap
       )
     )
 

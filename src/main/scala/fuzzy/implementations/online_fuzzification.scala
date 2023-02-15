@@ -44,12 +44,56 @@ class OnlineFuzzification(
     val outResult = Output(UInt(1.W))
   })
 
-  //
-  // Test random
-  //
-  val generatedResults =
-    HashMapGenerator.generate(true /*DesignConsts.ENABLE_DEBUG*/, 0, 0)
+  val regLutResultsVec = Reg(Vec(countOfLuts, UInt(1.W)))
 
+  val outResultValid = WireInit(false.B)
+  val outResult = WireInit(0.U(1.W))
+
+  var currentIndexForLutGenResult: Int = 0
+
+  //
+  // Transition rules
+  //
+  when(io.start === true.B) {
+
+    //
+    // Create online LUTs
+    //
+    lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
+      for (i <- 0 until numberOfLuts) {
+
+        //
+        // Compute the lut for the
+        //
+        val lutGeneratedResults =
+          HashMapGenerator.generate(debug, inputNumber, i)
+
+        val lutResult = LutMembershipFunctionOnline(
+          debug,
+          lutGeneratedResults._1,
+          lutGeneratedResults._2,
+          lutGeneratedResults._3,
+          lutGeneratedResults._4
+        )(
+          io.inputs(inputNumber),
+          io.start
+        )
+
+        //
+        // Connect the lut result bit
+        //
+        regLutResultsVec(currentIndexForLutGenResult) := lutResult._1
+
+        currentIndexForLutGenResult += 1
+      }
+
+    }
+
+  }.otherwise {
+    //
+    // The reset condition
+    //
+  }
   //
   // Connect output
   //
