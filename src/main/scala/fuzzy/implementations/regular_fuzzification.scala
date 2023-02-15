@@ -151,10 +151,11 @@ class RegularFuzzification(
 
   maxConnectionMap.foreach { case (minimumVectorIndex, maximumVectorIndex) =>
     if (!alreadyCountedMaxList.contains(maximumVectorIndex)) {
+      alreadyCountedMaxList += maximumVectorIndex
       numberOfMaxs += 1
     }
   }
-
+  LogInfo(debug)("number of maximums are : " + numberOfMaxs)
   val regMaxVec = Reg(Vec(numberOfMaxs, UInt(lutOutputBitCount.W)))
 
   //
@@ -268,7 +269,7 @@ class RegularFuzzification(
     }
 
     //
-    // *** Creating connections for Maximums ***
+    // *** Creating connections for maximums ***
     //
 
     var maximumCountOfMaximums: Int = 0 // used for computing the delay cycles
