@@ -59,7 +59,7 @@ class RegularFuzzificationTest extends AnyFlatSpec with ChiselScalatestTester {
       //
       // Step the inputs
       //
-      dut.clock.step(10)
+      dut.clock.step(50)
 
       //
       // Remove the start bit again

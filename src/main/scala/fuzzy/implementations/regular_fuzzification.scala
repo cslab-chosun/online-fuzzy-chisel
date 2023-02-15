@@ -234,37 +234,28 @@ class RegularFuzzification(
     }
     LogInfo(debug)("")
 
-    //
-    // Connecting Minimums
-    //
-    var currentLutIndex: Int = 0
+    val connectionsByY =
+      listOfConnections.groupBy { case (x, y) => y }.toSeq.sortBy(_._1)
 
-    listOfConnections.foreach { case (x1, y1) =>
-      listOfConnections.foreach { case (x2, y2) =>
-        if (y1 == y2 && y1 == currentLutIndex) {
-          //
-          // Create the comparator based on LUT
-          //
-          regMinVec(currentLutIndex) := Comparator(
-            debug,
-            false,
-            lutOutputBitCount
-          )(
-            io.start,
-            regLutResultsVec(x1),
-            regLutResultsVec(x2)
-          )
-
-          currentLutIndex += 1 // we could use y1 as the index too
-
-          //
-          // Log
-          //
-          LogInfo(debug)(
-            s"regMinVec(${currentLutIndex}) <= Min( regLutResultsVec(${x1}),   regLutResultsVec(${x2}) )"
-          )
-        }
-      }
+    connectionsByY.foreach { case (y, xs) =>
+      val num1 = xs(0)
+      val num2 = xs(1)
+      LogInfo(debug)(s"Connections for y=${y} - ${num1._1}, ${num2._1} ")
+      LogInfo(debug)(
+        s"regMinVec(${y}) <= Min( regLutResultsVec(${num1._1}),   regLutResultsVec(${num2._1}) )"
+      )
+      //
+      // Create the comparator based on LUT
+      //
+      regMinVec(y) := Comparator(
+        false,
+        false,
+        lutOutputBitCount
+      )(
+        io.start,
+        regLutResultsVec(num1._1),
+        regLutResultsVec(num2._1)
+      )
 
     }
 
@@ -353,6 +344,9 @@ class RegularFuzzification(
       }
 
     }
+
+    // -------------------------------------------------------------------------------
+    //
 
     //
     // *** Creating connections for Maximums based on Indexes ***

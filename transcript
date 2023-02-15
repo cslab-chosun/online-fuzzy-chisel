@@ -1,3 +1,7 @@
 # OpenFile /home/sina/Desktop/chisel_projects/online-fuzzy-chisel/sim/../test_run_dir/DUT_should_pass/RegularFuzzification.vcd.wlf
 # do /home/sina/Desktop/chisel_projects/online-fuzzy-chisel/sim/modelsim.tcl
-# Break key hit
+# ** Error: (vish-4014) No objects found matching '*regLutResultsVec*'.
+# Error in macro /home/sina/Desktop/chisel_projects/online-fuzzy-chisel/sim/modelsim.tcl line 6
+# (vish-4014) No objects found matching '*regLutResultsVec*'.
+#     while executing
+# "add wave -group my_group -position insertpoint {*regLutResultsVec*}"
