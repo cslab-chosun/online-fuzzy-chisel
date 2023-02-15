@@ -6,7 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import fuzzy.algorithms.min_max._
 import fuzzy.utils._
 import fuzzy.utils.file._
-import fuzzy.algorithms.lut_mem_online._
+import fuzzy.algorithms.implementations._
 
 class LutMembershipFunctionOnlineTest
     extends AnyFlatSpec
@@ -14,7 +14,7 @@ class LutMembershipFunctionOnlineTest
   "DUT" should "pass" in {
 
     val generatedResults =
-      HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
+      HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG, 0, 0)
 
     if (DesignConsts.ENABLE_DEBUG) {
       println(

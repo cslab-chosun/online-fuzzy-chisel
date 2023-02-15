@@ -177,11 +177,12 @@ class RegularFuzzification(
           io.inputs(inputNumber.U)
         ) // Value read from the LUT
 
-        lutIndex = lutIndex + 1
-
         LogInfo(debug)(
           s"input number: ${inputNumber} - mapped to LUT: lut_${inputNumber}_${i}.txt - LUT Index: ${lutIndex}"
         )
+
+        lutIndex = lutIndex + 1
+
       }
 
     }
@@ -235,20 +236,34 @@ class RegularFuzzification(
     //
     // Connecting Minimums
     //
-    for (i <- 0 until numberOfMins) {
+    var currentLutIndex: Int = 0
 
-      regMinVec(i) := Comparator(debug, false, lutOutputBitCount)(
-        io.start,
-        listOfConnections(i)._1.U,
-        listOfConnections(i)._2.U
-      )
+    listOfConnections.foreach { case (x1, y1) =>
+      listOfConnections.foreach { case (x2, y2) =>
+        if (y1 == y2 && y1 == currentLutIndex) {
+          //
+          // Create the comparator based on LUT
+          //
+          regMinVec(currentLutIndex) := Comparator(
+            debug,
+            false,
+            lutOutputBitCount
+          )(
+            io.start,
+            regLutResultsVec(x1),
+            regLutResultsVec(x2)
+          )
 
-      //
-      // Log
-      //
-      LogInfo(debug)(
-        s"regMinVec(${i}) <= Min( listOfConnections(${i})._1.U,   listOfConnections(${i})._2.U)"
-      )
+          currentLutIndex += 1 // we could use y1 as the index too
+
+          //
+          // Log
+          //
+          LogInfo(debug)(
+            s"regMinVec(${currentLutIndex}) <= Min( regLutResultsVec(${x1}),   regLutResultsVec(${x2}) )"
+          )
+        }
+      }
 
     }
 

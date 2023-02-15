@@ -13,6 +13,7 @@ import firrtl.FileUtils
 import scala.collection.mutable.ListBuffer
 
 import fuzzy.algorithms.implementations
+import fuzzy.components
 
 class OnlineFuzzification(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
@@ -45,11 +46,26 @@ class OnlineFuzzification(
   })
 
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(1.W)))
+  val regLutResultsValidVec = Reg(Vec(countOfLuts, Bool()))
 
   val outResultValid = WireInit(false.B)
   val outResult = WireInit(0.U(1.W))
 
   var currentIndexForLutGenResult: Int = 0
+
+  //
+  // Compute the length of mins
+  //
+  var numberOfMins: Int = 0
+  lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
+    if (numberOfMins == 0) {
+      numberOfMins = numberOfLuts
+    } else {
+      numberOfMins = numberOfMins * numberOfLuts
+    }
+  }
+
+  val regMinVec = Reg(Vec(numberOfMins, UInt(1.W)))
 
   //
   // Transition rules
@@ -80,14 +96,51 @@ class OnlineFuzzification(
         )
 
         //
-        // Connect the lut result bit
+        // Connect the lut result bit and valid bit
         //
         regLutResultsVec(currentIndexForLutGenResult) := lutResult._1
+        regLutResultsValidVec(currentIndexForLutGenResult) := lutResult._2
 
         currentIndexForLutGenResult += 1
       }
+    }
+
+    //
+    // TODO: Generalize the selection, currently generalized into two inputs
+    // -------------------------------------------------------------------------------
+
+    //
+    // *** Connecting LUTs to Mins
+    //
+    val listOfConnections = ListBuffer[(Int, Int)]()
+
+    //
+    // Create connections for the first LUT
+    //
+    for (i <- 0 until lutAndInputMap(0)._2) {
+
+      for (j <- 0 until numberOfMins / lutAndInputMap(0)._2) {
+
+        listOfConnections += ((i, (i * lutAndInputMap(0)._2) + j))
+      }
+    }
+
+    //
+    // Create connections for the second LUT
+    //
+    for (i <- 0 until lutAndInputMap(1)._2) {
+
+      for (j <- 0 until numberOfMins / lutAndInputMap(1)._2) {
+
+        listOfConnections += ((
+          i + lutAndInputMap(0)._2,
+          j * lutAndInputMap(1)._2 + i
+        ))
+      }
 
     }
+    // -------------------------------------------------------------------------------
+    //
 
   }.otherwise {
     //
