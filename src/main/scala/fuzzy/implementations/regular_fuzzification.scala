@@ -226,6 +226,10 @@ class RegularFuzzification(
     //
 
     //
+    // *** Connect Minimum circuits ***
+    //
+
+    //
     // iterate over the elements
     //
     LogInfo(debug)("")

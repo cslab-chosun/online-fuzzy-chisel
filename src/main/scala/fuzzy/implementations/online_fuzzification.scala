@@ -14,6 +14,7 @@ import scala.collection.mutable.ListBuffer
 
 import fuzzy.algorithms.implementations
 import fuzzy.components
+import fuzzy.algorithms.min_max._
 
 class OnlineFuzzification(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
@@ -44,7 +45,6 @@ class OnlineFuzzification(
     val outResultValid = Output(Bool())
     val outResult = Output(UInt(1.W))
   })
-
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(1.W)))
   val regLutResultsValidVec = Reg(Vec(countOfLuts, Bool()))
 
@@ -141,6 +141,127 @@ class OnlineFuzzification(
     }
     // -------------------------------------------------------------------------------
     //
+
+    //
+    // *** Connect Minimum circuits ***
+    //
+
+    //
+    // iterate over the elements
+    //
+    LogInfo(debug)("")
+    listOfConnections.foreach { case (x, y) =>
+      LogInfo(debug)(s"Connection: ($x, $y)")
+    }
+    LogInfo(debug)("")
+
+    val connectionsByY =
+      listOfConnections.groupBy { case (x, y) => y }.toSeq.sortBy(_._1)
+
+    val minMaxConnections = ListBuffer[(Int, (Int, Int))]()
+
+    val connectionsByMaximumVectorIndex =
+      maxConnectionMap
+        .groupBy { case (minimumVectorIndex, maximumVectorIndex) =>
+          maximumVectorIndex
+        }
+        .toSeq
+        .sortBy(_._1)
+
+    connectionsByMaximumVectorIndex.foreach {
+      case (minimumVectorIndex, maximumVectorIndex) =>
+        maximumVectorIndex.foreach { case (item) =>
+          val selectedConnectionsByMaximumVectorIndex = connectionsByY
+            .find { case (y, xs) =>
+              y == item._1
+            }
+            .map { case (y, xs) =>
+              xs.unzip
+            }
+            .getOrElse((List.empty[Int], List.empty[Int]))
+
+          println(
+            "Item : " + item._1 + ": " +
+              selectedConnectionsByMaximumVectorIndex._1
+          )
+          minMaxConnections += ((
+            minimumVectorIndex.toInt,
+            (
+              selectedConnectionsByMaximumVectorIndex._1(0).toInt,
+              selectedConnectionsByMaximumVectorIndex._1(1).toInt
+            )
+          ))
+
+        }
+        LogInfo(debug)(
+          s"\nminimumVectorIndex=$minimumVectorIndex: ${maximumVectorIndex.map(_._1).mkString(", ")}"
+        )
+    }
+
+    //
+    // Iterate over list of min-max connections
+    //
+    LogInfo(debug)(s"min-max list: ${minMaxConnections}}")
+
+    val minMaxConnectionsByResult =
+      minMaxConnections
+        .groupBy { case (minimumVectorIndex, connectionIndex) =>
+          minimumVectorIndex
+        }
+        .toSeq
+        .sortBy(_._1)
+
+    //
+    // *** Connect Min-max tree ***
+    //
+    LogInfo(debug)(s"\n")
+
+    LogInfo(debug)(
+      s"number of expected results : ${minMaxConnectionsByResult.length}"
+    )
+
+    //
+    // Create connection for registers
+    //
+    val regMinMaxTreeResultsVec =
+      Reg(Vec(minMaxConnectionsByResult.length, UInt(1.W)))
+
+    minMaxConnectionsByResult.foreach {
+      case (maxResultIndex, connectionIndex) =>
+        LogInfo(debug)(
+          s"maxResultIndex=$maxResultIndex: ${connectionIndex.mkString(", ")}"
+        )
+
+        //
+        // Determine length of connection
+        //
+        var vectorCount = 8
+
+        val vector1 = VecInit(Seq.fill(vectorCount)(0.U(1.W)))
+        val vector2 = VecInit(Seq.fill(vectorCount)(0.U(1.W)))
+
+        var tempIndex: Int = 0
+
+        connectionIndex.foreach { case (item) =>
+          vector1(tempIndex) := regLutResultsVec(item._2._1)
+          vector2(tempIndex) := regLutResultsVec(item._2._2)
+          tempIndex += 1
+        }
+
+        //
+        // Connect the min-max tree
+        //
+        val minMaxResult =
+          MinMaxParallelOnlineComparator(debug, vectorCount)(
+            vector1,
+            vector2,
+            false.B,
+            io.start
+          )
+
+        regMinMaxTreeResultsVec(maxResultIndex) := minMaxResult._1
+
+    }
 
   }.otherwise {
     //

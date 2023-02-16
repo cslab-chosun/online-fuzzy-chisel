@@ -2,127 +2,152 @@
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_0_comparatorModule:Comparator",
+    "index":0.0
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_1",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_1_comparatorModule:Comparator",
+    "index":0.01818181818181818
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_2",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_2_comparatorModule:Comparator",
+    "index":0.03636363636363636
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_3",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_3_comparatorModule:Comparator",
+    "index":0.05454545454545454
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_4",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_4_comparatorModule:Comparator",
+    "index":0.07272727272727272
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_5",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_5_comparatorModule:Comparator",
+    "index":0.09090909090909091
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_6",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_6_comparatorModule:Comparator",
+    "index":0.10909090909090909
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_7",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_7_comparatorModule:Comparator",
+    "index":0.12727272727272726
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_8",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_8_comparatorModule:Comparator",
+    "index":0.14545454545454545
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_9",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_9_comparatorModule:Comparator",
+    "index":0.16363636363636364
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_10",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_10_comparatorModule:Comparator",
+    "index":0.18181818181818182
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_11",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_11_comparatorModule:Comparator",
+    "index":0.2
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_12",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_12_comparatorModule:Comparator",
+    "index":0.21818181818181817
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_13",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_13_comparatorModule:Comparator",
+    "index":0.23636363636363636
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_14",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_14_comparatorModule:Comparator",
+    "index":0.2545454545454545
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_15",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_15_comparatorModule:Comparator",
+    "index":0.2727272727272727
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_16",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_16_comparatorModule:Comparator",
+    "index":0.2909090909090909
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_17",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_17_comparatorModule:Comparator",
+    "index":0.3090909090909091
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_18",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_18_comparatorModule:Comparator",
+    "index":0.32727272727272727
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_19",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_19_comparatorModule:Comparator",
+    "index":0.34545454545454546
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_20",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_20_comparatorModule:Comparator",
+    "index":0.36363636363636365
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_21",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_21_comparatorModule:Comparator",
+    "index":0.38181818181818183
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_22",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_22_comparatorModule:Comparator",
+    "index":0.4
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_23",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_23_comparatorModule:Comparator",
+    "index":0.41818181818181815
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~RegularFuzzification|Comparator_24",
-    "index":-1.0
+    "duplicate":"~RegularFuzzification|RegularFuzzification/regMinVec_24_comparatorModule:Comparator",
+    "index":0.43636363636363634
   },
   {
     "class":"firrtl.transforms.DedupedResult",
