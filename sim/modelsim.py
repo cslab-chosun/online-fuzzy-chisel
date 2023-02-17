@@ -98,7 +98,7 @@ if CONFIG_SHOW_ALL_WAVES:
 else:
     with open(current_script_path + '/modelsim.tcl', 'w') as f:
         for item in CONFIG_WAVES_LIST:
-            f.write("add wave -group my_group -position insertpoint {*" + item.replace('\n','').replace('\r', '') + '*}\n')
+            f.write("add wave -position insertpoint {*" + item.replace('\n','').replace('\r', '') + '*}\n')
 
 #
 # Remove all the previous *.wlf, *.vcd, *.fir files

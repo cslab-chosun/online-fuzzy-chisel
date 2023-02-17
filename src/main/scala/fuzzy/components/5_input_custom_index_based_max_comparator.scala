@@ -7,7 +7,7 @@ import fuzzy.utils._
 
 class ResultOfIndexBasedOnlineMaxIndex() extends Bundle {
 
-  val selectedInput = Bool()
+  val selectedInput = UInt(3.W) // for 3-bit selector
   val earlyTerminate1 = Bool()
   val earlyTerminate2 = Bool()
   val maxOutput = UInt(1.W)
@@ -34,6 +34,9 @@ class FiveInputCustomIndexBasedMaxComparator(
 
   })
 
+  val regResult = RegInit(0.U(3.W))
+  val regResultValid = RegInit(false.B)
+
   val regIndexBasedMaxResultVec = Reg(
     Vec(
       4,
@@ -52,7 +55,12 @@ class FiveInputCustomIndexBasedMaxComparator(
         regIndexBasedMaxResultVec(2).earlyTerminate1
       )
 
-    regIndexBasedMaxResultVec(0).selectedInput := selectedInput_0
+    when(selectedInput_0 === false.B) {
+      regIndexBasedMaxResultVec(0).selectedInput := 0.U // Index = 0
+    }.otherwise {
+      regIndexBasedMaxResultVec(0).selectedInput := 1.U // Index = 0
+    }
+
     regIndexBasedMaxResultVec(0).earlyTerminate1 := earlyTerminate1_0
     regIndexBasedMaxResultVec(0).earlyTerminate2 := earlyTerminate2_0
     regIndexBasedMaxResultVec(0).maxOutput := maxOutput_0
@@ -66,7 +74,12 @@ class FiveInputCustomIndexBasedMaxComparator(
         regIndexBasedMaxResultVec(2).earlyTerminate2
       )
 
-    regIndexBasedMaxResultVec(1).selectedInput := selectedInput_1
+    when(selectedInput_1 === false.B) {
+      regIndexBasedMaxResultVec(1).selectedInput := 2.U // Index = 1
+    }.otherwise {
+      regIndexBasedMaxResultVec(1).selectedInput := 3.U // Index = 1
+    }
+
     regIndexBasedMaxResultVec(1).earlyTerminate1 := earlyTerminate1_1
     regIndexBasedMaxResultVec(1).earlyTerminate2 := earlyTerminate2_1
     regIndexBasedMaxResultVec(1).maxOutput := maxOutput_1
@@ -80,7 +93,16 @@ class FiveInputCustomIndexBasedMaxComparator(
         regIndexBasedMaxResultVec(3).earlyTerminate1
       )
 
-    regIndexBasedMaxResultVec(2).selectedInput := selectedInput_2
+    when(selectedInput_2 === false.B) {
+      regIndexBasedMaxResultVec(2).selectedInput := regIndexBasedMaxResultVec(
+        0
+      ).selectedInput // Index = 2
+    }.otherwise {
+      regIndexBasedMaxResultVec(2).selectedInput := regIndexBasedMaxResultVec(
+        1
+      ).selectedInput // Index = 2
+    }
+
     regIndexBasedMaxResultVec(2).earlyTerminate1 := earlyTerminate1_2
     regIndexBasedMaxResultVec(2).earlyTerminate2 := earlyTerminate2_2
     regIndexBasedMaxResultVec(2).maxOutput := maxOutput_2
@@ -94,10 +116,34 @@ class FiveInputCustomIndexBasedMaxComparator(
         false.B
       )
 
-    regIndexBasedMaxResultVec(3).selectedInput := selectedInput_3
+    when(selectedInput_3 === false.B) {
+      regIndexBasedMaxResultVec(3).selectedInput := regIndexBasedMaxResultVec(
+        2
+      ).selectedInput // Index = 3
+    }.otherwise {
+      regIndexBasedMaxResultVec(3).selectedInput := 5.U // Index = 3
+    }
+
     regIndexBasedMaxResultVec(3).earlyTerminate1 := earlyTerminate1_3
     regIndexBasedMaxResultVec(3).earlyTerminate2 := earlyTerminate2_3
     regIndexBasedMaxResultVec(3).maxOutput := maxOutput_3
+
+    //
+    // Set the outputt
+    //
+    when(
+      regIndexBasedMaxResultVec(
+        3
+      ).earlyTerminate1 === true.B | regIndexBasedMaxResultVec(
+        3
+      ).earlyTerminate2 === true.B
+    ) {
+      //
+      // Means we find the maximum index
+      //
+      regResultValid := true.B
+
+    }
 
   }.otherwise {
 
@@ -110,12 +156,8 @@ class FiveInputCustomIndexBasedMaxComparator(
   //
   // Connect the outputs
   //
-  io.result := regIndexBasedMaxResultVec(3).maxOutput // should be changed
-  io.resultValid := regIndexBasedMaxResultVec(
-    3
-  ).earlyTerminate1 | regIndexBasedMaxResultVec(
-    3
-  ).earlyTerminate2 // should be changed
+  io.result := regIndexBasedMaxResultVec(3).selectedInput
+  io.resultValid := regResultValid
 
 }
 

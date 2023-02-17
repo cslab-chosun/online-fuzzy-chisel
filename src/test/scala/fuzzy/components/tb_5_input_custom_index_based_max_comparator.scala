@@ -33,13 +33,12 @@ class FiveInputCustomIndexBasedMaxComparatorTest
       // Add the input vector
       //
       val testCase0 = 0x48.U(8.W)
-      val testCase1 = 0x0.U(8.W)
-      val testCase2 = 0x25.U(8.W)
-      val testCase3 = 0x55.U(8.W)
-      val testCase4 = 0x1.U(8.W)
+      val testCase1 = 0x55.U(8.W)
+      val testCase2 = 0x1.U(8.W)
+      val testCase3 = 0x25.U(8.W)
+      val testCase4 = 0x0.U(8.W)
 
-      var i: Int = 0
-      while (dut.io.resultValid.peek() != 1.U) {
+      for (i <- 0 until 8) {
 
         dut.io.inputs(0).poke(testCase0(8 - i - 1))
         dut.io.inputs(1).poke(testCase1(8 - i - 1))
@@ -48,8 +47,6 @@ class FiveInputCustomIndexBasedMaxComparatorTest
         dut.io.inputs(4).poke(testCase4(8 - i - 1))
 
         dut.clock.step(1)
-
-        i += 1
 
       }
 
