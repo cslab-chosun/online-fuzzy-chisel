@@ -246,7 +246,7 @@ class OnlineFuzzification(
 
         connectionIndex.foreach { case (item) =>
           vector1(tempIndex) := regLutResultsVec(item._2._1)
-          vector1Str += s"regLutResultsVec(${item._2._1}) "
+          vector1Str += s"regLutResultsVec(${item._2._1}), "
           vector2(tempIndex) := regLutResultsVec(item._2._2)
           vector2Str += s"regLutResultsVec(${item._2._2}) "
 
@@ -273,6 +273,10 @@ class OnlineFuzzification(
         regMinMaxTreeResultsVec(maxResultIndex) := minMaxResult._1
 
     }
+
+    //
+    // *** Connect Min-max index tree ***
+    //
 
   }.otherwise {
     //
