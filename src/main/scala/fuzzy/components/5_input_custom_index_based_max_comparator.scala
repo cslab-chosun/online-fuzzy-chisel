@@ -111,6 +111,11 @@ class FiveInputCustomIndexBasedMaxComparator(
   // Connect the outputs
   //
   io.result := regIndexBasedMaxResultVec(3).maxOutput // should be changed
+  io.resultValid := regIndexBasedMaxResultVec(
+    3
+  ).earlyTerminate1 | regIndexBasedMaxResultVec(
+    3
+  ).earlyTerminate2 // should be changed
 
 }
 

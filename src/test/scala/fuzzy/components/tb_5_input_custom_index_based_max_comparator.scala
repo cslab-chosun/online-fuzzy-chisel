@@ -32,16 +32,31 @@ class FiveInputCustomIndexBasedMaxComparatorTest
       //
       // Add the input vector
       //
-      dut.io.inputs(0).poke(0xb8.U)
-      dut.io.inputs(1).poke(0x85.U)
-      dut.io.inputs(2).poke(0x77.U)
-      dut.io.inputs(3).poke(0x55.U)
-      dut.io.inputs(4).poke(0x1.U)
+      val testCase0 = 0x48.U(8.W)
+      val testCase1 = 0x0.U(8.W)
+      val testCase2 = 0x25.U(8.W)
+      val testCase3 = 0x55.U(8.W)
+      val testCase4 = 0x1.U(8.W)
+
+      var i: Int = 0
+      while (dut.io.resultValid.peek() != 1.U) {
+
+        dut.io.inputs(0).poke(testCase0(8 - i - 1))
+        dut.io.inputs(1).poke(testCase1(8 - i - 1))
+        dut.io.inputs(2).poke(testCase2(8 - i - 1))
+        dut.io.inputs(3).poke(testCase3(8 - i - 1))
+        dut.io.inputs(4).poke(testCase4(8 - i - 1))
+
+        dut.clock.step(1)
+
+        i += 1
+
+      }
 
       //
       // Step the inputs
       //
-      dut.clock.step(10)
+      dut.clock.step(50)
 
       //
       // Remove the start bit again
