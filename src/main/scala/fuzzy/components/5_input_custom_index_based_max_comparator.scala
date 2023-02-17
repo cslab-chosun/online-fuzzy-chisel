@@ -44,6 +44,10 @@ class FiveInputCustomIndexBasedMaxComparator(
     )
   )
 
+  val delayFor5thInput = RegInit(0.U(1.W))
+  val delayFor5thInput_2 = RegNext(delayFor5thInput)
+  delayFor5thInput := io.inputs(4)
+
   when(io.start) {
 
     // max-index 0
@@ -69,8 +73,8 @@ class FiveInputCustomIndexBasedMaxComparator(
     val (selectedInput_1, earlyTerminate1_1, earlyTerminate2_1, maxOutput_1) =
       OnlineComparator2(debug, isMax)(
         io.start, // start bit
-        io.inputs(0),
-        io.inputs(1),
+        io.inputs(2),
+        io.inputs(3),
         regIndexBasedMaxResultVec(2).earlyTerminate2
       )
 
@@ -88,8 +92,8 @@ class FiveInputCustomIndexBasedMaxComparator(
     val (selectedInput_2, earlyTerminate1_2, earlyTerminate2_2, maxOutput_2) =
       OnlineComparator2(debug, isMax)(
         io.start, // start bit
-        io.inputs(2),
-        io.inputs(3),
+        regIndexBasedMaxResultVec(0).maxOutput,
+        regIndexBasedMaxResultVec(1).maxOutput,
         regIndexBasedMaxResultVec(3).earlyTerminate1
       )
 
@@ -112,7 +116,7 @@ class FiveInputCustomIndexBasedMaxComparator(
       OnlineComparator2(debug, isMax)(
         io.start, // start bit
         regIndexBasedMaxResultVec(2).maxOutput,
-        io.inputs(4),
+        delayFor5thInput_2,
         false.B
       )
 
@@ -121,7 +125,7 @@ class FiveInputCustomIndexBasedMaxComparator(
         2
       ).selectedInput // Index = 3
     }.otherwise {
-      regIndexBasedMaxResultVec(3).selectedInput := 5.U // Index = 3
+      regIndexBasedMaxResultVec(3).selectedInput := 4.U // Index = 3
     }
 
     regIndexBasedMaxResultVec(3).earlyTerminate1 := earlyTerminate1_3
@@ -134,7 +138,7 @@ class FiveInputCustomIndexBasedMaxComparator(
     when(
       regIndexBasedMaxResultVec(
         3
-      ).earlyTerminate1 === true.B | regIndexBasedMaxResultVec(
+      ).earlyTerminate1 === true.B || regIndexBasedMaxResultVec(
         3
       ).earlyTerminate2 === true.B
     ) {
