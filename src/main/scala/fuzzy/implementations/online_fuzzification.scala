@@ -241,12 +241,23 @@ class OnlineFuzzification(
         val vector2 = VecInit(Seq.fill(vectorCount)(0.U(1.W)))
 
         var tempIndex: Int = 0
+        var vector1Str = ""
+        var vector2Str = ""
 
         connectionIndex.foreach { case (item) =>
           vector1(tempIndex) := regLutResultsVec(item._2._1)
+          vector1Str += s"regLutResultsVec(${item._2._1}) "
           vector2(tempIndex) := regLutResultsVec(item._2._2)
+          vector2Str += s"regLutResultsVec(${item._2._2}) "
+
           tempIndex += 1
         }
+
+        vector1Str += "\n"
+        vector2Str += "\n"
+
+        LogInfo(debug)(s"vector1=$vector1Str\n")
+        LogInfo(debug)(s"vector2=$vector2Str\n")
 
         //
         // Connect the min-max tree
