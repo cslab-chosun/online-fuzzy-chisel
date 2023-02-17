@@ -36,6 +36,7 @@ class FiveInputCustomIndexBasedMaxComparator(
 
   val regResult = RegInit(0.U(3.W))
   val regResultValid = RegInit(false.B)
+  val regResultValidDelay = RegNext(regResultValid)
 
   val regIndexBasedMaxResultVec = Reg(
     Vec(
@@ -161,7 +162,8 @@ class FiveInputCustomIndexBasedMaxComparator(
   // Connect the outputs
   //
   io.result := regIndexBasedMaxResultVec(3).selectedInput
-  io.resultValid := regResultValid
+
+  io.resultValid := regResultValidDelay
 
 }
 
