@@ -1,2 +1,2 @@
 add wave -position insertpoint {*clock*}
-add wave -position insertpoint {*regLutResultsVec*}
+add wave -position insertpoint {*outResult*}

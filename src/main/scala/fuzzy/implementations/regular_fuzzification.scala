@@ -176,7 +176,7 @@ class RegularFuzzification(
       //
       for (i <- 0 until numberOfLuts) {
 
-        val lut = buildLookupTable(false, inputNumber, i)
+        val lut = buildLookupTable(debug, inputNumber, i)
 
         regLutResultsVec(lutIndex) := lut(
           io.inputs(inputNumber)
