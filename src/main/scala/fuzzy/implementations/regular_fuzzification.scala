@@ -98,7 +98,11 @@ class RegularFuzzification(
     )
   })
 
-  def buildLookupTable(inputIndex: Int, lutIndex: Int): Vec[UInt] = {
+  def buildLookupTable(
+      debug: Boolean,
+      inputIndex: Int,
+      lutIndex: Int
+  ): Vec[UInt] = {
     val fileName =
       "src/main/resources/lut/lut_" + inputIndex + "_" + lutIndex + ".txt"
 
@@ -172,10 +176,10 @@ class RegularFuzzification(
       //
       for (i <- 0 until numberOfLuts) {
 
-        val lut = buildLookupTable(inputNumber, i)
+        val lut = buildLookupTable(false, inputNumber, i)
 
         regLutResultsVec(lutIndex) := lut(
-          io.inputs(inputNumber.U)
+          io.inputs(inputNumber)
         ) // Value read from the LUT
 
         LogInfo(debug)(
