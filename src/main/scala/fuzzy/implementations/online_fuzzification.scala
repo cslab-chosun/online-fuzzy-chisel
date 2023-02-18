@@ -43,13 +43,13 @@ class OnlineFuzzification(
     // Output signals
     //
     val outResultValid = Output(Bool())
-    val outResult = Output(UInt(1.W))
+    val outResult = Output(UInt(3.W)) // used for the index of output
   })
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(1.W)))
   val regLutResultsValidVec = Reg(Vec(countOfLuts, Bool()))
 
   val outResultValid = WireInit(false.B)
-  val outResult = WireInit(0.U(1.W))
+  val outResult = WireInit(0.U(3.W)) // // used for the index of output
 
   var currentIndexForLutGenResult: Int = 0
 
@@ -225,6 +225,8 @@ class OnlineFuzzification(
     //
     val regMinMaxTreeResultsVec =
       Reg(Vec(minMaxConnectionsByResult.length, UInt(1.W)))
+    val regMinMaxTreeResultsValidVec =
+      Reg(Vec(minMaxConnectionsByResult.length, Bool()))
 
     minMaxConnectionsByResult.foreach {
       case (maxResultIndex, connectionIndex) =>
@@ -271,23 +273,37 @@ class OnlineFuzzification(
           )
 
         regMinMaxTreeResultsVec(maxResultIndex) := minMaxResult._1
+        regMinMaxTreeResultsValidVec(maxResultIndex) := minMaxResult._2
 
     }
 
     //
     // *** Connect Min-max index tree ***
     //
+    val FiveInputIndexBasedMaxComparator =
+      FiveInputCustomIndexBasedMaxComparator(debug, true)(
+        regMinMaxTreeResultsValidVec(0) & regMinMaxTreeResultsValidVec(
+          1
+        ) & regMinMaxTreeResultsValidVec(2) & regMinMaxTreeResultsValidVec(
+          3
+        ) & regMinMaxTreeResultsValidVec(4),
+        regMinMaxTreeResultsVec
+      )
+
+    outResult := FiveInputIndexBasedMaxComparator._1
+    outResultValid := FiveInputIndexBasedMaxComparator._2
 
   }.otherwise {
     //
     // The reset condition
     //
   }
+
   //
   // Connect output
   //
-  io.outResultValid := true.B
-  io.outResult := 1.U
+  io.outResultValid := outResultValid
+  io.outResult := outResult
 
 }
 

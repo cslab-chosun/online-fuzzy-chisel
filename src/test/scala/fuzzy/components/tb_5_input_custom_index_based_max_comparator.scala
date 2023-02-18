@@ -34,9 +34,9 @@ class FiveInputCustomIndexBasedMaxComparatorTest
       //
       val testCase0 = 0x48.U(8.W)
       val testCase1 = 0x0.U(8.W)
-      val testCase2 = 0x1.U(8.W)
-      val testCase3 = 0x25.U(8.W)
-      val testCase4 = 0x55.U(8.W)
+      val testCase2 = 0x55.U(8.W)
+      val testCase3 = 0x1.U(8.W)
+      val testCase4 = 0x25.U(8.W)
 
       for (i <- 0 until 8) {
 

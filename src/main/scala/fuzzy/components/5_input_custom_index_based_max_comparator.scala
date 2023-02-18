@@ -175,13 +175,14 @@ object FiveInputCustomIndexBasedMaxComparator {
   )(
       start: Bool,
       inputs: Vec[UInt]
-  ): UInt = {
+  ): (UInt, Bool) = {
 
     val comparatorModule = Module(
       new FiveInputCustomIndexBasedMaxComparator(debug, isMax)
     )
 
     val result = Wire(UInt(3.W))
+    val resultValid = Wire(Bool())
 
     //
     // Configure the input signals
@@ -190,10 +191,11 @@ object FiveInputCustomIndexBasedMaxComparator {
     comparatorModule.io.inputs := inputs
 
     result := comparatorModule.io.result
+    resultValid := comparatorModule.io.resultValid
 
     //
     // Return the output result
     //
-    result
+    (result, resultValid)
   }
 }

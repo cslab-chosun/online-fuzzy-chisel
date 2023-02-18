@@ -13,7 +13,9 @@ module MinMaxParallelOnlineComparator(
   input   io_in2_2,
   input   io_in2_3,
   input   io_in2_4,
-  input   io_in2_5
+  input   io_in2_5,
+  output  io_outResultValid,
+  output  io_outResult
 );
   wire  comparatorModule_clock; // @[online_comparator2.scala 181:34]
   wire  comparatorModule_reset; // @[online_comparator2.scala 181:34]
@@ -150,6 +152,8 @@ module MinMaxParallelOnlineComparator(
   wire  comparatorModule_14_io_earlyTerminate1; // @[online_comparator2.scala 181:34]
   wire  comparatorModule_14_io_earlyTerminate2; // @[online_comparator2.scala 181:34]
   wire  comparatorModule_14_io_maxMin; // @[online_comparator2.scala 181:34]
+  reg  outResultValid; // @[min_max_parallel_online_comparator.scala 58:31]
+  reg  regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 60:26]
   reg  regStorageVec_0_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 60:26]
   reg  regStorageVec_0_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 60:26]
   reg  regStorageVec_1_minMaxOutput; // @[min_max_parallel_online_comparator.scala 60:26]
@@ -185,6 +189,7 @@ module MinMaxParallelOnlineComparator(
   wire [3:0] _T_3 = 4'h8 - 4'h1; // @[min_max_parallel_online_comparator.scala 83:46]
   wire [3:0] _T_5 = _T_3 + 4'h3; // @[min_max_parallel_online_comparator.scala 83:52]
   wire  _T_6 = currentIteration != _T_5; // @[min_max_parallel_online_comparator.scala 83:28]
+  wire  _GEN_0 = currentIteration == 4'h3 | outResultValid; // @[min_max_parallel_online_comparator.scala 88:62 89:28 58:31]
   wire  _T_9 = ~reset; // @[online_comparator2.scala 204:13]
   wire  earlyTerminate1 = comparatorModule_io_earlyTerminate1; // @[online_comparator2.scala 183:31 200:21]
   wire  earlyTerminate1_1 = comparatorModule_1_io_earlyTerminate1; // @[online_comparator2.scala 183:31 200:21]
@@ -201,9 +206,12 @@ module MinMaxParallelOnlineComparator(
   wire  earlyTerminate1_12 = comparatorModule_12_io_earlyTerminate1; // @[online_comparator2.scala 183:31 200:21]
   wire  earlyTerminate1_13 = comparatorModule_13_io_earlyTerminate1; // @[online_comparator2.scala 183:31 200:21]
   wire  earlyTerminate1_14 = comparatorModule_14_io_earlyTerminate1; // @[online_comparator2.scala 183:31 200:21]
+  wire  _GEN_1 = _T_6 & _GEN_0; // @[min_max_parallel_online_comparator.scala 86:11 180:26]
   wire  _GEN_3 = _T_6 ? earlyTerminate1 : regStorageVec_0_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 86:11 107:49 60:26]
   wire  earlyTerminate2 = comparatorModule_io_earlyTerminate2; // @[online_comparator2.scala 184:31 201:21]
   wire  _GEN_4 = _T_6 ? earlyTerminate2 : regStorageVec_0_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 86:11 108:49 60:26]
+  wire  maxOutput = comparatorModule_io_maxMin; // @[online_comparator2.scala 186:28 214:18]
+  wire  _GEN_5 = _T_6 ? maxOutput : regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 86:11 109:45 60:26]
   wire  _GEN_7 = _T_6 ? earlyTerminate1_1 : regStorageVec_1_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 86:11 107:49 60:26]
   wire  earlyTerminate2_1 = comparatorModule_1_io_earlyTerminate2; // @[online_comparator2.scala 184:31 201:21]
   wire  _GEN_8 = _T_6 ? earlyTerminate2_1 : regStorageVec_1_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 86:11 108:49 60:26]
@@ -259,8 +267,11 @@ module MinMaxParallelOnlineComparator(
   wire  minOutput_7 = comparatorModule_14_io_maxMin; // @[online_comparator2.scala 186:28 214:18]
   wire  _GEN_61 = _T_6 ? minOutput_7 : regStorageVec_14_minMaxOutput; // @[min_max_parallel_online_comparator.scala 86:11 150:45 60:26]
   wire  _GEN_62 = _T_6 ? state : 1'h1; // @[min_max_parallel_online_comparator.scala 86:11 179:17 63:22]
+  wire  _GEN_63 = state ? 1'h0 : outResultValid; // @[min_max_parallel_online_comparator.scala 76:19 188:24 58:31]
+  wire  _GEN_65 = ~state ? _GEN_1 : _GEN_63; // @[min_max_parallel_online_comparator.scala 76:19]
   wire  _GEN_67 = ~state ? _GEN_3 : regStorageVec_0_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_68 = ~state ? _GEN_4 : regStorageVec_0_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
+  wire  _GEN_69 = ~state ? _GEN_5 : regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_71 = ~state ? _GEN_7 : regStorageVec_1_earlyTerminated1; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_72 = ~state ? _GEN_8 : regStorageVec_1_earlyTerminated2; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_73 = ~state ? _GEN_9 : regStorageVec_1_minMaxOutput; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
@@ -288,6 +299,7 @@ module MinMaxParallelOnlineComparator(
   wire  _GEN_121 = ~state ? _GEN_57 : regStorageVec_13_minMaxOutput; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_125 = ~state ? _GEN_61 : regStorageVec_14_minMaxOutput; // @[min_max_parallel_online_comparator.scala 76:19 60:26]
   wire  _GEN_126 = ~state ? _GEN_62 : state; // @[min_max_parallel_online_comparator.scala 76:19 63:22]
+  wire  _GEN_128 = io_start & _GEN_65; // @[min_max_parallel_online_comparator.scala 197:20 74:29]
   wire  _GEN_189 = io_start & _GEN_126; // @[min_max_parallel_online_comparator.scala 198:11 74:29]
   wire  _GEN_206 = io_start & _T_1 & _T_6; // @[online_comparator2.scala 204:13]
   OnlineComparator2 comparatorModule ( // @[online_comparator2.scala 181:34]
@@ -455,6 +467,8 @@ module MinMaxParallelOnlineComparator(
     .io_earlyTerminate2(comparatorModule_14_io_earlyTerminate2),
     .io_maxMin(comparatorModule_14_io_maxMin)
   );
+  assign io_outResultValid = outResultValid; // @[min_max_parallel_online_comparator.scala 221:21]
+  assign io_outResult = regStorageVec_0_minMaxOutput; // @[min_max_parallel_online_comparator.scala 220:16]
   assign comparatorModule_clock = clock;
   assign comparatorModule_reset = reset;
   assign comparatorModule_io_start = io_start; // @[online_comparator2.scala 195:31]
@@ -546,6 +560,12 @@ module MinMaxParallelOnlineComparator(
   assign comparatorModule_14_io_in1 = 1'h0; // @[online_comparator2.scala 191:29]
   assign comparatorModule_14_io_in2 = 1'h0; // @[online_comparator2.scala 192:29]
   always @(posedge clock) begin
+    if (reset) begin // @[min_max_parallel_online_comparator.scala 58:31]
+      outResultValid <= 1'h0; // @[min_max_parallel_online_comparator.scala 58:31]
+    end else begin
+      outResultValid <= _GEN_128;
+    end
+    regStorageVec_0_minMaxOutput <= io_start & _GEN_69; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
     regStorageVec_0_earlyTerminated1 <= io_start & _GEN_67; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
     regStorageVec_0_earlyTerminated2 <= io_start & _GEN_68; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
     regStorageVec_1_minMaxOutput <= io_start & _GEN_73; // @[min_max_parallel_online_comparator.scala 213:24 74:29]
