@@ -51,10 +51,10 @@ class RegularFuzzificationTest extends AnyFlatSpec with ChiselScalatestTester {
       //
 
       //
-      // Max input number is 2 ^ 5 = 32 (0x20)
+      // Max input number is 2 ^ 10 = 1023
       //
-      dut.io.inputs(0).poke(260.U)
-      dut.io.inputs(1).poke(76.U)
+      dut.io.inputs(0).poke(590.U)
+      dut.io.inputs(1).poke(150.U)
 
       //
       // Step the inputs

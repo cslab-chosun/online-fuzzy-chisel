@@ -44,7 +44,14 @@ class OnlineFuzzification(
     //
     val outResultValid = Output(Bool())
     val outResult = Output(UInt(3.W)) // used for the index of output
+
+    /////////////////////////////////////////////////////////////////////////
+    // Temp outputs to be removed
+    val regLutResultsVec = Input(Vec(countOfLuts, UInt(1.W)))
+
+    /////////////////////////////////////////////////////////////////////////
   })
+
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(1.W)))
   val regLutResultsValidVec = Reg(Vec(countOfLuts, Bool()))
 
@@ -67,6 +74,13 @@ class OnlineFuzzification(
 
   val regMinVec = Reg(Vec(numberOfMins, UInt(1.W)))
 
+  ////////////////////////////////////////////////////////////////////////////
+  // Temporary added for test, should be removed
+  // io.regLutResultsVec := regLutResultsVec
+  regLutResultsVec := io.regLutResultsVec
+
+  //////////////////////////////////////////////////////////////////////////////
+
   //
   // Transition rules
   //
@@ -75,6 +89,11 @@ class OnlineFuzzification(
     //
     // Create online LUTs
     //
+    //////////////////////////////////////////////////////////////////////////////
+
+    /*
+      //////////////////////////////////////////////////////////////////////////////
+
     lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
       for (i <- 0 until numberOfLuts) {
 
@@ -104,6 +123,9 @@ class OnlineFuzzification(
         currentIndexForLutGenResult += 1
       }
     }
+      //////////////////////////////////////////////////////////////////////////////
+     */
+    //////////////////////////////////////////////////////////////////////////////
 
     //
     // TODO: Generalize the selection, currently generalized into two inputs
@@ -292,7 +314,6 @@ class OnlineFuzzification(
 
     outResult := FiveInputIndexBasedMaxComparator._1
     outResultValid := FiveInputIndexBasedMaxComparator._2
-
   }.otherwise {
     //
     // The reset condition
