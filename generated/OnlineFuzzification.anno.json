@@ -536,14 +536,14 @@
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~OnlineFuzzification|OnlineFuzzification>io_outResultValid",
+    "sink":"~OnlineFuzzification|OnlineFuzzification>io_outResult",
     "sources":[
       "~OnlineFuzzification|OnlineFuzzification>io_start"
     ]
   },
   {
     "class":"firrtl.transforms.CombinationalPath",
-    "sink":"~OnlineFuzzification|OnlineFuzzification>io_outResult",
+    "sink":"~OnlineFuzzification|OnlineFuzzification>io_outResultValid",
     "sources":[
       "~OnlineFuzzification|OnlineFuzzification>io_start"
     ]

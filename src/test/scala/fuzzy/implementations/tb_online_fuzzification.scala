@@ -57,7 +57,7 @@ class OnlineFuzzificationTest extends AnyFlatSpec with ChiselScalatestTester {
       /////////////////////////////////////////////////////////////////////////
       // Temp outputs to be removed
 
-      val testtestCase0 = 0.U(10.W)
+      /*   val testtestCase0 = 0.U(10.W)
       val testtestCase1 = 0.U(10.W)
       val testtestCase2 = 0.U(10.W)
       val testtestCase3 = 0.U(10.W)
@@ -84,6 +84,8 @@ class OnlineFuzzificationTest extends AnyFlatSpec with ChiselScalatestTester {
         dut.clock.step(1)
 
       }
+
+       */
 /////////////////////////////////////////////////////////////////////////
 
       val testCase0 = 260.U(10.W)
