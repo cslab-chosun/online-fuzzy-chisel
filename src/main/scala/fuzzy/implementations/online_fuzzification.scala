@@ -39,17 +39,14 @@ class OnlineFuzzification(
     val start = Input(Bool())
     val inputs = Input(Vec(numberOfInputs, UInt((1.W))))
 
+    val lutConnections = Input(Vec(countOfLuts, UInt(1.W)))
+
     //
     // Output signals
     //
     val outResultValid = Output(Bool())
     val outResult = Output(UInt(3.W)) // used for the index of output
 
-    /////////////////////////////////////////////////////////////////////////
-    // Temp outputs to be removed
-    val regLutResultsVec = Input(Vec(countOfLuts, UInt(1.W)))
-
-    /////////////////////////////////////////////////////////////////////////
   })
 
   val regLutResultsVec = Reg(Vec(countOfLuts, UInt(1.W)))
@@ -74,11 +71,12 @@ class OnlineFuzzification(
 
   val regMinVec = Reg(Vec(numberOfMins, UInt(1.W)))
 
-  ////////////////////////////////////////////////////////////////////////////
-  // Temporary added for test, should be removed
-  // regLutResultsVec := io.regLutResultsVec
-
-  //////////////////////////////////////////////////////////////////////////////
+  //
+  // Connect direct LUTs
+  //
+  if (DesignConsts.LUT_CONNECTION) {
+    regLutResultsVec := io.lutConnections
+  }
 
   //
   // Transition rules
@@ -88,46 +86,40 @@ class OnlineFuzzification(
     //
     // Create online LUTs
     //
-    //////////////////////////////////////////////////////////////////////////////
+    if (DesignConsts.LUT_CONNECTION) {
+      lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
+        for (i <- 0 until numberOfLuts) {
 
-    /// *
-    //////////////////////////////////////////////////////////////////////////////
+          //
+          // Compute the lut for the
+          //
+          val lutGeneratedResults =
+            HashMapGenerator.generate(debug, inputNumber, i)
 
-    lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
-      for (i <- 0 until numberOfLuts) {
+          val lutResult = LutMembershipFunctionOnline(
+            debug,
+            lutGeneratedResults._1,
+            lutGeneratedResults._2,
+            lutGeneratedResults._3,
+            lutGeneratedResults._4
+          )(
+            io.inputs(inputNumber),
+            io.start
+          )
 
-        //
-        // Compute the lut for the
-        //
-        val lutGeneratedResults =
-          HashMapGenerator.generate(debug, inputNumber, i)
+          //
+          // Connect the lut result bit and valid bit
+          //
+          regLutResultsVec(currentIndexForLutGenResult) := lutResult._1
+          regLutResultsValidVec(currentIndexForLutGenResult) := lutResult._2
 
-        val lutResult = LutMembershipFunctionOnline(
-          debug,
-          lutGeneratedResults._1,
-          lutGeneratedResults._2,
-          lutGeneratedResults._3,
-          lutGeneratedResults._4
-        )(
-          io.inputs(inputNumber),
-          io.start
-        )
-
-        //
-        // Connect the lut result bit and valid bit
-        //
-        regLutResultsVec(currentIndexForLutGenResult) := lutResult._1
-        regLutResultsValidVec(currentIndexForLutGenResult) := lutResult._2
-
-        currentIndexForLutGenResult += 1
+          currentIndexForLutGenResult += 1
+        }
       }
     }
-    //////////////////////////////////////////////////////////////////////////////
-    // */
-    //////////////////////////////////////////////////////////////////////////////
 
     //
-    // TODO: Generalize the selection, currently generalized into two inputs
+    // Generalize the selection, currently generalized into two inputs
     // -------------------------------------------------------------------------------
 
     //

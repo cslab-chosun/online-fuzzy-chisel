@@ -27,9 +27,6 @@ object HashMapGenerator {
     for (y <- 0 until m) {
       for (k <- 0 until pow(2, n).toInt) {
         Checked(k) = false
-        LogInfo(debug)(
-          "_________________________________________________ fff 9"
-        )
       }
 
       for (i <- 1 to n) {
@@ -38,17 +35,11 @@ object HashMapGenerator {
           var sw = !Checked(j)
           for (k <- j + 1 until j + b if sw) {
             sw = (table(k)(y) == table(j)(y))
-            LogInfo(debug)(
-              "_________________________________________________ fff 8"
-            )
           }
 
           if (sw && !Checked(j)) {
             for (k <- j until j + b) {
               Checked(k) = true
-              LogInfo(debug)(
-                "_________________________________________________ fff 10"
-              )
             }
 
             val f = (j / b) % 2
@@ -241,9 +232,6 @@ class LutMembershipFunctionOnline(
         when(counter < bitCount.U) {
 
           hashMap.foreach { case (key, value) =>
-            LogInfo(debug)(
-              "_________________________________________________ fff 2"
-            )
             when(i === key._1.U) {
 
               when(io.inputBit === key._2.U) {
@@ -270,9 +258,6 @@ class LutMembershipFunctionOnline(
           }.elsewhen(counter >= delta.U) {
             outResultValid := true.B
             outResult := buffer(counter - delta.U)
-            LogInfo(debug)(
-              "_________________________________________________ fff 12"
-            )
 
             if (debug) {
               printf(
@@ -286,15 +271,7 @@ class LutMembershipFunctionOnline(
           //
           // State transition
           //
-          LogInfo(debug)(
-            "_________________________________________________ fff 1"
-          )
-
           when(i < (math.pow(2, bitCount - 1).toInt - 1).U) {
-
-            LogInfo(debug)(
-              "_________________________________________________ fff 3"
-            )
 
             if (debug) {
               printf(
@@ -308,10 +285,6 @@ class LutMembershipFunctionOnline(
             }.elsewhen(io.inputBit === 1.U) {
               i := 2.U * i + 2.U
             }
-
-            LogInfo(debug)(
-              "_________________________________________________ fff 4"
-            )
 
           }.elsewhen(i < (math.pow(2, bitCount).toInt - 1).U) {
 
@@ -328,10 +301,6 @@ class LutMembershipFunctionOnline(
 
         }.otherwise {
 
-          LogInfo(debug)(
-            "_________________________________________________ fff 5"
-          )
-
           outResult := 0.U
           outResultValid := false.B
         }
@@ -339,9 +308,7 @@ class LutMembershipFunctionOnline(
       }
 
       is(sFinished) {
-        LogInfo(debug)(
-          "_________________________________________________ fff 6"
-        )
+
         //
         // Wait here
         //
@@ -350,9 +317,7 @@ class LutMembershipFunctionOnline(
       }
     }
   }.otherwise {
-    LogInfo(debug)(
-      "_________________________________________________ fff 7"
-    )
+
     //
     // Reset the state
     //

@@ -86,6 +86,8 @@ class RegularFuzzification(
       Vec(numberOfInputs, UInt((log2Ceil(inputMax)).W))
     )
 
+    val lutConnections = Input(Vec(countOfLuts, UInt(lutOutputBitCount.W)))
+
     //
     // Output signals
     //
@@ -96,6 +98,7 @@ class RegularFuzzification(
       ) // it's actually should be log2Ceil(max index number) but as we compute it later, let
       // it be the actual bit count of LUT
     )
+
   })
 
   def buildLookupTable(
@@ -163,6 +166,13 @@ class RegularFuzzification(
   val regMaxVec = Reg(Vec(numberOfMaxs, UInt(lutOutputBitCount.W)))
 
   //
+  // Connect direct LUTs
+  //
+  if (DesignConsts.LUT_CONNECTION) {
+    regLutResultsVec := io.lutConnections
+  }
+
+  //
   // Transition rules
   //
   when(io.start === true.B) {
@@ -170,30 +180,34 @@ class RegularFuzzification(
     //
     // Status transition
     //
-    lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
-      //
-      // Create multiple LUTs
-      //
-      for (i <- 0 until numberOfLuts) {
 
-        val lut = buildLookupTable(debug, inputNumber, i)
+    if (DesignConsts.LUT_CONNECTION) {
 
-        regLutResultsVec(lutIndex) := lut(
-          io.inputs(inputNumber)
-        ) // Value read from the LUT
+      lutAndInputMap.foreach { case (inputNumber, numberOfLuts) =>
+        //
+        // Create multiple LUTs
+        //
+        for (i <- 0 until numberOfLuts) {
 
-        LogInfo(debug)(
-          s"input number: ${inputNumber} - mapped to LUT: lut_${inputNumber}_${i}.txt - LUT Index: ${lutIndex}"
-        )
+          val lut = buildLookupTable(debug, inputNumber, i)
 
-        lutIndex = lutIndex + 1
+          regLutResultsVec(lutIndex) := lut(
+            io.inputs(inputNumber)
+          ) // Value read from the LUT
+
+          LogInfo(debug)(
+            s"input number: ${inputNumber} - mapped to LUT: lut_${inputNumber}_${i}.txt - LUT Index: ${lutIndex}"
+          )
+
+          lutIndex = lutIndex + 1
+
+        }
 
       }
-
     }
 
     //
-    // TODO: Generalize the selection, currently generalized into two inputs
+    // Generalize the selection, currently generalized into two inputs
     // -------------------------------------------------------------------------------
 
     //
@@ -495,11 +509,11 @@ object RegularFuzzificationMain extends App {
       ),
       Array(
         "--emission-options=disableMemRandomization,disableRegisterRandomization",
-        "-e", // The intention for this argument (and next argument) is to separate generated files.
-        "verilog", // We could also use "sverilog" to generate SystemVerilog files.
+        // "-e", // The intention for this argument (and next argument) is to separate generated files.
+        // "verilog", // We could also use "sverilog" to generate SystemVerilog files.
         "--target-dir",
-        "generated/",
-        "--target:fpga"
+        "generated/"
+        // "--target:fpga"
       )
     )
   )

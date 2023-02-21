@@ -4,18 +4,18 @@ module OnlineFuzzification(
   input        io_start,
   input        io_inputs_0,
   input        io_inputs_1,
+  input        io_lutConnections_0,
+  input        io_lutConnections_1,
+  input        io_lutConnections_2,
+  input        io_lutConnections_3,
+  input        io_lutConnections_4,
+  input        io_lutConnections_5,
+  input        io_lutConnections_6,
+  input        io_lutConnections_7,
+  input        io_lutConnections_8,
+  input        io_lutConnections_9,
   output       io_outResultValid,
-  output [2:0] io_outResult,
-  input        io_regLutResultsVec_0,
-  input        io_regLutResultsVec_1,
-  input        io_regLutResultsVec_2,
-  input        io_regLutResultsVec_3,
-  input        io_regLutResultsVec_4,
-  input        io_regLutResultsVec_5,
-  input        io_regLutResultsVec_6,
-  input        io_regLutResultsVec_7,
-  input        io_regLutResultsVec_8,
-  input        io_regLutResultsVec_9
+  output [2:0] io_outResult
 );
   wire  lutMemFunction_clock; // @[lut_mem_online.scala 387:32]
   wire  lutMemFunction_reset; // @[lut_mem_online.scala 387:32]
@@ -162,28 +162,28 @@ module OnlineFuzzification(
   wire  comparatorModule_io_inputs_4; // @[5_input_custom_index_based_max_comparator.scala 180:34]
   wire [2:0] comparatorModule_io_result; // @[5_input_custom_index_based_max_comparator.scala 180:34]
   wire  comparatorModule_io_resultValid; // @[5_input_custom_index_based_max_comparator.scala 180:34]
-  reg  regLutResultsVec_0; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_1; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_2; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_3; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_4; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_5; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_6; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_7; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_8; // @[online_fuzzification.scala 55:29]
-  reg  regLutResultsVec_9; // @[online_fuzzification.scala 55:29]
-  reg  regMinMaxTreeResultsVec_0; // @[online_fuzzification.scala 248:10]
-  reg  regMinMaxTreeResultsVec_1; // @[online_fuzzification.scala 248:10]
-  reg  regMinMaxTreeResultsVec_2; // @[online_fuzzification.scala 248:10]
-  reg  regMinMaxTreeResultsVec_3; // @[online_fuzzification.scala 248:10]
-  reg  regMinMaxTreeResultsVec_4; // @[online_fuzzification.scala 248:10]
-  reg  regMinMaxTreeResultsValidVec_0; // @[online_fuzzification.scala 250:10]
-  reg  regMinMaxTreeResultsValidVec_1; // @[online_fuzzification.scala 250:10]
-  reg  regMinMaxTreeResultsValidVec_2; // @[online_fuzzification.scala 250:10]
-  reg  regMinMaxTreeResultsValidVec_3; // @[online_fuzzification.scala 250:10]
-  reg  regMinMaxTreeResultsValidVec_4; // @[online_fuzzification.scala 250:10]
-  wire  _T_1 = regMinMaxTreeResultsValidVec_0 & regMinMaxTreeResultsValidVec_1; // @[online_fuzzification.scala 306:41]
-  wire  _T_3 = _T_1 & regMinMaxTreeResultsValidVec_2 & regMinMaxTreeResultsValidVec_3; // @[online_fuzzification.scala 308:45]
+  reg  regLutResultsVec_0; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_1; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_2; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_3; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_4; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_5; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_6; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_7; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_8; // @[online_fuzzification.scala 52:29]
+  reg  regLutResultsVec_9; // @[online_fuzzification.scala 52:29]
+  reg  regMinMaxTreeResultsVec_0; // @[online_fuzzification.scala 240:10]
+  reg  regMinMaxTreeResultsVec_1; // @[online_fuzzification.scala 240:10]
+  reg  regMinMaxTreeResultsVec_2; // @[online_fuzzification.scala 240:10]
+  reg  regMinMaxTreeResultsVec_3; // @[online_fuzzification.scala 240:10]
+  reg  regMinMaxTreeResultsVec_4; // @[online_fuzzification.scala 240:10]
+  reg  regMinMaxTreeResultsValidVec_0; // @[online_fuzzification.scala 242:10]
+  reg  regMinMaxTreeResultsValidVec_1; // @[online_fuzzification.scala 242:10]
+  reg  regMinMaxTreeResultsValidVec_2; // @[online_fuzzification.scala 242:10]
+  reg  regMinMaxTreeResultsValidVec_3; // @[online_fuzzification.scala 242:10]
+  reg  regMinMaxTreeResultsValidVec_4; // @[online_fuzzification.scala 242:10]
+  wire  _T_1 = regMinMaxTreeResultsValidVec_0 & regMinMaxTreeResultsValidVec_1; // @[online_fuzzification.scala 298:41]
+  wire  _T_3 = _T_1 & regMinMaxTreeResultsValidVec_2 & regMinMaxTreeResultsValidVec_3; // @[online_fuzzification.scala 300:45]
   wire  outResult_1 = lutMemFunction_io_outResult; // @[lut_mem_online.scala 397:25 413:15]
   wire  outResult_2 = lutMemFunction_1_io_outResult; // @[lut_mem_online.scala 397:25 413:15]
   wire  outResult_3 = lutMemFunction_2_io_outResult; // @[lut_mem_online.scala 397:25 413:15]
@@ -373,8 +373,8 @@ module OnlineFuzzification(
     .io_result(comparatorModule_io_result),
     .io_resultValid(comparatorModule_io_resultValid)
   );
-  assign io_outResultValid = io_start & resultValid; // @[online_fuzzification.scala 315:20 86:29]
-  assign io_outResult = io_start ? result : 3'h0; // @[online_fuzzification.scala 314:15 86:29]
+  assign io_outResultValid = io_start & resultValid; // @[online_fuzzification.scala 307:20 84:29]
+  assign io_outResult = io_start ? result : 3'h0; // @[online_fuzzification.scala 306:15 84:29]
   assign lutMemFunction_clock = clock;
   assign lutMemFunction_reset = reset;
   assign lutMemFunction_io_start = io_start; // @[lut_mem_online.scala 403:29]
@@ -418,116 +418,136 @@ module OnlineFuzzification(
   assign minMaxTree_clock = clock;
   assign minMaxTree_reset = reset;
   assign minMaxTree_io_start = io_start; // @[min_max_parallel_online_comparator.scala 243:25]
-  assign minMaxTree_io_in1_0 = regLutResultsVec_0; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_io_in1_1 = regLutResultsVec_0; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_io_in1_2 = regLutResultsVec_0; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_io_in1_3 = regLutResultsVec_1; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_io_in1_4 = 1'h0; // @[online_fuzzification.scala 263:{30,30}]
-  assign minMaxTree_io_in1_5 = 1'h0; // @[online_fuzzification.scala 263:{30,30}]
-  assign minMaxTree_io_in2_0 = regLutResultsVec_5; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_io_in2_1 = regLutResultsVec_6; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_io_in2_2 = regLutResultsVec_7; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_io_in2_3 = regLutResultsVec_5; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_io_in2_4 = 1'h0; // @[online_fuzzification.scala 264:{30,30}]
-  assign minMaxTree_io_in2_5 = 1'h0; // @[online_fuzzification.scala 264:{30,30}]
+  assign minMaxTree_io_in1_0 = regLutResultsVec_0; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_io_in1_1 = regLutResultsVec_0; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_io_in1_2 = regLutResultsVec_0; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_io_in1_3 = regLutResultsVec_1; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_io_in1_4 = 1'h0; // @[online_fuzzification.scala 255:{30,30}]
+  assign minMaxTree_io_in1_5 = 1'h0; // @[online_fuzzification.scala 255:{30,30}]
+  assign minMaxTree_io_in2_0 = regLutResultsVec_5; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_io_in2_1 = regLutResultsVec_6; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_io_in2_2 = regLutResultsVec_7; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_io_in2_3 = regLutResultsVec_5; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_io_in2_4 = 1'h0; // @[online_fuzzification.scala 256:{30,30}]
+  assign minMaxTree_io_in2_5 = 1'h0; // @[online_fuzzification.scala 256:{30,30}]
   assign minMaxTree_1_clock = clock;
   assign minMaxTree_1_reset = reset;
   assign minMaxTree_1_io_start = io_start; // @[min_max_parallel_online_comparator.scala 243:25]
-  assign minMaxTree_1_io_in1_0 = regLutResultsVec_0; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_1_io_in1_1 = regLutResultsVec_0; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_1_io_in1_2 = regLutResultsVec_1; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_1_io_in1_3 = regLutResultsVec_1; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_1_io_in1_4 = regLutResultsVec_1; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_1_io_in1_5 = regLutResultsVec_2; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_1_io_in2_0 = regLutResultsVec_8; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_1_io_in2_1 = regLutResultsVec_9; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_1_io_in2_2 = regLutResultsVec_6; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_1_io_in2_3 = regLutResultsVec_7; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_1_io_in2_4 = regLutResultsVec_8; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_1_io_in2_5 = regLutResultsVec_5; // @[online_fuzzification.scala 264:30 273:30]
+  assign minMaxTree_1_io_in1_0 = regLutResultsVec_0; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_1_io_in1_1 = regLutResultsVec_0; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_1_io_in1_2 = regLutResultsVec_1; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_1_io_in1_3 = regLutResultsVec_1; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_1_io_in1_4 = regLutResultsVec_1; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_1_io_in1_5 = regLutResultsVec_2; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_1_io_in2_0 = regLutResultsVec_8; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_1_io_in2_1 = regLutResultsVec_9; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_1_io_in2_2 = regLutResultsVec_6; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_1_io_in2_3 = regLutResultsVec_7; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_1_io_in2_4 = regLutResultsVec_8; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_1_io_in2_5 = regLutResultsVec_5; // @[online_fuzzification.scala 256:30 265:30]
   assign minMaxTree_2_clock = clock;
   assign minMaxTree_2_reset = reset;
   assign minMaxTree_2_io_start = io_start; // @[min_max_parallel_online_comparator.scala 243:25]
-  assign minMaxTree_2_io_in1_0 = regLutResultsVec_1; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_2_io_in1_1 = regLutResultsVec_2; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_2_io_in1_2 = regLutResultsVec_2; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_2_io_in1_3 = regLutResultsVec_3; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_2_io_in1_4 = 1'h0; // @[online_fuzzification.scala 263:{30,30}]
-  assign minMaxTree_2_io_in1_5 = 1'h0; // @[online_fuzzification.scala 263:{30,30}]
-  assign minMaxTree_2_io_in2_0 = regLutResultsVec_9; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_2_io_in2_1 = regLutResultsVec_6; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_2_io_in2_2 = regLutResultsVec_7; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_2_io_in2_3 = regLutResultsVec_5; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_2_io_in2_4 = 1'h0; // @[online_fuzzification.scala 264:{30,30}]
-  assign minMaxTree_2_io_in2_5 = 1'h0; // @[online_fuzzification.scala 264:{30,30}]
+  assign minMaxTree_2_io_in1_0 = regLutResultsVec_1; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_2_io_in1_1 = regLutResultsVec_2; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_2_io_in1_2 = regLutResultsVec_2; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_2_io_in1_3 = regLutResultsVec_3; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_2_io_in1_4 = 1'h0; // @[online_fuzzification.scala 255:{30,30}]
+  assign minMaxTree_2_io_in1_5 = 1'h0; // @[online_fuzzification.scala 255:{30,30}]
+  assign minMaxTree_2_io_in2_0 = regLutResultsVec_9; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_2_io_in2_1 = regLutResultsVec_6; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_2_io_in2_2 = regLutResultsVec_7; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_2_io_in2_3 = regLutResultsVec_5; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_2_io_in2_4 = 1'h0; // @[online_fuzzification.scala 256:{30,30}]
+  assign minMaxTree_2_io_in2_5 = 1'h0; // @[online_fuzzification.scala 256:{30,30}]
   assign minMaxTree_3_clock = clock;
   assign minMaxTree_3_reset = reset;
   assign minMaxTree_3_io_start = io_start; // @[min_max_parallel_online_comparator.scala 243:25]
-  assign minMaxTree_3_io_in1_0 = regLutResultsVec_2; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_3_io_in1_1 = regLutResultsVec_2; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_3_io_in1_2 = regLutResultsVec_3; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_3_io_in1_3 = regLutResultsVec_3; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_3_io_in1_4 = regLutResultsVec_4; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_3_io_in1_5 = regLutResultsVec_4; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_3_io_in2_0 = regLutResultsVec_8; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_3_io_in2_1 = regLutResultsVec_9; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_3_io_in2_2 = regLutResultsVec_6; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_3_io_in2_3 = regLutResultsVec_7; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_3_io_in2_4 = regLutResultsVec_5; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_3_io_in2_5 = regLutResultsVec_6; // @[online_fuzzification.scala 264:30 273:30]
+  assign minMaxTree_3_io_in1_0 = regLutResultsVec_2; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_3_io_in1_1 = regLutResultsVec_2; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_3_io_in1_2 = regLutResultsVec_3; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_3_io_in1_3 = regLutResultsVec_3; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_3_io_in1_4 = regLutResultsVec_4; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_3_io_in1_5 = regLutResultsVec_4; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_3_io_in2_0 = regLutResultsVec_8; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_3_io_in2_1 = regLutResultsVec_9; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_3_io_in2_2 = regLutResultsVec_6; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_3_io_in2_3 = regLutResultsVec_7; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_3_io_in2_4 = regLutResultsVec_5; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_3_io_in2_5 = regLutResultsVec_6; // @[online_fuzzification.scala 256:30 265:30]
   assign minMaxTree_4_clock = clock;
   assign minMaxTree_4_reset = reset;
   assign minMaxTree_4_io_start = io_start; // @[min_max_parallel_online_comparator.scala 243:25]
-  assign minMaxTree_4_io_in1_0 = regLutResultsVec_3; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_4_io_in1_1 = regLutResultsVec_3; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_4_io_in1_2 = regLutResultsVec_4; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_4_io_in1_3 = regLutResultsVec_4; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_4_io_in1_4 = regLutResultsVec_4; // @[online_fuzzification.scala 263:30 271:30]
-  assign minMaxTree_4_io_in1_5 = 1'h0; // @[online_fuzzification.scala 263:{30,30}]
-  assign minMaxTree_4_io_in2_0 = regLutResultsVec_8; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_4_io_in2_1 = regLutResultsVec_9; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_4_io_in2_2 = regLutResultsVec_7; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_4_io_in2_3 = regLutResultsVec_8; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_4_io_in2_4 = regLutResultsVec_9; // @[online_fuzzification.scala 264:30 273:30]
-  assign minMaxTree_4_io_in2_5 = 1'h0; // @[online_fuzzification.scala 264:{30,30}]
+  assign minMaxTree_4_io_in1_0 = regLutResultsVec_3; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_4_io_in1_1 = regLutResultsVec_3; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_4_io_in1_2 = regLutResultsVec_4; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_4_io_in1_3 = regLutResultsVec_4; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_4_io_in1_4 = regLutResultsVec_4; // @[online_fuzzification.scala 255:30 263:30]
+  assign minMaxTree_4_io_in1_5 = 1'h0; // @[online_fuzzification.scala 255:{30,30}]
+  assign minMaxTree_4_io_in2_0 = regLutResultsVec_8; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_4_io_in2_1 = regLutResultsVec_9; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_4_io_in2_2 = regLutResultsVec_7; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_4_io_in2_3 = regLutResultsVec_8; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_4_io_in2_4 = regLutResultsVec_9; // @[online_fuzzification.scala 256:30 265:30]
+  assign minMaxTree_4_io_in2_5 = 1'h0; // @[online_fuzzification.scala 256:{30,30}]
   assign comparatorModule_clock = clock;
   assign comparatorModule_reset = reset;
-  assign comparatorModule_io_start = _T_3 & regMinMaxTreeResultsValidVec_4; // @[online_fuzzification.scala 310:11]
+  assign comparatorModule_io_start = _T_3 & regMinMaxTreeResultsValidVec_4; // @[online_fuzzification.scala 302:11]
   assign comparatorModule_io_inputs_0 = regMinMaxTreeResultsVec_0; // @[5_input_custom_index_based_max_comparator.scala 191:32]
   assign comparatorModule_io_inputs_1 = regMinMaxTreeResultsVec_1; // @[5_input_custom_index_based_max_comparator.scala 191:32]
   assign comparatorModule_io_inputs_2 = regMinMaxTreeResultsVec_2; // @[5_input_custom_index_based_max_comparator.scala 191:32]
   assign comparatorModule_io_inputs_3 = regMinMaxTreeResultsVec_3; // @[5_input_custom_index_based_max_comparator.scala 191:32]
   assign comparatorModule_io_inputs_4 = regMinMaxTreeResultsVec_4; // @[5_input_custom_index_based_max_comparator.scala 191:32]
   always @(posedge clock) begin
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_0 <= outResult_1; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_0 <= outResult_1; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_0 <= io_lutConnections_0; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_1 <= outResult_2; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_1 <= outResult_2; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_1 <= io_lutConnections_1; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_2 <= outResult_3; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_2 <= outResult_3; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_2 <= io_lutConnections_2; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_3 <= outResult_4; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_3 <= outResult_4; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_3 <= io_lutConnections_3; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_4 <= outResult_5; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_4 <= outResult_5; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_4 <= io_lutConnections_4; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_5 <= outResult_6; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_5 <= outResult_6; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_5 <= io_lutConnections_5; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_6 <= outResult_7; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_6 <= outResult_7; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_6 <= io_lutConnections_6; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_7 <= outResult_8; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_7 <= outResult_8; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_7 <= io_lutConnections_7; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_8 <= outResult_9; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_8 <= outResult_9; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_8 <= io_lutConnections_8; // @[online_fuzzification.scala 78:22]
     end
-    if (io_start) begin // @[online_fuzzification.scala 86:29]
-      regLutResultsVec_9 <= outResult_10; // @[online_fuzzification.scala 119:55]
+    if (io_start) begin // @[online_fuzzification.scala 84:29]
+      regLutResultsVec_9 <= outResult_10; // @[online_fuzzification.scala 113:57]
+    end else begin
+      regLutResultsVec_9 <= io_lutConnections_9; // @[online_fuzzification.scala 78:22]
     end
     regMinMaxTreeResultsVec_0 <= minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 240:25 249:15]
     regMinMaxTreeResultsVec_1 <= minMaxTree_1_io_outResult; // @[min_max_parallel_online_comparator.scala 240:25 249:15]
