@@ -168,7 +168,7 @@ class RegularFuzzification(
   //
   // Connect direct LUTs
   //
-  if (DesignConsts.LUT_CONNECTION) {
+  if (!DesignConsts.LUT_CONNECTION) {
     regLutResultsVec := io.lutConnections
   }
 
@@ -509,11 +509,11 @@ object RegularFuzzificationMain extends App {
       ),
       Array(
         "--emission-options=disableMemRandomization,disableRegisterRandomization",
-        // "-e", // The intention for this argument (and next argument) is to separate generated files.
-        // "verilog", // We could also use "sverilog" to generate SystemVerilog files.
+        "-e", // The intention for this argument (and next argument) is to separate generated files.
+        "verilog", // We could also use "sverilog" to generate SystemVerilog files.
         "--target-dir",
-        "generated/"
-        // "--target:fpga"
+        "generated/regular-fuzzification/",
+        "--target:fpga"
       )
     )
   )

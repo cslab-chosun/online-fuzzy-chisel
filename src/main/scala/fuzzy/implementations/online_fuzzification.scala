@@ -74,7 +74,7 @@ class OnlineFuzzification(
   //
   // Connect direct LUTs
   //
-  if (DesignConsts.LUT_CONNECTION) {
+  if (!DesignConsts.LUT_CONNECTION) {
     regLutResultsVec := io.lutConnections
   }
 
@@ -349,7 +349,7 @@ object OnlineFuzzificationMain extends App {
         "-e", // The intention for this argument (and next argument) is to separate generated files.
         "verilog", // We could also use "sverilog" to generate SystemVerilog files.
         "--target-dir",
-        "generated/",
+        "generated/online-fuzzification/",
         "--target:fpga"
       )
     )
