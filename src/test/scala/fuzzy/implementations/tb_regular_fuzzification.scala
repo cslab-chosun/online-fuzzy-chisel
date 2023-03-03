@@ -24,7 +24,7 @@ class RegularFuzzificationTest extends AnyFlatSpec with ChiselScalatestTester {
     // Read the configuration
     //
     test(
-      new RegularFuzzification(
+      new RegularFuzzificationInput(
         config._1,
         config._2,
         config._3,

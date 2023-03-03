@@ -501,53 +501,33 @@ module OnlineFuzzification(
   always @(posedge clock) begin
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_0 <= outResult_1; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_0 <= io_lutConnections_0; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_1 <= outResult_2; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_1 <= io_lutConnections_1; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_2 <= outResult_3; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_2 <= io_lutConnections_2; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_3 <= outResult_4; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_3 <= io_lutConnections_3; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_4 <= outResult_5; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_4 <= io_lutConnections_4; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_5 <= outResult_6; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_5 <= io_lutConnections_5; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_6 <= outResult_7; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_6 <= io_lutConnections_6; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_7 <= outResult_8; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_7 <= io_lutConnections_7; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_8 <= outResult_9; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_8 <= io_lutConnections_8; // @[online_fuzzification.scala 78:22]
     end
     if (io_start) begin // @[online_fuzzification.scala 84:29]
       regLutResultsVec_9 <= outResult_10; // @[online_fuzzification.scala 113:57]
-    end else begin
-      regLutResultsVec_9 <= io_lutConnections_9; // @[online_fuzzification.scala 78:22]
     end
     regMinMaxTreeResultsVec_0 <= minMaxTree_io_outResult; // @[min_max_parallel_online_comparator.scala 240:25 249:15]
     regMinMaxTreeResultsVec_1 <= minMaxTree_1_io_outResult; // @[min_max_parallel_online_comparator.scala 240:25 249:15]

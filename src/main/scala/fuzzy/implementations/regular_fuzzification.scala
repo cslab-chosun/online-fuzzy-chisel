@@ -60,7 +60,7 @@ object ReadInputAndLutDescription {
   }
 }
 
-class RegularFuzzification(
+class RegularFuzzificationInput(
     debug: Boolean = DesignConsts.ENABLE_DEBUG,
     countOfLuts: Int = 10, // count of LUTs
     numberOfInputs: Int = 2, // number of inputs (each input is an integer)
@@ -429,7 +429,7 @@ class RegularFuzzification(
 
 }
 
-object RegularFuzzification {
+object RegularFuzzificationInput {
 
   def apply(
       debug: Boolean = DesignConsts.ENABLE_DEBUG
@@ -444,7 +444,7 @@ object RegularFuzzification {
     )
 
     val fuzzification = Module(
-      new RegularFuzzification(
+      new RegularFuzzificationInput(
         config._1,
         config._2,
         config._3,
@@ -480,41 +480,4 @@ object RegularFuzzification {
     //
     (outResult, outResultValid)
   }
-}
-
-object RegularFuzzificationMain extends App {
-
-  //
-  // Read the configuration
-  //
-  val config = ReadInputAndLutDescription(
-    "src/main/resources/lut/config.txt",
-    "src/main/resources/lut/max.txt"
-  )
-
-  //
-  // These lines generate the Verilog output
-  //
-  println(
-    new (chisel3.stage.ChiselStage).emitVerilog(
-      new RegularFuzzification(
-        config._1,
-        config._2,
-        config._3,
-        config._4,
-        config._5,
-        config._6, // Equals to lutOutputBitCount and SHOULD NOT CHANGE THE LOCATION OF THIS PARAMETER
-        config._7,
-        config._8
-      ),
-      Array(
-        "--emission-options=disableMemRandomization,disableRegisterRandomization",
-        "-e", // The intention for this argument (and next argument) is to separate generated files.
-        "verilog", // We could also use "sverilog" to generate SystemVerilog files.
-        "--target-dir",
-        "generated/regular-fuzzification/",
-        "--target:fpga"
-      )
-    )
-  )
 }
