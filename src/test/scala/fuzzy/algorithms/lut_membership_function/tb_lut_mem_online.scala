@@ -14,7 +14,12 @@ class LutMembershipFunctionOnlineTest
   "DUT" should "pass" in {
 
     val generatedResults =
-      HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG, 0, 0)
+      HashMapGenerator.generate(
+        DesignConsts.ENABLE_DEBUG,
+        false, // it's not reversed LUT
+        0,
+        0
+      )
 
     if (DesignConsts.ENABLE_DEBUG) {
       println(

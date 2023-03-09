@@ -3,14 +3,15 @@ package fuzzy.algorithms.interface
 import chisel3._
 import chisel3.util._
 
+import firrtl.FileUtils
+
+import scala.math._
+
 import fuzzy.components._
 import fuzzy.utils._
 import fuzzy.algorithms.implementations._
+
 import scala.collection.immutable.ListMap
-
-import scala.math._
-import firrtl.FileUtils
-
 import scala.collection.mutable.ListBuffer
 
 class RegularFuzzification(
@@ -20,10 +21,10 @@ class RegularFuzzification(
     inputMax: Int = 180, // maximum possible number of input
     lutInputBitCount: Int = 5, // equal to n
     lutOutputBitCount: Int = 4, // equal to m
-    lutAndInputMap: scala.collection.mutable.ListBuffer[
+    lutAndInputMap: ListBuffer[
       (Int, Int)
     ], // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
-    maxConnectionMap: scala.collection.mutable.ListBuffer[
+    maxConnectionMap: ListBuffer[
       (Int, Int)
     ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
 

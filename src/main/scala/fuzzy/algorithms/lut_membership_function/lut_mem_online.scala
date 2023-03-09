@@ -3,19 +3,48 @@ package fuzzy.algorithms.implementations
 import chisel3._
 import chisel3.util._
 
-import fuzzy.components._
-import fuzzy.utils._
-
 import scala.collection.immutable.ListMap
+import scala.collection.mutable.ListBuffer
 import scala.math._
 import scala.io.Source
 
-object HashMapGenerator {
-  private val HashMap =
-    scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]()
-  private var Delta = 0
+import fuzzy.components._
+import fuzzy.utils._
 
-  def FuzzyCompute(
+object HashMapGenerator {
+
+  private val hashMap =
+    ListBuffer[(Tuple3[Int, Int, Int], Int)]()
+  private var delta = 0
+
+  def reverse(text: String): String = {
+    if (text == null) return null
+    text.reverse
+  }
+
+  def reorderLut(lutString: String, n: Int, m: Int): String = {
+    val nToPow2 = math.pow(2, n).toInt
+    val lutNumbers =
+      ListBuffer[(Tuple2[Int, String])]()
+    var output = ""
+
+    for (i <- 0 until nToPow2) {
+      var binary = i.toBinaryString.reverse.padTo(n, '0').reverse
+      lutNumbers += Tuple2(
+        Integer.parseInt(reverse(binary), 2),
+        lutString.substring(i * 4, i * 4 + m)
+      )
+    }
+
+    lutNumbers.sorted.foreach { item =>
+      println(item)
+      output += item._2
+    }
+
+    output
+  }
+
+  def fuzzyCompute(
       debug: Boolean,
       m: Int,
       n: Int,
@@ -44,8 +73,8 @@ object HashMapGenerator {
 
             val f = (j / b) % 2
             val s = pow(2, i - 1).toInt + j / b / 2 - 1
-            HashMap.append((Tuple3(s, f, y), if (table(j)(y)) 1 else 0))
-            if (i - y > Delta) Delta = i - y
+            hashMap.append((Tuple3(s, f, y), if (table(j)(y)) 1 else 0))
+            if (i - y > delta) delta = i - y
           }
         }
         if (debug) {
@@ -58,19 +87,20 @@ object HashMapGenerator {
 
     }
     if (debug) {
-      println(s"delta: $Delta")
+      println(s"delta: $delta")
     }
   }
 
   def generate(
       debug: Boolean,
+      reverseLut: Boolean,
       inputIndex: Int = -1,
       lutIndex: Int = -1
   ): (
       Int,
       Int,
       Int,
-      scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
+      ListBuffer[(Tuple3[Int, Int, Int], Int)]
   ) = {
 
     var m_output = 4 // deafault value
@@ -145,9 +175,25 @@ object HashMapGenerator {
 
     LogInfo(debug)("LUT stream:" + inputTrim)
 
-    for (i <- 0 until inputTrim.length / m_output) {
-      for (j <- 0 until m_output) {
-        array(i)(j) = if (inputTrim(i * m_output + j) == '1') true else false
+    if (reverseLut) {
+      //
+      // Reverse the stream
+      //
+      val inputTrimReversed = reorderLut(inputTrim, n_input, m_output)
+      LogInfo(debug)("Reversed LUT stream: " + inputTrimReversed)
+
+      for (i <- 0 until inputTrimReversed.length / m_output) {
+        for (j <- 0 until m_output) {
+          array(i)(j) =
+            if (inputTrimReversed(i * m_output + j) == '1') true else false
+        }
+      }
+
+    } else {
+      for (i <- 0 until inputTrim.length / m_output) {
+        for (j <- 0 until m_output) {
+          array(i)(j) = if (inputTrim(i * m_output + j) == '1') true else false
+        }
       }
     }
 
@@ -160,15 +206,15 @@ object HashMapGenerator {
     //
     // Call the fuzzy computer
     //
-    FuzzyCompute(debug, m_output, n_input, array)
+    fuzzyCompute(debug, m_output, n_input, array)
 
-    HashMap.foreach { case (key, value) =>
+    hashMap.foreach { case (key, value) =>
       if (debug) {
         println(s"{ ${key._1}, ${key._2}, ${key._3} } ====> $value")
       }
     }
 
-    return (n_input, m_output, Delta, HashMap)
+    return (n_input, m_output, delta, hashMap)
   }
 }
 
@@ -177,7 +223,7 @@ class LutMembershipFunctionOnline(
     bitCount: Int,
     outputBitCount: Int,
     delta: Int,
-    hashMap: scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
+    hashMap: ListBuffer[(Tuple3[Int, Int, Int], Int)]
 ) extends Module {
 
   val io = IO(new Bundle {
@@ -343,7 +389,7 @@ object LutMembershipFunctionOnline {
       bitCount: Int,
       outputBitCount: Int,
       delta: Int,
-      hashMap: scala.collection.mutable.ListBuffer[(Tuple3[Int, Int, Int], Int)]
+      hashMap: ListBuffer[(Tuple3[Int, Int, Int], Int)]
   )(
       inputBit: UInt,
       start: Bool
@@ -390,7 +436,10 @@ object LutMemOnlineMain extends App {
   // These lines generate the Verilog output
   //
   val generatedResults =
-    HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
+    HashMapGenerator.generate(
+      DesignConsts.ENABLE_DEBUG,
+      false // it's not reversed LUT
+    )
 
   println(
     new (chisel3.stage.ChiselStage).emitVerilog(

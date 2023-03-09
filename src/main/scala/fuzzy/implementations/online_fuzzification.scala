@@ -3,15 +3,14 @@ package fuzzy.algorithms.implementations
 import chisel3._
 import chisel3.util._
 
-import fuzzy.components._
-import fuzzy.utils._
-import scala.collection.immutable.ListMap
-
-import scala.math._
 import firrtl.FileUtils
 
+import scala.math._
+import scala.collection.immutable.ListMap
 import scala.collection.mutable.ListBuffer
 
+import fuzzy.components._
+import fuzzy.utils._
 import fuzzy.algorithms.implementations
 import fuzzy.components
 import fuzzy.algorithms.min_max._
@@ -23,10 +22,10 @@ class OnlineFuzzification(
     inputMax: Int = 180, // maximum possible number of input
     lutInputBitCount: Int = 5, // equal to n
     lutOutputBitCount: Int = 4, // equal to m
-    lutAndInputMap: scala.collection.mutable.ListBuffer[
+    lutAndInputMap: ListBuffer[
       (Int, Int)
     ], // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
-    maxConnectionMap: scala.collection.mutable.ListBuffer[
+    maxConnectionMap: ListBuffer[
       (Int, Int)
     ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
 ) extends Module {
@@ -94,7 +93,12 @@ class OnlineFuzzification(
           // Compute the lut for the
           //
           val lutGeneratedResults =
-            HashMapGenerator.generate(debug, inputNumber, i)
+            HashMapGenerator.generate(
+              debug,
+              false, // it's not reversed LUT
+              inputNumber,
+              i
+            )
 
           val lutResult = LutMembershipFunctionOnline(
             debug,

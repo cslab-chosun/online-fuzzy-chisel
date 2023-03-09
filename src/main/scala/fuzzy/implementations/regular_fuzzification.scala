@@ -3,14 +3,15 @@ package fuzzy.algorithms.implementations
 import chisel3._
 import chisel3.util._
 
-import fuzzy.components._
-import fuzzy.utils._
-import scala.collection.immutable.ListMap
-
-import scala.math._
 import firrtl.FileUtils
 
+import scala.math._
+
+import scala.collection.immutable.ListMap
 import scala.collection.mutable.ListBuffer
+
+import fuzzy.components._
+import fuzzy.utils._
 
 object ReadInputAndLutDescription {
 
@@ -21,8 +22,8 @@ object ReadInputAndLutDescription {
       Int,
       Int,
       Int,
-      scala.collection.mutable.ListBuffer[(Int, Int)],
-      scala.collection.mutable.ListBuffer[(Int, Int)]
+      ListBuffer[(Int, Int)],
+      ListBuffer[(Int, Int)]
   ) = {
     val source = scala.io.Source.fromFile(configFilePath)
     val source2 = scala.io.Source.fromFile(maxConnFilePath)
@@ -38,7 +39,7 @@ object ReadInputAndLutDescription {
     //
     // Create input and lut coumt list
     //
-    val lut = scala.collection.mutable.ListBuffer[(Int, Int)]()
+    val lut = ListBuffer[(Int, Int)]()
     for (line <- lines) {
       val pair = line.split(",")
       lut += ((pair(0).toInt, pair(1).toInt))
@@ -48,7 +49,7 @@ object ReadInputAndLutDescription {
     //
     // Create max connection count
     //
-    val max = scala.collection.mutable.ListBuffer[(Int, Int)]()
+    val max = ListBuffer[(Int, Int)]()
     val lines2 = source2.getLines()
     for (line <- lines2) {
       val pair = line.split(",")
@@ -67,10 +68,10 @@ class RegularFuzzificationInput(
     inputMax: Int = 180, // maximum possible number of input
     lutInputBitCount: Int = 5, // equal to n
     lutOutputBitCount: Int = 4, // equal to m
-    lutAndInputMap: scala.collection.mutable.ListBuffer[
+    lutAndInputMap: ListBuffer[
       (Int, Int)
     ], // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
-    maxConnectionMap: scala.collection.mutable.ListBuffer[
+    maxConnectionMap: ListBuffer[
       (Int, Int)
     ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
 ) extends Module {
@@ -438,10 +439,10 @@ object RegularFuzzificationInput {
       inputMax: Int = 180, // maximum possible number of input
       lutInputBitCount: Int = 5, // equal to n
       lutOutputBitCount: Int = 4, // equal to m
-      lutAndInputMap: scala.collection.mutable.ListBuffer[
+      lutAndInputMap: ListBuffer[
         (Int, Int)
       ], // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
-      maxConnectionMap: scala.collection.mutable.ListBuffer[
+      maxConnectionMap: ListBuffer[
         (Int, Int)
       ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
 
