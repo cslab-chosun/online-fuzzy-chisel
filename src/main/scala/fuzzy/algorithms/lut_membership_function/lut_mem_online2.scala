@@ -18,7 +18,8 @@ class LutMembershipFunctionOnline2(
     bitCount: Int,
     outputBitCount: Int,
     delta: Int,
-    hashMap: ListBuffer[(Tuple3[Int, Int, Int], Int)]
+    inputIndex: Int,
+    lutIndex: Int
 ) extends Module {
 
   val io = IO(new Bundle {
@@ -80,6 +81,11 @@ class LutMembershipFunctionOnline2(
   val outResult = RegInit(false.B)
 
   //
+  // Build LUT
+  //
+  val lut = buildLookupTable(debug, inputIndex, lutIndex)
+
+  //
   // Transition rules
   //
   when(io.start === true.B) {
@@ -90,9 +96,19 @@ class LutMembershipFunctionOnline2(
     switch(state) {
 
       is(sStarted) {
+
         //
         // implement the logic here
         //
+
+        // ----------------------------------------------------------
+
+        // The above LUT is later read as follows:
+        val in = 0x123.U // Any 10-bit input to the LUT
+        val lutOut = lut(in) // Value read from the LUT
+
+        // ----------------------------------------------------------
+
       }
 
       is(sFinished) {
@@ -130,7 +146,8 @@ object LutMembershipFunctionOnline2 {
       bitCount: Int,
       outputBitCount: Int,
       delta: Int,
-      hashMap: ListBuffer[(Tuple3[Int, Int, Int], Int)]
+      inputIndex: Int,
+      lutIndex: Int
   )(
       inputBit: UInt,
       start: Bool
@@ -142,7 +159,8 @@ object LutMembershipFunctionOnline2 {
         bitCount,
         outputBitCount,
         delta,
-        hashMap
+        inputIndex,
+        lutIndex
       )
     )
 
@@ -173,13 +191,19 @@ object LutMembershipFunctionOnline2 {
 }
 
 object LutMemOnline2Main extends App {
+
+  val inputIndex: Int = 0 // for test we build LUT upon the first LUT (0, 0)
+  val lutIndex: Int = 0 // for test we build LUT upon the first LUT (0, 0)
+
   //
   // These lines generate the Verilog output
   //
   val generatedResults =
     HashMapGenerator.generate(
       DesignConsts.ENABLE_DEBUG,
-      true // it's reversed LUT!
+      true, // it's reversed LUT!
+      inputIndex,
+      lutIndex
     )
 
   println(
@@ -189,7 +213,8 @@ object LutMemOnline2Main extends App {
         generatedResults._1,
         generatedResults._2,
         generatedResults._3,
-        generatedResults._4
+        inputIndex,
+        lutIndex
       ),
       Array(
         "--emission-options=disableMemRandomization,disableRegisterRandomization",

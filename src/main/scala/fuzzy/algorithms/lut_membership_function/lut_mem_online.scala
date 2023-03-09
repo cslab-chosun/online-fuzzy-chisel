@@ -173,7 +173,7 @@ object HashMapGenerator {
     val inputTrim =
       input.trim.replaceAll(" ", "").replaceAll("\t", "").replaceAll("\n", "")
 
-    LogInfo(debug)("LUT stream:" + inputTrim)
+    LogInfo(debug)("LUT stream: " + inputTrim)
 
     if (reverseLut) {
       //
