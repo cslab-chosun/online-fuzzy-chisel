@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LutMemFunc2", "LutMemFunc2\LutMemFunc2.csproj", "{423345A8-3A7F-4E0C-BCAE-351998C7FDAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{423345A8-3A7F-4E0C-BCAE-351998C7FDAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{423345A8-3A7F-4E0C-BCAE-351998C7FDAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{423345A8-3A7F-4E0C-BCAE-351998C7FDAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{423345A8-3A7F-4E0C-BCAE-351998C7FDAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C6E9484-51F1-4B8C-98B5-35B08749A867}
+	EndGlobalSection
+EndGlobal
