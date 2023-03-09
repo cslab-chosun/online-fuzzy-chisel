@@ -170,11 +170,18 @@ object HashMapGenerator2 {
     val inputTrim =
       input.trim.replaceAll(" ", "").replaceAll("\t", "").replaceAll("\n", "")
 
-    LogInfo(debug)("LUT stream:" + inputTrim)
+    LogInfo(debug)("LUT stream: " + inputTrim)
 
-    for (i <- 0 until inputTrim.length / m_output) {
+    //
+    // Reverse the stream
+    //
+    val inputTrimReversed = reorderLut(inputTrim, n_input, m_output)
+    LogInfo(debug)("Reversed LUT stream: " + inputTrimReversed)
+
+    for (i <- 0 until inputTrimReversed.length / m_output) {
       for (j <- 0 until m_output) {
-        array(i)(j) = if (inputTrim(i * m_output + j) == '1') true else false
+        array(i)(j) =
+          if (inputTrimReversed(i * m_output + j) == '1') true else false
       }
     }
 
@@ -417,7 +424,7 @@ object LutMemOnline2Main extends App {
   // These lines generate the Verilog output
   //
   val generatedResults =
-    HashMapGenerator.generate(DesignConsts.ENABLE_DEBUG)
+    HashMapGenerator2.generate(DesignConsts.ENABLE_DEBUG)
 
   println(
     new (chisel3.stage.ChiselStage).emitVerilog(
