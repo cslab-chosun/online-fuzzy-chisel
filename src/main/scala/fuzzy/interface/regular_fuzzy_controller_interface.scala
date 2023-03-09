@@ -26,6 +26,7 @@ class RegularFuzzification(
     maxConnectionMap: scala.collection.mutable.ListBuffer[
       (Int, Int)
     ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
+
 ) extends Module {
 
   val io = IO(new Bundle {
@@ -57,25 +58,47 @@ class RegularFuzzification(
   )
 
   val regIndex = RegInit(
-    (log2Ceil(inputMax) - 1).U((log2Ceil(numberOfInputs)).W)
+    (log2Ceil(inputMax) - 1).U((log2Ceil(inputMax)).W)
   )
+
+  val regStart = RegInit(false.B)
 
   when(io.start === true.B) {
 
     for (i <- 0 until numberOfInputs) {
-      regInputBits(i)(regIndex) := io.inputs(i)
+
+      regInputBits(i) := regInputBits(i) | (io.inputs(i) << regIndex)
+
     }
 
     when(regIndex =/= 0.U) {
       regIndex := regIndex - 1.U
     }.otherwise {
       regIndex := (log2Ceil(inputMax) - 1).U
+      regStart := true.B
     }
   }
 
   //
   // Connect the interface
   //
+  val outputResults = RegularFuzzificationInput(
+    debug,
+    countOfLuts,
+    numberOfInputs,
+    inputMax,
+    lutInputBitCount,
+    lutOutputBitCount,
+    lutAndInputMap,
+    maxConnectionMap
+  )(
+    regStart,
+    regInputBits,
+    io.lutConnections
+  )
+
+  io.outResult := outputResults._1
+  io.outResultValid := outputResults._2
 
 }
 
@@ -85,7 +108,8 @@ object RegularFuzzification {
       debug: Boolean = DesignConsts.ENABLE_DEBUG
   )(
       start: Bool,
-      inputs: Vec[UInt]
+      inputs: Vec[UInt],
+      optionalLutConnections: Vec[UInt]
   ): (UInt, Bool) = {
 
     val config = ReadInputAndLutDescription(
@@ -94,7 +118,7 @@ object RegularFuzzification {
     )
 
     val fuzzification = Module(
-      new RegularFuzzification(
+      new RegularFuzzificationInput(
         config._1,
         config._2,
         config._3,
@@ -113,6 +137,11 @@ object RegularFuzzification {
     // Start the circuit
     //
     fuzzification.io.start := start
+
+    //
+    // Connect LUT connections
+    //
+    fuzzification.io.lutConnections := optionalLutConnections
 
     //
     // Set the Inputs vectors

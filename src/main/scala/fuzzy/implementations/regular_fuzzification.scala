@@ -432,37 +432,50 @@ class RegularFuzzificationInput(
 object RegularFuzzificationInput {
 
   def apply(
-      debug: Boolean = DesignConsts.ENABLE_DEBUG
+      debug: Boolean = DesignConsts.ENABLE_DEBUG,
+      countOfLuts: Int = 10, // count of LUTs
+      numberOfInputs: Int = 2, // number of inputs (each input is an integer)
+      inputMax: Int = 180, // maximum possible number of input
+      lutInputBitCount: Int = 5, // equal to n
+      lutOutputBitCount: Int = 4, // equal to m
+      lutAndInputMap: scala.collection.mutable.ListBuffer[
+        (Int, Int)
+      ], // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
+      maxConnectionMap: scala.collection.mutable.ListBuffer[
+        (Int, Int)
+      ] // invoke it like [input index: 0, 5 luts] [input index: 1, 6 luts]
+
   )(
       start: Bool,
-      inputs: Vec[UInt]
+      inputs: Vec[UInt],
+      optionalLutConnections: Vec[UInt]
   ): (UInt, Bool) = {
-
-    val config = ReadInputAndLutDescription(
-      "src/main/resources/lut/config.txt",
-      "src/main/resources/lut/max.txt"
-    )
 
     val fuzzification = Module(
       new RegularFuzzificationInput(
-        config._1,
-        config._2,
-        config._3,
-        config._4,
-        config._5,
-        config._6, // Equals to lutOutputBitCount and SHOULD NOT CHANGE THE LOCATION OF THIS PARAMETER
-        config._7,
-        config._8
+        debug,
+        countOfLuts,
+        numberOfInputs,
+        inputMax,
+        lutInputBitCount,
+        lutOutputBitCount,
+        lutAndInputMap,
+        maxConnectionMap
       )
     )
 
-    val outResult = Wire(UInt(config._6.W))
-    val outResultValid = Wire(Bool())
+    val outResult = WireInit(0.U(lutOutputBitCount.W))
+    val outResultValid = WireInit(false.B)
 
     //
     // Start the circuit
     //
     fuzzification.io.start := start
+
+    //
+    // Connect LUT connections
+    //
+    fuzzification.io.lutConnections := optionalLutConnections
 
     //
     // Set the Inputs vectors

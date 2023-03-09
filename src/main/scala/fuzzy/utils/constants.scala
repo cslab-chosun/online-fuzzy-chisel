@@ -14,7 +14,7 @@ object DesignConsts {
 
   val ENABLE_DEBUG: Boolean = false // whether to enable debug or not
 
-  val LUT_CONNECTION: Boolean = true // by default not
+  val LUT_CONNECTION: Boolean = false // by default not
 
   val TEST_FILE_PATH: String = "src/test/resources/min-max-tests.txt"
 
