@@ -73,9 +73,14 @@ class LutMembershipFunctionOnline2(
   val sStarted :: sFinished :: Nil = Enum(2)
   val state = RegInit(sStarted)
 
-  val buffer = Reg(Vec(bitCount, UInt(1.W)))
+  val buffer = VecInit(Seq.fill(bitCount)(0.U(1.W)))
+  val outputBuffer = RegInit(0.U(bitCount.W))
 
-  val counter = RegInit(0.U(log2Ceil(bitCount + delta).W))
+  val counter = RegInit(bitCount.U(log2Ceil(bitCount + delta).W))
+  val outputCounter = RegInit(bitCount.U(log2Ceil(bitCount + delta).W))
+
+  val isPassedDelta = RegInit(false.B)
+  val isOutputValid = RegNext(isPassedDelta)
 
   val outResultValid = RegInit(false.B)
   val outResult = RegInit(false.B)
@@ -98,16 +103,36 @@ class LutMembershipFunctionOnline2(
       is(sStarted) {
 
         //
-        // implement the logic here
+        // *** implement the logic here ***
         //
 
-        // ----------------------------------------------------------
+        //
+        // Save the buffer for the LUT
+        //
+        buffer(counter) := io.inputBit
 
-        // The above LUT is later read as follows:
-        val in = 0x123.U // Any 10-bit input to the LUT
-        val lutOut = lut(in) // Value read from the LUT
+        when(counter === delta.U) {
+          isPassedDelta := true.B
+        }
+        //
+        // Decrement the buffer
+        //
+        counter := counter - 1.U
 
-        // ----------------------------------------------------------
+        when(isPassedDelta === true.B) {
+
+          val lutOut = lut(buffer.asUInt()) // Value read from the LUT
+          outputBuffer := lutOut
+
+        }
+
+        when(isOutputValid === true.B) {
+
+          outResult := outputBuffer(outputCounter)
+          outResultValid := true.B
+          outputCounter := outputCounter + 1.U
+
+        }
 
       }
 
@@ -126,9 +151,15 @@ class LutMembershipFunctionOnline2(
     // Reset the state
     //
     state := sStarted
-    counter := 0.U
-    outResult := 0.U
-    outResultValid := false.B
+    counter := bitCount.U
+
+    for (i <- 0 until bitCount) {
+      buffer(i) := 0.U
+    }
+
+    outResult := outResult
+    outResultValid := outResultValid
+
   }
 
   //

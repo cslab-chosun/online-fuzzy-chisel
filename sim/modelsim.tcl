@@ -1,3 +1,9 @@
 add wave -position insertpoint {*clock*}
 add wave -position insertpoint {*io_outResult*}
 add wave -position insertpoint {*io_outResultValid*}
+add wave -position insertpoint {*buffer*}
+add wave -position insertpoint {*counter*}
+add wave -position insertpoint {*outputCounter*}
+add wave -position insertpoint {*isPassedDelta*}
+add wave -position insertpoint {*isOutputValid*}
+add wave -position insertpoint {*state*}
