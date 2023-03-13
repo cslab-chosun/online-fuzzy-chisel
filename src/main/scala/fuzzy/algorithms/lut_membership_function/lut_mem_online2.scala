@@ -73,11 +73,11 @@ class LutMembershipFunctionOnline2(
   val sStarted :: sFinished :: Nil = Enum(2)
   val state = RegInit(sStarted)
 
-  val buffer = VecInit(Seq.fill(bitCount)(0.U(1.W)))
-  val outputBuffer = RegInit(0.U(bitCount.W))
+  val buffer = Reg(Vec(bitCount, UInt(1.W)))
+  val outputBuffer = RegInit(0.U(outputBitCount.W))
 
-  val counter = RegInit(bitCount.U(log2Ceil(bitCount + delta).W))
-  val outputCounter = RegInit(bitCount.U(log2Ceil(bitCount + delta).W))
+  val counter = RegInit(0.U(log2Ceil(bitCount).W))
+  val outputCounter = RegInit(0.U(log2Ceil(bitCount).W))
 
   val isPassedDelta = RegInit(false.B)
   val isOutputValid = RegNext(isPassedDelta)
@@ -89,6 +89,8 @@ class LutMembershipFunctionOnline2(
   // Build LUT
   //
   val lut = buildLookupTable(debug, inputIndex, lutIndex)
+
+  LogInfo(debug)("delta is : " + delta)
 
   //
   // Transition rules
@@ -107,32 +109,70 @@ class LutMembershipFunctionOnline2(
         //
 
         //
-        // Save the buffer for the LUT
+        // Check if we pass the delta or not
         //
-        buffer(counter) := io.inputBit
-
         when(counter === delta.U) {
           isPassedDelta := true.B
         }
+
         //
-        // Decrement the buffer
+        // Save the buffer for the LUT
         //
-        counter := counter - 1.U
+        when(counter =/= bitCount.U) {
 
-        when(isPassedDelta === true.B) {
+          buffer(counter) := io.inputBit
 
-          val lutOut = lut(buffer.asUInt()) // Value read from the LUT
-          outputBuffer := lutOut
+          if (debug) {
 
+            printf(
+              "buffer(%d) = %d\n",
+              counter,
+              io.inputBit
+            )
+          }
+
+          //
+          // Increment the buffer
+          //
+          counter := counter + 1.U
         }
 
-        when(isOutputValid === true.B) {
+        //
+        // Get the LUT results based on current available bits
+        //
+        when(isPassedDelta === true.B) {
 
-          outResult := outputBuffer(outputCounter)
+          val tempCurrentBuf = Reverse(buffer.asUInt)
+
+          val lutOut = lut(tempCurrentBuf) // Value read from the LUT
+          outputBuffer := lutOut
+
+          if (debug) {
+
+            printf(
+              "lut(%d) = %d\n",
+              tempCurrentBuf,
+              lutOut
+            )
+          }
+        }
+
+        //
+        // Produce the output
+        //
+        when(isOutputValid === true.B && outputCounter =/= outputBitCount.U) {
+
+          outResult := outputBuffer((outputBitCount - 1).U - outputCounter)
           outResultValid := true.B
           outputCounter := outputCounter + 1.U
 
         }
+          .otherwise {
+
+            outResult := 0.U
+            outResultValid := false.B
+
+          }
 
       }
 
@@ -151,7 +191,8 @@ class LutMembershipFunctionOnline2(
     // Reset the state
     //
     state := sStarted
-    counter := bitCount.U
+    counter := 0.U
+    outputCounter := 0.U
 
     for (i <- 0 until bitCount) {
       buffer(i) := 0.U

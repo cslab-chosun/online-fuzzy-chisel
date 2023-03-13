@@ -32,7 +32,7 @@ class LutMembershipFunctionOnlineTest2
 
     test(
       new LutMembershipFunctionOnline2(
-        DesignConsts.ENABLE_DEBUG,
+        true,
         generatedResults._1,
         generatedResults._2,
         generatedResults._3,
@@ -48,7 +48,7 @@ class LutMembershipFunctionOnlineTest2
         Array.tabulate(math.pow(2, generatedResults._1).toInt)(i => i).map(_.U)
 
       // for (loop <- 0 until testNumbers.length) {
-      val loop: Int = 5 // test should be removed
+      val loop: Int = 138 // test should be removed
 
       //
       // Reset for test and re-test
@@ -74,7 +74,9 @@ class LutMembershipFunctionOnlineTest2
         dut.io.inputBit.poke(
           testNumbers(loop)(generatedResults._1 - i - 1)
         )
+
         dut.clock.step(1)
+        dut.io.inputBit.poke(0)
 
       }
 
