@@ -105,6 +105,10 @@ gtkwave ./test_run_dir/DUT_should_pass/OnlineFuzzification.vcd
 
 If you want to use ModelSim instead of GTKWave, you can configure the `modelsim.config` file. Please visit <a href="https://github.com/cslab-chosun/online-fuzzy-chisel/blob/main/sim/README.md">here</a> for more information.
 
+## Results 
+
+The generated codes along with Vivado deployed codes are available in the `result` directory. The final generated codes for fuzzy controllers are available in the `generated` directory.
+
 ## Creating codes 
 
 You can generate HDL (Verilog) files for each component separately, by using the following command.
