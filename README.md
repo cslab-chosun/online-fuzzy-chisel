@@ -118,9 +118,10 @@ After that, you can choose the component for code generation.
 ```
 Multiple main classes detected. Select one to run:
  [1] fuzzy.Main
- [2] fuzzy.algorithms.implementations.LutMemOnlineMain
- [3] fuzzy.algorithms.implementations.OnlineFuzzificationMain
- [4] fuzzy.algorithms.implementations.RegularFuzzificationMain
+ [2] fuzzy.algorithms.implementations.LutMemOnline2Main
+ [3] fuzzy.algorithms.implementations.LutMemOnlineMain
+ [4] fuzzy.algorithms.implementations.OnlineFuzzificationMain
+ [5] fuzzy.algorithms.interface.RegularFuzzificationMain
 ```
 
 The generated codes are exported to the /generated directory in the root folder.

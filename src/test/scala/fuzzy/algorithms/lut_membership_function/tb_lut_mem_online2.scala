@@ -48,7 +48,7 @@ class LutMembershipFunctionOnlineTest2
         Array.tabulate(math.pow(2, generatedResults._1).toInt)(i => i).map(_.U)
 
       // for (loop <- 0 until testNumbers.length) {
-      val loop: Int = 138 // test should be removed
+      val loop: Int = 124 // test should be removed
 
       //
       // Reset for test and re-test

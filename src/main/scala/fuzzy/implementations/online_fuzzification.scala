@@ -100,12 +100,26 @@ class OnlineFuzzification(
               i
             )
 
+          /*
           val lutResult = LutMembershipFunctionOnline(
             debug,
             lutGeneratedResults._1,
             lutGeneratedResults._2,
             lutGeneratedResults._3,
             lutGeneratedResults._4
+          )(
+            io.inputs(inputNumber),
+            io.start
+          )
+           */
+
+          val lutResult = LutMembershipFunctionOnline2(
+            debug,
+            lutGeneratedResults._1,
+            lutGeneratedResults._2,
+            lutGeneratedResults._3,
+            inputNumber,
+            i
           )(
             io.inputs(inputNumber),
             io.start
