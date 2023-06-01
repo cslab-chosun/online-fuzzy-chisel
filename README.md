@@ -15,7 +15,7 @@ Online Fuzzy Controller implemented in the Chisel HDL language. Fuzzy Controller
 The implementation of the Online Fuzzy Controller in Chisel HDL provides a high-level hardware design that is more easily modifiable and adaptable. The source code utilizes online arithmetic techniques for efficient computation of the Fuzzy Controller's inference engine. This Fuzzy Controller source code provides an efficient and flexible solution for controlling complex and uncertain systems.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/cslab-chosun/uploaded-files/main/img/fuzzy-controller-design.png" width=700>
+  <img alt="Fuzzy Controller" title="Fuzzy Controller"  src="https://raw.githubusercontent.com/cslab-chosun/uploaded-files/main/img/fuzzy-controller-design.jpg" width=700>
 </p>
 
 ## Using Fuzzy Controller 
