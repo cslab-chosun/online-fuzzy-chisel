@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/cslab-chosun/online-fuzzy-chisel/">
-    <img alt="Online Fuzzy Controller" title="Online Fuzzy Controller" src="https://raw.githubusercontent.com/cslab-chosun/uploaded-files/main/img/online-fuzzy-logo.png" width="450">
+    <img alt="Online Fuzzy Controller" title="Online Fuzzy Controller" src="https://raw.githubusercontent.com/cslab-chosun/uploaded-files/main/img/online-fuzzy-logo2.png" width="450">
   </a>
 </p>
 
