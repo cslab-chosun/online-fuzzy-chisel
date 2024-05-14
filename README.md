@@ -18,6 +18,25 @@ The implementation of the Online Fuzzy Controller in Chisel HDL provides a high-
   <img alt="Fuzzy Controller" title="Fuzzy Controller"  src="https://raw.githubusercontent.com/cslab-chosun/uploaded-files/main/img/fuzzy-controller-design.jpg" width=700>
 </p>
 
+## Publication
+
+In case you use our framework in your work, please consider citing our paper.
+
+* **[A Hardware Realization Framework for Fuzzy Inference System Optimization](https://www.mdpi.com/2079-9292/13/4/690)** [[PDF](https://www.mdpi.com/2079-9292/13/4/690/pdf?version=1707370917)]
+
+```
+@article{gorgin2024hardware,
+  title={A Hardware Realization Framework for Fuzzy Inference System Optimization},
+  author={Gorgin, Saeid and Karvandi, Mohammad Sina and Moghari, Somaye and Fallah, Mohammad K and Lee, Jeong-A},
+  journal={Electronics},
+  volume={13},
+  number={4},
+  pages={690},
+  year={2024},
+  publisher={MDPI}
+}
+```
+
 ## Using Fuzzy Controller 
 
 For testing code and generating Verilog, you need to install chisel3, please visit <a href="https://github.com/chipsalliance/chisel3/blob/master/SETUP.md">here</a> for more information. 
